@@ -3,6 +3,10 @@ import profile
 import os
 app = Flask(__name__)
 
+@app.route("/")
+def home_view():
+        return "<h1>Welcome to the MealMatch Server</h1>"
+        
 #Display either CAS profile login screen or 
 #welcome screen based on whether user is logged
 #into the application
