@@ -1,7 +1,12 @@
 from flask import Flask, request, jsonify
 import profile
+import os
 app = Flask(__name__)
 
+@app.route("/")
+def home_view():
+        return "<h1>Welcome to the MealMatch Server</h1>"
+        
 #Display either CAS profile login screen or 
 #welcome screen based on whether user is logged
 #into the application
@@ -31,7 +36,7 @@ def profile_status():
 
 #Create a profile for a user in MongoDB
 @app.route('/createprofile', methods=['POST'])
-def create_profile():
+def create_profile_main():
     payload = request.json
     netid = payload["netid"]
     netid_new = profile.create_profile(netid)
@@ -40,21 +45,11 @@ def create_profile():
         'data': {"netid": netid_new}
         })
 
-#Create a profile for a user in MongoDB
-@app.route('/createprofile', methods=['POST'])
-def create_profile():
-    payload = request.json
-    netid = payload["netid"]
-    netid_new = profile.create_profile(netid)
-    return jsonify({
-        'status': 'OK',
-        'data': {"netid": netid_new}
-        })
 
 
 @app.route('/status', methods=["GET"])
 def status():
     return jsonify({"message": "ok"})
 
-
-app.run(host='0.0.0.0', port=8020, debug=False )
+port = int(os.environ.get('PORT', 5000))
+app.run(host='0.0.0.0', port=port, debug=False )
