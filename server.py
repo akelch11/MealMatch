@@ -31,7 +31,7 @@ def profile_status():
 
 #Create a profile for a user in MongoDB
 @app.route('/createprofile', methods=['POST'])
-def create_profile():
+def create_profile_main():
     payload = request.json
     netid = payload["netid"]
     netid_new = profile.create_profile(netid)
