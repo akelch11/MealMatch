@@ -40,16 +40,6 @@ def create_profile_main():
         'data': {"netid": netid_new}
         })
 
-#Create a profile for a user in MongoDB
-@app.route('/createprofile', methods=['POST'])
-def create_profile():
-    payload = request.json
-    netid = payload["netid"]
-    netid_new = profile.create_profile(netid)
-    return jsonify({
-        'status': 'OK',
-        'data': {"netid": netid_new}
-        })
 
 
 @app.route('/status', methods=["GET"])
