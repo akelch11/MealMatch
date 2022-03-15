@@ -39,7 +39,13 @@ def profile_status():
 def create_profile_main():
     payload = request.json
     netid = payload["netid"]
-    netid_new = profile.create_profile(netid)
+    name = payload["name"]
+    year = payload["year"]
+    major = payload["major"]
+    phonenum = payload["phonenum"]
+    bio = payload["bio"]
+
+    netid_new = profile.create_profile(netid, name, year, major, phonenum, bio)
     return jsonify({
         'status': 'OK',
         'data': {"netid": netid_new}
