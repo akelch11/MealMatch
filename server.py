@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import profile
+import os
 app = Flask(__name__)
 
 #Display either CAS profile login screen or 
