@@ -25,7 +25,10 @@ def create_profile(netid, name, year, major, phonenum, bio):
     val = (netid, name, year, major, phonenum, bio)
     cur.execute(sql, val)
 
+    conn.commit()
+    conn.close()
     print("Profile created for: " + netid)
+
     return netid
     
 def create_user_table():
