@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>MealMatch</title>
+</head>
+
+<body>
+   <h2>Create Account</h2>
+   <hr>
+   <form action="/form" method="get">
+      <table>
+		<tr>
+            <td align="right">
+               Name:
+            </td>
+            <td>
+               <input type="text" name="name" value = ""><br>
+            </td>
+         </tr>
+		 <tr>
+            <td align="right">
+               Netid:
+            </td>
+            <td>
+               <input type="text" name="netid" value = ""><br>
+            </td>
+         </tr>
+         <tr>
+            <td align="right">
+               Year:
+            </td>
+            <td>
+               <input type="text" name="year" value = ""><br>
+            </td>
+         </tr>
+         <tr>
+            <td align="right">
+               Major:
+            </td>
+            <td>
+               <input type="text" name="major" value = ""><br>
+               
+            </td>
+         </tr>
+         <tr>
+            <td align="right">
+               Bio:
+            </td>
+            <td>
+               <input type="text" name="area" value = ""><br>
+            </td>
+         </tr>
+         <tr>
+            <td align="right">
+               Phone Number:
+            </td>
+            <td>
+               <input type="text" name="phonenum" value = ""><br>
+            </td>
+         </tr>
+         <tr>
+            <td></td>
+            <td><input type="submit" value="Submit"><br></td>
+         </tr>
+      </table>
+   </form>
+   <hr>
+   {% if response != '': %}
+   Profile for {{response}} created
+   {% endif %}
+
+</body>
+
+</html>

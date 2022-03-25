@@ -1,11 +1,52 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, make_response
+from flask import render_template
 import profile
 import os
 app = Flask(__name__)
 
-@app.route("/")
-def home_view():
-        return "<h1>Welcome to the MealMatch Server</h1>"
+@app.route('/', methods=['GET'])
+@app.route('/index', methods=['GET'])
+def search_form():
+
+    html = render_template('createaccount.html',
+                            response = "")
+    response = make_response(html)
+    return response
+
+@app.route('/form', methods=["GET"])
+def form():
+    
+    name = request.args.get('name')
+    netid = request.args.get('netid')
+    year = request.args.get('year')
+    major = request.args.get('major')
+    bio = request.args.get('bio')
+    phonenum = request.args.get('phonenum')
+
+    if name is None:
+        name = ""
+
+    if netid is None:
+        netid = ""
+
+    if year is None:
+        year = ""
+
+    if major is None:
+        major = ""
+
+    if bio is None:
+        bio = ""
+
+    if phonenum is None:
+        phonenum = ""
+
+    profile.create_profile(netid, name, int(year), major, phonenum, bio)
+
+    html = render_template('createaccount.html')
+    response = make_response(html)
+    return response
+
         
 #Display either CAS profile login screen or 
 #welcome screen based on whether user is logged
@@ -32,25 +73,6 @@ def profile_status():
         'status': 'OK',
         'data': {"profile_status": profile_status}
         })
-
-
-#Create a profile for a user in MongoDB
-@app.route('/createprofile', methods=['POST'])
-def create_profile_main():
-    payload = request.json
-    netid = payload["netid"]
-    name = payload["name"]
-    year = payload["year"]
-    major = payload["major"]
-    phonenum = payload["phonenum"]
-    bio = payload["bio"]
-
-    netid_new = profile.create_profile(netid, name, year, major, phonenum, bio)
-    return jsonify({
-        'status': 'OK',
-        'data': {"netid": netid_new}
-        })
-
 
 
 @app.route('/status', methods=["GET"])
