@@ -1,3 +1,5 @@
+from sys import stderr
+from urllib import response
 from flask import Flask, request, make_response
 from flask import render_template
 import profile
@@ -78,6 +80,19 @@ def profile_status():
 @app.route('/status', methods=["GET"])
 def status():
     return jsonify({"message": "ok"})
+
+@app.route('/homescreen', methods = ['GET'])
+def homescreen():
+    html = render_template('testhomescreen.html')
+    response = make_response(html)
+    return response
+
+@app.route('/match', methods = ['GET'])
+def match():
+    html = render_template('ondemandmatch.html')
+    print('call match route')
+    response = make_response(html)
+    return response
 
 port = int(os.environ.get('PORT', 5001))
 app.run(host='0.0.0.0', port=port, debug=False )
