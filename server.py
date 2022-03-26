@@ -3,6 +3,7 @@ from urllib import response
 from flask import Flask, request, make_response
 from flask import render_template
 import profile
+import matcher
 import os
 app = Flask(__name__)
 
@@ -49,7 +50,36 @@ def form():
     response = make_response(html)
     return response
 
-        
+@app.route('/matchdummy', methods=['GET'])
+def ondemand():
+
+    html = render_template('dummyondemand.html')
+    response = make_response(html)
+    return response
+
+
+@app.route('/ondemand', methods=["GET"])
+def ondemand_form():
+    
+    mealtime = request.args.get('mealtime')
+    dhall = request.args.get('dhall')
+    endtime = request.args.get('endtime')
+    if mealtime is None:
+        mealtime = ""
+
+    if dhall is None:
+        dhall = ""
+
+    if endtime is None:
+        endtime = ""
+
+    matcher.add_request(mealtime, dhall, endtime)
+
+    html = render_template('dummyondemand.html')
+    response = make_response(html)
+    return response
+
+
 #Display either CAS profile login screen or 
 #welcome screen based on whether user is logged
 #into the application
@@ -83,7 +113,7 @@ def status():
 
 @app.route('/homescreen', methods = ['GET'])
 def homescreen():
-    html = render_template('testhomescreen.html')
+    html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
