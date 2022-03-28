@@ -1,3 +1,5 @@
+from curses import endwin
+import re
 from sys import stderr
 from urllib import response
 from flask import Flask, request, make_response
@@ -53,10 +55,40 @@ def form():
 @app.route('/matchdummy', methods=['GET'])
 def ondemand():
 
-    html = render_template('dummyondemand.html')
+
+    html = render_template('ondemandmatch.html')
+
     response = make_response(html)
     return response
 
+@app.route('/matchlanddummy', methods = ['GET'])
+def matchland():
+    meal_type = request.args.get('meal')
+    dhall = request.args.get('location')
+    start_time = request.args.get('start')
+    end_time = request.args.get('end')
+
+
+    html = render_template('matchlanddummy.html', meal = meal_type, location = dhall, \
+                          start = start_time, end = end_time)
+    response = make_response(html)
+    
+    if meal_type is None:
+        meal_type = ""
+
+    if dhall is None:
+        dhall = ""
+
+    if start_time is None:
+        start_time = ""
+
+    if end_time is None:
+        end_time = ""
+   # send match request to database
+   # matcher.add_request(start_time, dhall, end_time)
+
+
+    return response
 
 @app.route('/ondemand', methods=["GET"])
 def ondemand_form():
@@ -75,7 +107,7 @@ def ondemand_form():
 
     matcher.add_request(mealtime, dhall, endtime)
 
-    html = render_template('dummyondemand.html')
+    html = render_template('ondemandmatch.html')
     response = make_response(html)
     return response
 
@@ -123,6 +155,7 @@ def match():
     print('call match route')
     response = make_response(html)
     return response
+
 
 port = int(os.environ.get('PORT', 5001))
 app.run(host='0.0.0.0', port=port, debug=False )
