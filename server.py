@@ -1,26 +1,46 @@
 from curses import endwin
 import re
 from sys import stderr
-from urllib import response
-from flask import Flask, request, make_response
+# from urllib import response
+from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
 import profile
 import matcher
+import auth
+import keys
 import os
+
 app = Flask(__name__)
+app.secret_key = keys.APP_SECRET_KEY
+
+
+@app.route('/landing', methods=['GET'])
+def landing_page():
+    html = render_template('landing.html')
+    response = make_response(html)
+    return response
+
+
+@app.route('/next', methods=['GET'])
+def go_to_cas():
+    auth.authenticate()
+    return redirect(url_for('search_form'))
+
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def search_form():
-
+    if not session.get('username'):
+        return redirect(url_for('landing_page'))
+    # should go to home_screen if account created
     html = render_template('createaccount.html',
-                            response = "")
+                           response="")
     response = make_response(html)
     return response
 
+
 @app.route('/form', methods=["GET"])
 def form():
-    
     name = request.args.get('name')
     netid = request.args.get('netid')
     year = request.args.get('year')
@@ -52,12 +72,13 @@ def form():
     response = make_response(html)
     return response
 
+
 @app.route('/matchdummy', methods=['GET'])
 def ondemand():
 
 
-    html = render_template('ondemandmatch.html')
 
+    html = render_template('ondemandmatch.html')
     response = make_response(html)
     return response
 
@@ -92,7 +113,6 @@ def matchland():
 
 @app.route('/ondemand', methods=["GET"])
 def ondemand_form():
-    
     mealtime = request.args.get('mealtime')
     dhall = request.args.get('dhall')
     endtime = request.args.get('endtime')
@@ -112,9 +132,9 @@ def ondemand_form():
     return response
 
 
-#Display either CAS profile login screen or 
-#welcome screen based on whether user is logged
-#into the application
+# Display either CAS profile login screen or
+# welcome screen based on whether user is logged
+# into the application
 @app.route('/getloginstatus', methods=['GET'])
 def login_status():
     payload = request.json
@@ -123,11 +143,12 @@ def login_status():
     return jsonify({
         'status': 'OK',
         'data': {"login_status": login_status}
-        })
+    })
 
-#Display either CAS profile login screen or 
-#welcome screen based on whether user is logged
-#into the application
+
+# Display either CAS profile login screen or
+# welcome screen based on whether user is logged
+# into the application
 @app.route('/getprofilestatus', methods=['GET'])
 def profile_status():
     payload = request.json
@@ -136,26 +157,32 @@ def profile_status():
     return jsonify({
         'status': 'OK',
         'data': {"profile_status": profile_status}
-        })
+    })
 
 
 @app.route('/status', methods=["GET"])
 def status():
     return jsonify({"message": "ok"})
 
-@app.route('/homescreen', methods = ['GET'])
+
+@app.route('/homescreen', methods=['GET'])
 def homescreen():
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
-@app.route('/match', methods = ['GET'])
+
+@app.route('/match', methods=['GET'])
 def match():
     html = render_template('ondemandmatch.html')
     print('call match route')
     response = make_response(html)
     return response
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    auth.logout()
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False )
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)
