@@ -73,61 +73,77 @@ def create_matches_table():
     
     
 def match_requests():
+    
+    for dhall in dhall_list:
+
+        # Create queries for both lunch and dinner request matching
+        parse_requests_lunch = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
+                            FROM requests\n'''
+        parse_requests_lunch += "WHERE {}  = TRUE, LUNCH = TRUE\n".format(dhall)
+        parse_requests_lunch += "ORDER BY BEGINTIME ASCENDING"
+
+        parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
+                            FROM requests\n'''
+        parse_requests_din += "WHERE {}  = TRUE, LUNCH = FALSE\n".format(dhall)
+        parse_requests_din += "ORDER BY BEGINTIME ASCENDING"
+
+        execute_match_query(parse_requests_lunch, dhall)
+        execute_match_query(parse_requests_din, dhall)
+
+    print("Match Requests")
+
+def execute_match_query(parse_requests, dhall):
     # Number of characters in id
     N = 16
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
 
     cur = conn.cursor()
-
-    for dhall in dhall_list:
-        parse_requests = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
-                            FROM requests\n'''
-        parse_requests += "WHERE {}  = TRUE\n".format(dhall)
-        parse_requests += "ORDER BY LUNCH ASCENDING, BEGINTIME ASCENDING"
-
-        cur.execute(parse_requests)
-        rows = []
+    cur.execute(parse_requests)
+    rows = []
+    row = cur.fetchone()
+    # Add all current requests to rows for further processing
+    while(row):
+        rows.append(row)
         row = cur.fetchone()
-        # Add all current requests to rows for further processing
-        while(row):
-            rows.append(row)
-            row = cur.fetchone()
         
-        num = len(rows)
+    num = len(rows)
 
-        # Remove last element from requests if there are an odd number
-        # of requests
-        if num%2 == 1:
-            rows.pop()
-        
-        # Use requests in rows to create matches in pairs of two
-        while(rows):
-            # get data for first and second student to be matched
-            first = rows.pop(0)
-            second = rows.pop(0)
+    # Remove last element from requests if there are an odd number
+    # of requests
+    if num%2 == 1:
+        rows.pop()
+    
+    # Use requests in rows to create matches in pairs of two
+    while(rows):
+        # get data for first and second student to be matched
+        first = rows.pop(0)
+        second = rows.pop(0)
 
-            # Obtain matchid
-            match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
-            first_netid = first[1]
-            second_netid = second[1]
+        # Obtain matchid
+        match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+        first_netid = first[1]
+        second_netid = second[1]
 
-            # Current time for match made
-            now = datetime.now()
+        # Current time for match made
+        now = datetime.now()
 
-            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL) "
-            sql += "VALUES (%s, %s, %s, %s, %s)"
+        sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL) "
+        sql += "VALUES (%s, %s, %s, %s, %s)"
 
-            val = (match_id, first_netid, second_netid, now, dhall)
+        val = (match_id, first_netid, second_netid, now, dhall)
 
-            cur.execute(sql, val)
+        cur.execute(sql, val)
 
-            # Remove requests after match is made
-            remove_request(first[0])
-            remove_request(second[0])
-
+        # Remove requests after match is made
+        remove_request(first[0])
+        remove_request(second[0])
+    
     conn.commit()
     conn.close()
-    print("Match Requests")
+
+    print('Executed Matches Query')
+
+    pass
 
 # Remove request from request table 
 def remove_request(request_id):
