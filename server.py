@@ -46,10 +46,8 @@ def homescreen():
 
 @app.route('/create', methods=['GET'])
 def create_form():
-    
     # should go to home_screen if account created
-    html = render_template('createaccount.html',
-                           response="")
+    html = render_template('createaccount.html')
     response = make_response(html)
     return response
 
@@ -67,7 +65,7 @@ def form():
         name = netid
 
     if year is None:
-        year = ""
+        year = "0"
 
     if major is None:
         major = ""
@@ -80,7 +78,7 @@ def form():
 
     profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
-    html = render_template('createaccount.html')
+    html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
