@@ -29,7 +29,8 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr):
 
     conn.commit()
     conn.close()
-    print("Profile created for: " + netid)
+
+    match_requests()
 
 def create_requests_table():
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
@@ -74,7 +75,6 @@ def create_matches_table():
 def match_requests():
     # Number of characters in id
     N = 16
-
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
 
     cur = conn.cursor()
@@ -105,8 +105,6 @@ def match_requests():
             # get data for first and second student to be matched
             first = rows.pop(0)
             second = rows.pop(0)
-
-            # Put data in matches table
 
             # Obtain matchid
             match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
@@ -145,3 +143,21 @@ def remove_request(request_id):
     conn.commit()
     conn.close()    
     print("Removed request")
+
+def get_all_matches():
+    all_matches = []
+
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    query="select * from matches"
+
+    cur.execute(query)
+    rows=cur.fetchall()
+    for row in rows:
+        row = []
+        for col in row:
+            row.append(col)
+        all_matches.append(row)
+
+    cur.close()
+    return all_matches

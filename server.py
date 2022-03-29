@@ -107,80 +107,7 @@ def matchland():
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
-
-    html = render_template('matchlanddummy.html', meal = meal_type, location = dhall, \
-                          start = start_time, end = end_time)
-    response = make_response(html)
-    
-    if meal_type is None:
-        meal_type = ""
-
-    if dhall is None:
-        dhall = ""
-
-    if start_time is None:
-        start_time = ""
-
-    if end_time is None:
-        end_time = ""
-   # send match request to database
-   # matcher.add_request(start_time, dhall, end_time)
-
-
-    return response
-
-@app.route('/ondemand', methods=["GET"])
-def ondemand_form():
-    mealtime = request.args.get('mealtime')
-    dhall = request.args.get('dhall')
-    endtime = request.args.get('endtime')
-    if mealtime is None:
-        mealtime = ""
-
-    if dhall is None:
-        dhall = ""
-
-    if endtime is None:
-        endtime = ""
-
-    matcher.add_request(mealtime, dhall, endtime)
-
-    html = render_template('ondemandmatch.html')
-    response = make_response(html)
-    return response
-
-
-# Display either CAS profile login screen or
-# welcome screen based on whether user is logged
-# into the application
-@app.route('/getloginstatus', methods=['GET'])
-def login_status():
-    payload = request.json
-    netid = payload["netid"]
-    login_status = profile.get_loginstatus(netid)
-    return jsonify({
-        'status': 'OK',
-        'data': {"login_status": login_status}
-    })
-
-
-# Display either CAS profile login screen or
-# welcome screen based on whether user is logged
-# into the application
-@app.route('/getprofilestatus', methods=['GET'])
-def profile_status():
-    payload = request.json
-    netid = payload["netid"]
-    profile_status = profile.get_profilestatus(netid)
-    return jsonify({
-        'status': 'OK',
-        'data': {"profile_status": profile_status}
-    })
-
-
-@app.route('/status', methods=["GET"])
-def status():
-    return jsonify({"message": "ok"})
+    return get_matches()
 
 
 @app.route('/homescreen', methods=['GET'])
@@ -201,6 +128,17 @@ def match():
 def logout():
     auth.logout()
 
+@app.route('/matches', methods = ['GET'])
+def get_matches():
+    all_matches = matcher.get_all_matches()
+    html = render_template('matches.html', all_matches = all_matches)
+    response = make_response(html)
+    return response
+
+
 port = int(os.environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
 app.run(host='localhost', port=port, debug=False)
+
+
+
