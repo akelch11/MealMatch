@@ -1,3 +1,4 @@
+from ast import parse
 from curses import endwin
 import re
 from sys import stderr
@@ -8,6 +9,7 @@ import profile
 import matcher
 import auth
 import keys
+from dateutil import parser
 import os
 
 app = Flask(__name__)
@@ -96,6 +98,25 @@ def matchland():
     start_time = request.args.get('start')
     end_time = request.args.get('end')
 
+
+    if meal_type == "lunch":
+        meal_type = True
+    else:
+        meal_type = False
+
+    dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
+    dhall_arr = []
+    for i in range(len(dhall_list)):
+        if dhall_list[i].lower() == dhall.lower():
+            dhall_arr.append(True)
+        else:
+            dhall_arr.append(False)
+
+    netid = "avaidya"
+
+    start_time_datetime = parser.parse(start_time)
+    end_time_datetime = parser.parse(end_time)
+    matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
 
     html = render_template('matchlanddummy.html', meal = meal_type, location = dhall, \
                           start = start_time, end = end_time)
