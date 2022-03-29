@@ -48,7 +48,7 @@ def validate(ticket):
     if len(lines) != 2:
         return None
     first_line = lines[0].decode('utf-8')
-    second_line = lines[1].decode('utf-8')
+    second_line = lines[1].decode('utf-8').strip()
     if not first_line.startswith('yes'):
         return None
     return second_line
