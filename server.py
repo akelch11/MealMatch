@@ -10,6 +10,8 @@ import matcher
 import auth
 import keys
 from dateutil import parser
+import random
+import string
 import os
 
 app = Flask(__name__)
@@ -110,7 +112,8 @@ def matchland():
         else:
             dhall_arr.append(False)
 
-    netid = "avaidya"
+    netid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(8))
+
 
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)

@@ -79,13 +79,13 @@ def match_requests():
         # Create queries for both lunch and dinner request matching
         parse_requests_lunch = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_lunch += "WHERE {}  = TRUE, LUNCH = TRUE\n".format(dhall)
-        parse_requests_lunch += "ORDER BY BEGINTIME ASCENDING"
+        parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NOT NULL\n".format(dhall)
+        parse_requests_lunch += "ORDER BY BEGINTIME ASC"
 
         parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_din += "WHERE {}  = TRUE, LUNCH = FALSE\n".format(dhall)
-        parse_requests_din += "ORDER BY BEGINTIME ASCENDING"
+        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NOT NULL\n".format(dhall)
+        parse_requests_din += "ORDER BY BEGINTIME ASC"
 
         execute_match_query(parse_requests_lunch, dhall)
         execute_match_query(parse_requests_din, dhall)
@@ -105,19 +105,20 @@ def execute_match_query(parse_requests, dhall):
     while(row):
         rows.append(row)
         row = cur.fetchone()
-        
-    num = len(rows)
 
     # Remove last element from requests if there are an odd number
     # of requests
-    if num%2 == 1:
+    if len(rows)%2 == 1:
         rows.pop()
+    print(len(rows))
     
     # Use requests in rows to create matches in pairs of two
     while(rows):
         # get data for first and second student to be matched
         first = rows.pop(0)
+        print(first)
         second = rows.pop(0)
+        print(second)
 
         # Obtain matchid
         match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
@@ -135,8 +136,8 @@ def execute_match_query(parse_requests, dhall):
         cur.execute(sql, val)
 
         # Remove requests after match is made
-        remove_request(first[0])
-        remove_request(second[0])
+        modify_request(first[0], match_id)
+        modify_request(second[0], match_id)
     
     conn.commit()
     conn.close()
@@ -146,13 +147,13 @@ def execute_match_query(parse_requests, dhall):
     pass
 
 # Remove request from request table 
-def remove_request(request_id):
+def modify_request(request_id, match_id):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
 
     cur = conn.cursor()
 
-    sql = "DELETE FROM requests WHERE REQUESTID = %s"
-    val = (request_id)
+    sql = "UPDATE requests SET MATCHID = %s WHERE REQUESTID = %s"
+    val = (match_id, request_id)
 
     cur.execute(sql, val)
 
