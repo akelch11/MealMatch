@@ -2,6 +2,17 @@
 import psycopg2
 
 
+""""Check if the logged-in user has created a profile"""
+def exists(netid):
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    stmt = 'select name from users where netid=%s'
+    cur.execute(stmt, (netid,))
+    ret = cur.fetchone()
+    conn.commit()
+    conn.close()
+    return ret != None
+
 #Check with CAS authentication and see whether user
 #is logged in or not
 def get_loginstatus(netid):

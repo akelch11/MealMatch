@@ -24,14 +24,27 @@ def landing_page():
 @app.route('/next', methods=['GET'])
 def go_to_cas():
     auth.authenticate()
-    return redirect(url_for('search_form'))
+    return redirect(url_for('homescreen'))
 
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
-def search_form():
+@app.route('/homescreen', methods=['GET'])
+def homescreen():
+    # if not logged in 
     if not session.get('username'):
-        return redirect(url_for('landing_page'))
+        return redirect(url_for('landing_page')) # got to landing page
+
+    if not profile.exists(session.get('username')):
+        return redirect(url_for('create_form'))
+    html = render_template('homescreen.html')
+    response = make_response(html)
+    return response
+
+
+@app.route('/create', methods=['GET'])
+def create_form():
+    
     # should go to home_screen if account created
     html = render_template('createaccount.html',
                            response="")
@@ -39,20 +52,17 @@ def search_form():
     return response
 
 
-@app.route('/form', methods=["GET"])
+@app.route('/submit_create_form', methods=["GET"])
 def form():
     name = request.args.get('name')
-    netid = request.args.get('netid')
+    netid = session.get('username')
     year = request.args.get('year')
     major = request.args.get('major')
     bio = request.args.get('bio')
     phonenum = request.args.get('phonenum')
 
     if name is None:
-        name = ""
-
-    if netid is None:
-        netid = ""
+        name = netid
 
     if year is None:
         year = ""
@@ -75,9 +85,6 @@ def form():
 
 @app.route('/matchdummy', methods=['GET'])
 def ondemand():
-
-
-
     html = render_template('ondemandmatch.html')
     response = make_response(html)
     return response
@@ -163,13 +170,6 @@ def profile_status():
 @app.route('/status', methods=["GET"])
 def status():
     return jsonify({"message": "ok"})
-
-
-@app.route('/homescreen', methods=['GET'])
-def homescreen():
-    html = render_template('homescreen.html')
-    response = make_response(html)
-    return response
 
 
 @app.route('/match', methods=['GET'])
