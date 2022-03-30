@@ -1,16 +1,13 @@
-from ast import parse
-from curses import endwin
-import re
-from sys import stderr
-# from urllib import response
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
+from os import environ
+from dateutil import parser
+
 import profile
 import matcher
 import auth
 import keys
-from dateutil import parser
-import os
+
 
 app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
@@ -44,7 +41,7 @@ def homescreen():
     return response
 
 
-@app.route('/create', methods=['GET'])
+@app.route('/edit_account', methods=['GET'])
 def create_form():
     # should go to home_screen if account created
     html = render_template('createaccount.html')
@@ -202,6 +199,6 @@ def match():
 def logout():
     auth.logout()
 
-port = int(os.environ.get('PORT', 5001))
+port = int(environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
 app.run(host='localhost', port=port, debug=False)
