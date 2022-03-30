@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>MealMatch</title>
+</head>
+
+<body>
+   <h2>Matches</h2>
+   <table>
+      <tr>
+         <td><b>First NetId</b></td>
+         <td><b>Second NetId</b></td>
+         <td><b>Match Time</b></td>
+         <td><b>Dining Hall</b></td>
+      </tr>
+      {% for matches in all_matches: %}
+      <tr>
+         <td>{{matches[1]}}</td>
+         <td>{{matches[2]}}</td>
+         <td>{{matches[3]}}</td>
+         <td>{{matches[4]}}</td>
+      </tr>
+      {% endfor %}
+   </table>
+</body>
+
+</html>
