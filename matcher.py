@@ -10,17 +10,16 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
 
-    sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH, MATCHID,"
+    sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
     
     for i in range(len(dhall_list)):
         sql = sql + "{},".format(dhall_list[i])
 
-    sql = sql + "ATDHALL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s)"
-    print(sql)
-    requestId = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16))
+    sql = sql + "ATDHALL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s)"
+    requestId = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(16))
 
 
-    val = [requestId, netid, start_time, end_time, meal_type, ""]
+    val = [requestId, netid, start_time, end_time, meal_type]
     for i in range(len(dhall_arr)):
         val.append(dhall_arr[i])
 
@@ -50,7 +49,6 @@ def create_requests_table():
 
     create_table_query = create_table_query + "ATDHALL BOOLEAN);"
 
-    print(create_table_query)
     cur.execute(create_table_query)
     conn.commit()
     conn.close()
@@ -79,18 +77,17 @@ def match_requests():
         # Create queries for both lunch and dinner request matching
         parse_requests_lunch = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NOT NULL\n".format(dhall)
+        parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NULL\n".format(dhall)
         parse_requests_lunch += "ORDER BY BEGINTIME ASC"
 
         parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NOT NULL\n".format(dhall)
+        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL\n".format(dhall)
         parse_requests_din += "ORDER BY BEGINTIME ASC"
 
         execute_match_query(parse_requests_lunch, dhall)
         execute_match_query(parse_requests_din, dhall)
 
-    print("Match Requests")
 
 def execute_match_query(parse_requests, dhall):
     # Number of characters in id
@@ -109,16 +106,12 @@ def execute_match_query(parse_requests, dhall):
     # Remove last element from requests if there are an odd number
     # of requests
     if len(rows)%2 == 1:
-        rows.pop()
-    print(len(rows))
-    
+        rows.pop()    
     # Use requests in rows to create matches in pairs of two
     while(rows):
         # get data for first and second student to be matched
         first = rows.pop(0)
-        print(first)
         second = rows.pop(0)
-        print(second)
 
         # Obtain matchid
         match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
@@ -141,8 +134,6 @@ def execute_match_query(parse_requests, dhall):
     
     conn.commit()
     conn.close()
-
-    print('Executed Matches Query')
 
     pass
 
@@ -170,11 +161,14 @@ def get_all_matches():
 
     cur.execute(query)
     rows=cur.fetchall()
+    
     for row in rows:
-        row = []
+        row_arr = []
         for col in row:
-            row.append(col)
-        all_matches.append(row)
+            row_arr.append(col)
+        all_matches.append(row_arr)
+
+
 
     cur.close()
     return all_matches

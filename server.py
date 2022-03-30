@@ -98,7 +98,6 @@ def matchland():
     start_time = request.args.get('start')
     end_time = request.args.get('end')
 
-
     if meal_type == "lunch":
         meal_type = True
     else:
@@ -112,11 +111,11 @@ def matchland():
         else:
             dhall_arr.append(False)
 
-    netid = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(8))
-
+    netid = session.get('username')
 
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)
+
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
     return get_matches()
 
