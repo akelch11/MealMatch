@@ -36,17 +36,18 @@ def go_to_cas():
 @app.route('/homescreen', methods=['GET'])
 def homescreen():
     # if not logged in 
-    if not session.get('username'):
-        return redirect(url_for('landing_page')) # got to landing page
+    # if not session.get('username'):
+    #     return redirect(url_for('landing_page')) # got to landing page
 
-    if not profile.exists(session.get('username')):
-        return redirect(url_for('create_form'))
+    # if not profile.exists(session.get('username')):
+    #     return redirect(url_for('create_form'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
 
-@app.route('/create', methods=['GET'])
+
+@app.route('/createdummy', methods=['GET'])
 def create_form():
     # should go to home_screen if account created
     html = render_template('createaccount.html')
@@ -111,13 +112,14 @@ def matchland():
         else:
             dhall_arr.append(False)
 
-    netid = session.get('username')
+    netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
-    return get_matches()
+    return redirect("/matches")
+
 
 
 @app.route('/match', methods=['GET'])
@@ -133,8 +135,27 @@ def logout():
 
 @app.route('/matches', methods = ['GET'])
 def get_matches():
-    all_matches = matcher.get_all_matches()
-    html = render_template('matches.html', all_matches = all_matches)
+
+    session_netid = "6ocdq"
+
+    all_matches = matcher.get_all_matches(session_netid)
+
+    cleaned_matches = []
+    curr_match = []
+    for i in range(len(all_matches)):
+        row = all_matches[i]
+        netid = row[5]
+        if netid != session_netid:
+            curr_match.append(netid) #Netid
+            curr_match.append(row[4]) #Dhall
+            curr_match.append(row[3]) #Match Time
+            curr_match.append(row[6]) #Name
+            curr_match.append(row[7]) #Year
+            curr_match.append(row[8]) #Major
+            curr_match.append(row[9]) #Phone Number
+            cleaned_matches.append(curr_match)
+
+    html = render_template('matches.html', all_matches = cleaned_matches)
     response = make_response(html)
     return response
 

@@ -14,39 +14,39 @@
         <span><h1 class="col-sm-6">MealMatch</h1></span>  
    </div>
 
-   
-
 <center>
-   <div class= "container btn-group">
-       
-        <form action = '/matchdummy'>
-                 <button class = "btn-lg btn-block row-cols-sm-4" id = "grabMealButton">
-                
-            
+   <div class= "container btn-group" id = "mainContainer">
+    <div class = "row w-100" id = "rowTest">  
+        <div class = "col">
+            <form action = '/matchdummy'>
+                <button class = "btn-lg btn-block row-cols-sm-4" id = "grabMealButton">
                 <img src = "/static/diningchairslogo.png" alt = "grab meal" style = "width: 100px; height: 100px;"> </img>
                 <br>
                 GRAB A MEAL
              </button>
-        </form>
-              
-        <form>
-            <button class = "btn-lg btn-block row-cols-sm-4" id = "bigButtons">
-                
-            <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
-             <br>
-            SCHEDULED MEALS
-            </button>
-        </form>
-    
+            </form>
+        </div> 
+        <div class = "col">  
+            <form action = '/matches'>
+                <button class = "btn-lg btn-block row-cols-sm-4" id = "bigButtons">
+                <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                <br>
+                SCHEDULED MEALS
+                </button>
+            </form>
+        </div> 
 
-
-        <form>
-            <button class ="btn-lg btn-block row-cols-sm-4" id = "bigButtons">
+        <div class = "col">  
+            <form>
+                <button class ="btn-lg btn-block row-cols-sm-4" id = "bigButtons">
                 <img src = "/static/profilepiclogowhite.png" style="width: 100px; height: 100px;" ></img>
                 <br>
-            MY PROFILE
+                MY PROFILE
              </button>
-        </form> 
+            </form> 
+        </div>  
+    </div>
+
    </div>
 </center>
 
@@ -56,8 +56,6 @@
 
 
 </html>
-
-
 <style>
     * {
 	box-sizing: border-box;
@@ -65,7 +63,12 @@
 
 }
 
+#mainContainer {
+    margin-top: 20px;
+}
 
+#rowTest {
+}
 
 .jumbotron {
     background-color: rgba(255, 159, 70, 1);
@@ -85,20 +88,13 @@
 
 }
 #bigButtons {
-    margin: 40px;
-    margin-top: 20px;
     background-color: #ff9f46;
     color: white;
-    size: 200%;
 }
 
 #grabMealButton {
-    margin: 40px;
-    margin-top: 20px;
     background-color: #ff9f46;
     color: white;
-    
-    size: 200%;
 }
 
 </style>
