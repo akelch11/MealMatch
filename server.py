@@ -1,18 +1,12 @@
-from ast import parse
-from curses import endwin
-import re
-from sys import stderr
-# from urllib import response
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
+from os import environ
+from dateutil import parser
+
 import profile
 import matcher
 import auth
 import keys
-from dateutil import parser
-import random
-import string
-import os
 
 app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
@@ -46,8 +40,12 @@ def homescreen():
     return response
 
 
+<<<<<<< HEAD
 
 @app.route('/createdummy', methods=['GET'])
+=======
+@app.route('/edit_account', methods=['GET'])
+>>>>>>> 4b0002483b017ed17c02398c119e8cb88d8bc916
 def create_form():
     # should go to home_screen if account created
     html = render_template('createaccount.html')
@@ -160,9 +158,6 @@ def get_matches():
     return response
 
 
-port = int(os.environ.get('PORT', 5001))
+port = int(environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
 app.run(host='localhost', port=port, debug=False)
-
-
-
