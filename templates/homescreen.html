@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!--- homescreen-->
 <html>
     <head>
         
@@ -15,60 +15,46 @@
    </div>
 
 <center>
-   <div class= "container btn-group" id = "mainContainer">
-    <div class = "row w-100" id = "rowTest">  
-        <div class = "col">
-            <form action = '/matchdummy'>
-                <button class = "btn-lg btn-block row-cols-sm-4" id = "grabMealButton">
-                <img src = "/static/diningchairslogo.png" alt = "grab meal" style = "width: 100px; height: 100px;"> </img>
-                <br>
-                GRAB A MEAL
-             </button>
-<<<<<<< HEAD
-            </form>
-        </div> 
-        <div class = "col">  
-            <form action = '/matches'>
-                <button class = "btn-lg btn-block row-cols-sm-4" id = "bigButtons">
-                <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
-                <br>
-                SCHEDULED MEALS
+    <div class= "container-fluid btn-group" id = "mainContainer">
+        <div class = "row w-100" id = "rowTest">  
+            
+            <div class = "col-sm-4">
+                <form action = '/matchdummy'>
+                    <button class = "btn-lg btn-block" id = "grabMealButton">
+                    <img src = "/static/diningchairslogo.png" alt = "grab meal" style = "width: 100px; height: 100px;"> </img>
+                    <br>
+                    GRAB A MEAL
                 </button>
-            </form>
-        </div> 
+                </form>
+            </div>
+            
+            <div class = 'col-sm-4'>
+                <form>
+                    <button class = "btn-lg btn-block" id = "bigButtons">
+                        
+                    <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                    <br>
+                    SCHEDULED MEALS
+                    </button>
+                </form>
+            </div>
+        
 
-        <div class = "col">  
-            <form>
-                <button class ="btn-lg btn-block row-cols-sm-4" id = "bigButtons">
-=======
-        </form>
-              
-        <form>
-            <button class = "btn-lg btn-block row-cols-sm-4" id = "bigButtons">
-                
-            <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
-             <br>
-            SCHEDULED MEALS
-            </button>
-        </form>
-    
-
-
-        <form action="/edit_account">
-            <button class ="btn-lg btn-block row-cols-sm-4" id = "bigButtons">
->>>>>>> 4b0002483b017ed17c02398c119e8cb88d8bc916
-                <img src = "/static/profilepiclogowhite.png" style="width: 100px; height: 100px;" ></img>
-                <br>
-                MY PROFILE
-             </button>
-            </form> 
-        </div>  
+            <div class = 'col-sm-4'>
+                <form action="/edit_account">
+                    <button class ="btn-lg btn-block" id = "bigButtons">
+                        <img src = "/static/profilepiclogowhite.png" style="width: 100px; height: 100px;" ></img>
+                        <br>
+                        MY PROFILE
+                    </button>
+                    </form> 
+            </div>
+            
+        </div>
     </div>
-
-   </div>
 </center>
 
-</body>
+</body> 
 
     
 
@@ -83,10 +69,11 @@
 
 #mainContainer {
     margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
-#rowTest {
-}
+
 
 .jumbotron {
     background-color: rgba(255, 159, 70, 1);
