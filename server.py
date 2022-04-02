@@ -27,7 +27,6 @@ def go_to_cas():
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
-@app.route('/homescreen', methods=['GET'])
 def homescreen():
     # if not logged in 
     if not session.get('username'):
