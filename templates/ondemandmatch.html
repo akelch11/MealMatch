@@ -156,15 +156,13 @@
 		for(let i = 0; i < dHallButtons.length; i++)
 			dHallButtons[i].addEventListener('click', updateUrl)
 		
-		let startTimeButton = document.getElementById("startTimeButton");
+		
 		let endTimeButton = document.getElementById("endTimeButton");
 
-		startTimeButton.addEventListener('click', updateUrl);
+		
 		endTimeButton.addEventListener('click', updateUrl);
 		// update url on changing times
-		startTimeButton.addEventListener('change', updateUrl);
-		endTimeButton.addEventListener('change', updateUrl)
-
+		endTimeButton.addEventListener('change', updateUrl);
 
 </script>
 
