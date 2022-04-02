@@ -2,6 +2,7 @@ from ast import parse
 from curses import endwin
 import re
 from sys import stderr
+from urllib import response
 # from urllib import response
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
@@ -105,11 +106,24 @@ def matchland():
 
     dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
     dhall_arr = []
-    for i in range(len(dhall_list)):
-        if dhall_list[i].lower() == dhall.lower():
-            dhall_arr.append(True)
-        else:
-            dhall_arr.append(False)
+
+    # multiple dhalls were selected via scheduled match
+    # Dining halls are listed in between '-' of dhall request parameter
+    if '-' in dhall:
+        # 
+        for hall_name in dhall_list:
+            if hall_name not in dhall:
+                dhall_arr.append(False)
+            else:
+                dhall_arr.append(True)
+    else:
+        # one dining hall selected
+        for i in range(len(dhall_list)):
+            if dhall_list[i].lower() == dhall.lower():
+                dhall_arr.append(True)
+            else:
+                dhall_arr.append(False)
+    
 
     netid = session.get('username')
 
@@ -118,6 +132,29 @@ def matchland():
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
     return get_matches()
+
+
+@app.route('/schedulematchlanddummy', methods = ['GET'])
+def scheduleland():
+    meal_type = request.args.get('meal')
+    dhall = request.args.get('location')
+    start_time = request.args.get('start')
+    end_time = request.args.get('end')
+
+    html = render_template('matchlanddummy.html', \
+            meal = meal_type, location = dhall, start = start_time, end = end_time)
+    
+    response = make_response(html)
+    return response
+
+@app.route('/schedulematch', methods = ['GET'])
+def schedulematch():
+     html = render_template('scheduledmatch.html')
+     response = make_response(html)
+     return response
+    
+
+
 
 
 @app.route('/match', methods=['GET'])

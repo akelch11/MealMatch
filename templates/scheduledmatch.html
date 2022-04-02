@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@600;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+        <meta name = "viewport" content="width=device-width, initial-scale=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>	
+        
+	</head>
+
+<body>
+    <div class = "jumbotron container-fluid" id = "header">
+        <span><h1 class="col-sm-6">MealMatch</h1></span>  
+   </div>
+
+<center>
+
+	<div id = 'mealType' class = "container">
+
+		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
+			I want to eat:
+			<button class = 'btn-lg' id = 'lunchButton'> Lunch </button>
+			<button class = 'btn-lg' id = 'dinnerButton'> Dinner </button>
+		</div>
+	
+	</div>
+
+<div id = 'hallType' class = "container">
+
+	
+	<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
+		I want to eat at:
+		<button class = 'btn-lg dHallType' id = 'RoMa'> RoMa </button>
+		<button class = 'btn-lg dHallType' id = 'Whitman'> Whitman </button>
+		<button class = 'btn-lg dHallType' id = 'Wucox'> Wucox </button>
+		<button class = 'btn-lg dHallType' id = 'Forbes'> Forbes </button>
+		<button class = 'btn-lg dHallType' id = 'CJL'> CJL </button>
+	</div>
+
+</div>
+
+
+
+<div id = 'mealTimes' class = "container">
+
+	
+	<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
+		I'm free from:
+		<input class = 'btn-sm' type = 'time' step = '60' id = 'startTimeButton'></button> 
+		to
+		<input class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'></button>
+		
+	</div>
+
+</div>
+
+<div>
+
+		<div class = 'container'>
+			<a id = "submitButtonForm" action = "/" href = "/">
+				<button class = 'btn-lg submitButton'> Find me a match!</button>
+			</a>
+		</div>
+</div>
+
+
+
+
+</center>
+   
+
+</body>
+
+    
+
+
+</html>
+
+
+<script>
+	
+		let lunchButton = document.getElementById("lunchButton");
+		let dinnerButton = document.getElementById("dinnerButton");
+		let activeMeal = "";
+        let activeDhalls = {'ROMA': false, 'WHITMAN': false, 'WUCOX': false, "FORBES": false, 'CJL': false};
+
+
+		lunchButton.addEventListener('click', function onClick() {
+			activeMeal = 'lunch';
+			console.log('lunch Pressed');
+			lunchButton.style.backgroundColor = "#ff9f46";
+			dinnerButton.style.backgroundColor = 'white';
+
+		});
+
+		dinnerButton.addEventListener('click', function onClick() {
+			activeMeal = 'dinner';
+			console.log('dinner Pressed');
+			dinnerButton.style.backgroundColor = "#ff9f46";
+			lunchButton.style.backgroundColor = 'white';
+
+		});
+
+
+		let dHallButtons = document.getElementsByClassName('dHallType')
+		;
+
+		for(let i = 0; i < dHallButtons.length; i++)
+		{
+			let btn = dHallButtons[i];
+			btn.addEventListener('click',
+			function() {
+				
+                dhall = btn.id.toUpperCase();
+               
+               // select Dhall
+                if(!activeDhalls[dhall]) 
+				{
+                    btn.style.backgroundColor = "#ff9f46";
+                    activeDhalls[dhall] = true;
+                } 
+                else
+                {
+                    btn.style.backgroundColor = "white";
+                    activeDhalls[dhall] = false;
+                }
+
+			});
+		}
+
+
+
+		//
+
+		let submitButtonForm = document.getElementById("submitButtonForm");
+
+
+		
+			// update url to contain proper match request information
+		updateUrl =  function() {
+
+
+		
+			let url = "/matchlanddummy"
+			let startTime = document.getElementById("startTimeButton").value;
+			let endTime = document.getElementById("endTimeButton").value;
+
+			url += "?meal=" + activeMeal;
+			url += "&location=";
+
+            let dHallOptions = "";
+            for(var dh in activeDhalls)
+                if(activeDhalls[dh])
+                    dHallOptions += (dh + "-");
+            
+            url+= dHallOptions.slice(0,-1);
+			url += "&start=" + startTime;
+			url += "&end=" + endTime;
+		
+			submitButtonForm.setAttribute('action', url);
+			submitButtonForm.setAttribute('href', url);
+			
+		};
+
+
+		lunchButton.addEventListener('click', updateUrl);
+		dinnerButton.addEventListener('click', updateUrl);
+
+		for(let i = 0; i < dHallButtons.length; i++)
+			dHallButtons[i].addEventListener('click', updateUrl)
+		
+		let startTimeButton = document.getElementById("startTimeButton");
+		let endTimeButton = document.getElementById("endTimeButton");
+
+		startTimeButton.addEventListener('click', updateUrl);
+		endTimeButton.addEventListener('click', updateUrl);
+		// update url on changing times
+		startTimeButton.addEventListener('change', updateUrl);
+		endTimeButton.addEventListener('change', updateUrl)
+
+
+</script>
+
+
+<style>
+    * {
+	box-sizing: border-box;
+	
+
+}
+
+body {
+	font-family: "Maven Pro", sans-serif;
+	font-weight: normal;
+}
+
+
+.jumbotron {
+    background-color: rgba(255, 159, 70, 1);
+    color: rgba(255,255,255, 1);
+    text-align: left;
+    font-size: 16px;
+    height: 70px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+	font-family: "Maven Pro", sans-serif;
+	
+}
+
+
+#header {
+	font-weight: 900;
+}
+
+.outlineBox {
+	width: 100%;
+	height: 727px;
+	background: rgba(255, 255, 255, 1);
+	opacity: 1;
+	position: absolute;
+	
+	border-top-left-radius: 16px;
+	border-top-right-radius: 16px;
+	border-bottom-left-radius: 16px;
+	border-bottom-right-radius: 16px;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	overflow: hidden;
+}
+
+#mealType {
+	margin: 20px;
+    margin-top: 20px;
+	
+}
+
+.menuButton {
+	padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+	padding-right: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+button {
+	background-color: white;
+}
+
+.submitButton {
+	background-color: rgba(255, 159, 70, 1);
+	padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+	padding-right: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	margin-right: 20px;
+	color: white;
+}
+</style>
