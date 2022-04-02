@@ -2,27 +2,59 @@
 <html>
 
 <head>
-   <title>MealMatch</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+   <meta name = "viewport" content="width=device-width, initial-scale=1">
+<title>MealMatch</title>
 </head>
 
 <body>
-   <h2>Matches</h2>
-   <table>
+   <div class = "jumbotron container-fluid">
+      <span><h1 class="col-sm-6">MealMatch</h1></span>  
+   </div>
+
+   <table class = "table table-striped">
       <tr>
-         <td><b>First NetId</b></td>
-         <td><b>Second NetId</b></td>
-         <td><b>Match Time</b></td>
+         <td><b>Netid</b></td>
+         <td><b>Name</b></td>
          <td><b>Dining Hall</b></td>
+         <td><b>Match Time</b></td>
+         <td><b>Year</b></td>
+         <td><b>Major</b></td>
+         <td><b>Phone Number</b></td>
       </tr>
       {% for matches in all_matches: %}
       <tr>
+         <td>{{matches[0]}}</td> 
+         <td>{{matches[3]}}</td>
          <td>{{matches[1]}}</td>
          <td>{{matches[2]}}</td>
-         <td>{{matches[3]}}</td>
          <td>{{matches[4]}}</td>
+         <td>{{matches[5]}}</td>
+         <td>{{matches[6]}}</td>
       </tr>
       {% endfor %}
    </table>
 </body>
 
 </html>
+
+<style>
+
+
+.jumbotron {
+    background-color: rgba(255, 159, 70, 1);
+    color: rgba(255,255,255, 1);
+    text-align: left;
+    font-size: 16px;
+    height: 70px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+
+</style>

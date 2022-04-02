@@ -16,7 +16,7 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr):
         sql = sql + "{},".format(dhall_list[i])
 
     sql = sql + "ATDHALL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s)"
-    requestId = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(16))
+    requestId = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
 
 
     val = [requestId, netid, start_time, end_time, meal_type]
@@ -152,14 +152,19 @@ def modify_request(request_id, match_id):
     conn.close()    
     print("Removed request")
 
-def get_all_matches():
+def get_all_matches(netid):
     all_matches = []
 
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
-    query="select * from matches"
+    query="""SELECT * 
+            FROM matches as m, users as u
+            WHERE (m.first_netid = u.netid
+            OR m.second_netid = u.netid)
+            AND (m.first_netid = %s OR m.second_netid = %s)
+            ORDER BY match_time ASC"""
 
-    cur.execute(query)
+    cur.execute(query, (netid, netid))
     rows=cur.fetchall()
     
     for row in rows:

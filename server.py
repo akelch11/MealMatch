@@ -1,19 +1,21 @@
+<<<<<<< HEAD
 from ast import parse
 from curses import endwin
 import re
 from sys import stderr
 from urllib import response
 # from urllib import response
+=======
+>>>>>>> 83de259ac8796c94e582e99300051eb819194249
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
+from os import environ
+from dateutil import parser
+
 import profile
 import matcher
 import auth
 import keys
-from dateutil import parser
-import random
-import string
-import os
 
 app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
@@ -37,17 +39,22 @@ def go_to_cas():
 @app.route('/homescreen', methods=['GET'])
 def homescreen():
     # if not logged in 
-    if not session.get('username'):
-        return redirect(url_for('landing_page')) # got to landing page
+    # if not session.get('username'):
+    #     return redirect(url_for('landing_page')) # got to landing page
 
-    if not profile.exists(session.get('username')):
-        return redirect(url_for('create_form'))
+    # if not profile.exists(session.get('username')):
+    #     return redirect(url_for('create_form'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
 
-@app.route('/create', methods=['GET'])
+<<<<<<< HEAD
+
+@app.route('/createdummy', methods=['GET'])
+=======
+@app.route('/edit_account', methods=['GET'])
+>>>>>>> 4b0002483b017ed17c02398c119e8cb88d8bc916
 def create_form():
     # should go to home_screen if account created
     html = render_template('createaccount.html')
@@ -125,13 +132,14 @@ def matchland():
                 dhall_arr.append(False)
     
 
-    netid = session.get('username')
+    netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
-    return get_matches()
+    return redirect("/matches")
+
 
 
 @app.route('/schedulematchlanddummy', methods = ['GET'])
@@ -170,15 +178,31 @@ def logout():
 
 @app.route('/matches', methods = ['GET'])
 def get_matches():
-    all_matches = matcher.get_all_matches()
-    html = render_template('matches.html', all_matches = all_matches)
+
+    session_netid = "6ocdq"
+
+    all_matches = matcher.get_all_matches(session_netid)
+
+    cleaned_matches = []
+    curr_match = []
+    for i in range(len(all_matches)):
+        row = all_matches[i]
+        netid = row[5]
+        if netid != session_netid:
+            curr_match.append(netid) #Netid
+            curr_match.append(row[4]) #Dhall
+            curr_match.append(row[3]) #Match Time
+            curr_match.append(row[6]) #Name
+            curr_match.append(row[7]) #Year
+            curr_match.append(row[8]) #Major
+            curr_match.append(row[9]) #Phone Number
+            cleaned_matches.append(curr_match)
+
+    html = render_template('matches.html', all_matches = cleaned_matches)
     response = make_response(html)
     return response
 
 
-port = int(os.environ.get('PORT', 5001))
+port = int(environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
 app.run(host='localhost', port=port, debug=False)
-
-
-
