@@ -10,8 +10,9 @@ import profile
 import matcher
 import auth
 import keys
+from big_lists import majors, dhall_list, dept_code
 from dateutil import parser
-from datetime import datetime
+from datetime import date, datetime
 import random
 import string
 import os
@@ -36,50 +37,54 @@ def go_to_cas():
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def homescreen():
-    # if not logged in 
-    # if not session.get('username'):
-    #     return redirect(url_for('landing_page')) # got to landing page
-
-    # if not profile.exists(session.get('username')):
-    #     return redirect(url_for('create_form'))
+    # if not logged in
+    print('arriving at index, checking for username in session')
+    if not session.get('username'):
+        return redirect(url_for('landing_page')) # go to landing page
+    print('session recognizes existence of netid as', session.get('username'))
+    if not profile.exists(session.get('username')):
+        return redirect(url_for('create_form'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
-
+# get what the senior class's year is right now 
+def senior_year():
+    td = date.today()
+    return td.year if td.month<8 else td.year+1
+    
+#establish the route for creating/editing your account
 @app.route('/edit_account', methods=['GET'])
 def create_form():
     # should go to home_screen if account created
-    html = render_template('editaccount.html')
+    # username = auth.authenticate()
+    username = session.get('username')
+    profile_dict = profile.get_profile(username)
+    html = render_template('editaccount.html',
+                    senior_class=senior_year(),
+                    majors=majors,
+                    existing_profile_info=profile_dict)
     response = make_response(html)
     return response
 
 
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
-    name = request.args.get('name')
+    name = request.args.get('name').strip()
     netid = session.get('username')
     year = request.args.get('year')
     major = request.args.get('major')
-    bio = request.args.get('bio')
-    phonenum = request.args.get('phonenum')
-
-    if name is None:
-        name = netid
-
-    if year is None:
-        year = "0"
-
-    if major is None:
-        major = ""
+    bio = request.args.get('bio').strip()
+    phonenum = request.args.get('phonenum').strip()
 
     if bio is None:
-        bio = ""
-
-    if phonenum is None:
-        phonenum = ""
-
-    profile.create_profile(netid, name, int(year), major, phonenum, bio)
+        bio = "Hi! My name is %s. I'm a %s major in the class of %s. \
+        Super excited to grab a meal with you. You can reach me at %s"\
+        % (name, dept_code[major], year, phonenum)
+    if profile.exists(netid):
+        profile.edit_profile(netid, name, int(year), major, phonenum, bio)
+    else:
+        profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
     html = render_template('homescreen.html')
     response = make_response(html)
@@ -103,7 +108,6 @@ def matchland():
     else:
         meal_type = False
 
-    dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
     dhall_arr = []
 
     # multiple dhalls were selected via scheduled match
@@ -153,9 +157,6 @@ def schedulematch():
      response = make_response(html)
      return response
     
-
-
-
 
 @app.route('/match', methods=['GET'])
 def match():

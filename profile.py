@@ -1,10 +1,17 @@
-
+from sys import stdout
 import psycopg2
+
+def new_conn():
+    return psycopg2.connect(database="d4p66i6pnk5690",
+                            user="uvqmavpcfqtovz",
+                            password="e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2",
+                            host="ec2-44-194-167-63.compute-1.amazonaws.com",
+                            port="5432")
 
 
 """"Check if the logged-in user has created a profile"""
 def exists(netid):
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    conn = new_conn()
     cur = conn.cursor()
     stmt = 'select name from users where netid=%s'
     cur.execute(stmt, (netid,))
@@ -12,6 +19,19 @@ def exists(netid):
     conn.commit()
     conn.close()
     return ret != None
+
+def get_profile(netid):
+    conn = new_conn()
+    cur = conn.cursor()
+    stmt = 'select name,year,major,phonenum,bio from users where netid=%s'
+    cur.execute(stmt, (netid,))
+    vals = cur.fetchone()
+    if not vals: # TODO need a default value in the dropdown menus to correspond to the first time
+        vals = [""] * 5
+    conn.commit()
+    conn.close()
+    keys = ["name","year","major","phonenum","bio"]
+    return dict(zip(keys, vals))
 
 #Check with CAS authentication and see whether user
 #is logged in or not
@@ -28,23 +48,36 @@ def get_profilestatus(netid):
 
 #Create profile for user and update MongoDB
 def create_profile(netid, name, year, major, phonenum, bio):
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    conn = new_conn()
     cur = conn.cursor()
     
-
-    sql = "INSERT INTO users (NETID,NAME,YEAR,MAJOR,PHONENUM, BIO) VALUES (%s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO users (NETID,NAME,YEAR,MAJOR,PHONENUM,BIO) VALUES (%s, %s, %s, %s, %s, %s)"
     val = (netid, name, year, major, phonenum, bio)
     cur.execute(sql, val)
 
     conn.commit()
     conn.close()
-    print("Profile created for: " + netid)
+    print("Profile created for:", netid, file=stdout)
+
+    return netid
+
+def edit_profile(netid, name, year, major, phonenum, bio):
+    conn = new_conn()
+    cur = conn.cursor()
+    
+
+    sql = "UPDATE users SET NAME=%s,YEAR=%s,MAJOR=%s,PHONENUM=%s,BIO=%s WHERE NETID=%s"
+    val = (name, year, major, phonenum, bio, netid)
+    cur.execute(sql, val)
+
+    conn.commit()
+    conn.close()
+    print("Profile updated for:", netid, file=stdout)
 
     return netid
     
 def create_user_table():
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-
+    conn = new_conn()
     cur = conn.cursor()
     cur.execute('''CREATE TABLE users
             (NETID TEXT PRIMARY KEY NOT NULL,

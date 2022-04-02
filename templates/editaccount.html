@@ -15,7 +15,7 @@
                Name:
             </td>
             <td>
-               <input type="text" name="name" value=""><br>
+               <input name="name" required value="{{existing_profile_info['name']}}"><br>
             </td>
          </tr>
          <tr>
@@ -23,16 +23,26 @@
                Year:
             </td>
             <td>
-               <input type="text" name="year" value=""><br>
+               <select name="year" required> <!-- Update to be dynamic - one of them needs the selected tag-->
+                  <option disabled selected hidden value="">Select your year</option>
+                  <option name="senior_class">{{senior_class}}</option>
+                  <option name="junior_class">{{senior_class+1}}</option>
+                  <option name="sophomore_class">{{senior_class+2}}</option>
+                  <option name="freshman_class">{{senior_class+3}}</option>
+               </select>
             </td>
          </tr>
          <tr>
             <td align="right">
                Major:
             </td>
-            <td>
-               <input type="text" name="major" value=""><br>
-
+            <td> <!-- Update to be dynamic - one of them needs the selected tag-->
+               <select name="major" required>
+                  <option disabled selected hidden value="">Choose your major</option>
+                  {% for major in majors %}
+                  <option>{{major}}</option>
+                  {% endfor %}
+               </select>
             </td>
          </tr>
          <tr>
@@ -40,7 +50,7 @@
                Bio:
             </td>
             <td>
-               <input type="text" name="area" value=""><br>
+               <input name="bio" required value="{{existing_profile_info['bio']}}"><br>
             </td>
          </tr>
          <tr>
@@ -48,12 +58,12 @@
                Phone Number:
             </td>
             <td>
-               <input type="text" name="phonenum" value=""><br>
+               <input type="tel" name="phonenum" pattern="[0-9]{10,}" required value="{{existing_profile_info['phonenum']}}"><br>
             </td>
          </tr>
          <tr>
             <td></td>
-            <td><input type="submit" value="Submit"><br></td>
+            <td><input type="submit" value="Get Started!"><br></td>
          </tr>
       </table>
    </form>

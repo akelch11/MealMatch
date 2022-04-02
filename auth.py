@@ -62,20 +62,25 @@ def validate(ticket):
 def authenticate():
     # If the username is in the session, then the user was
     # authenticated previously.  So return the username.
+    print('testing if in session')
     if 'username' in session:
         return session.get('username')
 
     # If the request does not contain a login ticket, then redirect
     # the browser to the login page to get one.
+    print('testing if login ticket exists')
     ticket = request.args.get('ticket')
     if ticket is None:
+        print('login ticket did not exist, redirecting?')
         login_url = (_CAS_URL + 'login?service=' + quote(request.url))
         abort(redirect(login_url))
 
     # If the login ticket is invalid, then redirect the browser
     # to the login page to get a new one.
+    print('testing if login ticket is valid')
     username = validate(ticket)
     if username is None:
+        print('login ticket was invalid, redirecting (2)?')
         login_url = (_CAS_URL + 'login?service='
                      + quote(strip_ticket(request.url)))
         abort(redirect(login_url))
