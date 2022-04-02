@@ -17,7 +17,7 @@
    </div>
 
 <center>
-
+	
 	<div id = 'mealType' class = "container">
 
 		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
@@ -32,7 +32,7 @@
 
 	
 	<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
-		I want to eat at:
+		I'm currently at:
 		<button class = 'btn-lg dHallType' id = 'RoMa'> RoMa </button>
 		<button class = 'btn-lg dHallType' id = 'Whitman'> Whitman </button>
 		<button class = 'btn-lg dHallType' id = 'Wucox'> Wucox </button>
@@ -48,9 +48,7 @@
 
 	
 	<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
-		I'm free from:
-		<input class = 'btn-sm' type = 'time' step = '60' id = 'startTimeButton'></button> 
-		to
+		I'm free until:
 		<input class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'></button>
 		
 	</div>
@@ -136,12 +134,10 @@
 
 		
 			let url = "/matchlanddummy"
-			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
 			url += "?meal=" + activeMeal;
 			url += "&location=" + activeDhall;
-			url += "&start=" + startTime;
 			url += "&end=" + endTime;
 		
 			submitButtonForm.setAttribute('action', url);

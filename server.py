@@ -11,6 +11,7 @@ import matcher
 import auth
 import keys
 from dateutil import parser
+from datetime import datetime
 import random
 import string
 import os
@@ -96,7 +97,6 @@ def ondemand():
 def matchland():
     meal_type = request.args.get('meal')
     dhall = request.args.get('location')
-    start_time = request.args.get('start')
     end_time = request.args.get('end')
 
     if meal_type == "lunch":
@@ -127,7 +127,7 @@ def matchland():
 
     netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
-    start_time_datetime = parser.parse(start_time)
+    start_time_datetime = datetime.now()
     end_time_datetime = parser.parse(end_time)
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)

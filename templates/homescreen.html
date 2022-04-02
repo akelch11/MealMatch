@@ -20,21 +20,33 @@
             
             <div class = "col-sm-4">
                 <form action = '/matchdummy'>
-                    <button class = "btn-lg btn-block" id = "grabMealButton">
+                    <button class = "btn-lg btn-block homeButton" id = "grabMealButton">
                     <img src = "/static/diningchairslogo.png" alt = "grab meal" style = "width: 100px; height: 100px;"> </img>
                     <br>
-                    GRAB A MEAL
+                    I'M AT A DHALL
                 </button>
                 </form>
             </div>
-            
+
             <div class = 'col-sm-4'>
-                <form>
-                    <button class = "btn-lg btn-block" id = "bigButtons">
+                <form action="/schedulematch"> 
+                    <button class = "btn-lg btn-block homeButton" id = "bigButtons2">
                         
                     <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
                     <br>
-                    SCHEDULED MEALS
+                    SCHEDULE A MEAL
+                    </button>
+                </form>
+            </div>
+
+            
+            <div class = 'col-sm-4'>
+                <form action="/matches">
+                    <button class = "btn-lg btn-block homeButton" id = "bigButtons">
+                        
+                    <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                    <br>
+                    MATCHES
                     </button>
                 </form>
             </div>
@@ -42,7 +54,7 @@
 
             <div class = 'col-sm-4'>
                 <form action="/edit_account">
-                    <button class ="btn-lg btn-block" id = "bigButtons">
+                    <button class ="btn-lg btn-block homeButton" id = "bigButtons">
                         <img src = "/static/profilepiclogowhite.png" style="width: 100px; height: 100px;" ></img>
                         <br>
                         MY PROFILE
@@ -73,7 +85,9 @@
     padding-bottom: 10px;
 }
 
-
+.homeButton {
+    margin: 20px;
+}
 
 .jumbotron {
     background-color: rgba(255, 159, 70, 1);
@@ -93,6 +107,11 @@
 
 }
 #bigButtons {
+    background-color: #ff9f46;
+    color: white;
+}
+
+#bigButtons2 {
     background-color: #ff9f46;
     color: white;
 }
