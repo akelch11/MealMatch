@@ -50,12 +50,12 @@ def homescreen():
 @app.route('/edit_account', methods=['GET'])
 def create_form():
     # should go to home_screen if account created
-    html = render_template('createaccount.html')
+    html = render_template('editaccount.html')
     response = make_response(html)
     return response
 
 
-@app.route('/submit_create_form', methods=["GET"])
+@app.route('/submit_profile_form', methods=["GET"])
 def form():
     name = request.args.get('name')
     netid = session.get('username')
