@@ -101,6 +101,7 @@ def ondemand():
 def matchland():
     meal_type = request.args.get('meal')
     dhall = request.args.get('location')
+    start_time = request.args.get('start')
     end_time = request.args.get('end')
 
     if meal_type == "lunch":
@@ -126,11 +127,14 @@ def matchland():
                 dhall_arr.append(True)
             else:
                 dhall_arr.append(False)
-    
 
     netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
-    start_time_datetime = datetime.now()
+    if start_time == "now":
+        start_time_datetime = datetime.now()
+    else:
+        start_time_datetime = parser.parse(start_time)
+
     end_time_datetime = parser.parse(end_time)
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
