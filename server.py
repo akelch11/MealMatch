@@ -1,12 +1,19 @@
+##
+from ast import parse
+from curses import endwin
+import re
+from sys import stderr
+# from urllib import response
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
-from os import environ
-from dateutil import parser
-
 import profile
 import matcher
 import auth
 import keys
+from dateutil import parser
+import random
+import string
+import os
 
 app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
@@ -29,11 +36,11 @@ def go_to_cas():
 @app.route('/index', methods=['GET'])
 def homescreen():
     # if not logged in 
-    if not session.get('username'):
-        return redirect(url_for('landing_page')) # got to landing page
+    # if not session.get('username'):
+    #     return redirect(url_for('landing_page')) # got to landing page
 
-    if not profile.exists(session.get('username')):
-        return redirect(url_for('create_form'))
+    # if not profile.exists(session.get('username')):
+    #     return redirect(url_for('create_form'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
@@ -98,19 +105,56 @@ def matchland():
 
     dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
     dhall_arr = []
-    for i in range(len(dhall_list)):
-        if dhall_list[i].lower() == dhall.lower():
-            dhall_arr.append(True)
-        else:
-            dhall_arr.append(False)
 
-    netid = session.get('username')
+    # multiple dhalls were selected via scheduled match
+    # Dining halls are listed in between '-' of dhall request parameter
+    if '-' in dhall:
+        # 
+        for hall_name in dhall_list:
+            if hall_name not in dhall:
+                dhall_arr.append(False)
+            else:
+                dhall_arr.append(True)
+    else:
+        # one dining hall selected
+        for i in range(len(dhall_list)):
+            if dhall_list[i].lower() == dhall.lower():
+                dhall_arr.append(True)
+            else:
+                dhall_arr.append(False)
+    
+
+    netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
     start_time_datetime = parser.parse(start_time)
     end_time_datetime = parser.parse(end_time)
 
     matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
-    return get_matches()
+    return redirect("/matches")
+
+
+
+@app.route('/schedulematchlanddummy', methods = ['GET'])
+def scheduleland():
+    meal_type = request.args.get('meal')
+    dhall = request.args.get('location')
+    start_time = request.args.get('start')
+    end_time = request.args.get('end')
+
+    html = render_template('matchlanddummy.html', \
+            meal = meal_type, location = dhall, start = start_time, end = end_time)
+    
+    response = make_response(html)
+    return response
+
+@app.route('/schedulematch', methods = ['GET'])
+def schedulematch():
+     html = render_template('scheduledmatch.html')
+     response = make_response(html)
+     return response
+    
+
+
 
 
 @app.route('/match', methods=['GET'])
@@ -126,12 +170,31 @@ def logout():
 
 @app.route('/matches', methods = ['GET'])
 def get_matches():
-    all_matches = matcher.get_all_matches()
-    html = render_template('matches.html', all_matches = all_matches)
+
+    session_netid = "6ocdq"
+
+    all_matches = matcher.get_all_matches(session_netid)
+
+    cleaned_matches = []
+    curr_match = []
+    for i in range(len(all_matches)):
+        row = all_matches[i]
+        netid = row[5]
+        if netid != session_netid:
+            curr_match.append(netid) #Netid
+            curr_match.append(row[4]) #Dhall
+            curr_match.append(row[3]) #Match Time
+            curr_match.append(row[6]) #Name
+            curr_match.append(row[7]) #Year
+            curr_match.append(row[8]) #Major
+            curr_match.append(row[9]) #Phone Number
+            cleaned_matches.append(curr_match)
+
+    html = render_template('matches.html', all_matches = cleaned_matches)
     response = make_response(html)
     return response
 
 
-port = int(environ.get('PORT', 5001))
+port = int(os.environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
 app.run(host='localhost', port=port, debug=False)
