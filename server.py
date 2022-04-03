@@ -59,12 +59,28 @@ def senior_year():
 def create_form():
     # should go to home_screen if account created
     username = auth.authenticate()
+
     # username = session.get('username')
     profile_dict = profile.get_profile(username)
-    html = render_template('editaccount.html',
+    print(profile_dict, file=stderr)
+
+
+    title_value = ""
+    button_value = ""
+    # netid detected in system
+    if profile.exists(username):
+        title_value = 'Edit Your Profile!'
+        button_value = "Submit Changes"
+    else:
+        title_value = 'Create Your Account!'
+        button_value = "Get Started!"
+
+    html = render_template('editprofile.html',
                     senior_class=senior_year(),
                     majors=majors,
-                    existing_profile_info=profile_dict)
+                    existing_profile_info=profile_dict,
+                    title_value = title_value,
+                    button_value = button_value)
     response = make_response(html)
     return response
 
