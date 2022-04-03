@@ -1,3 +1,6 @@
+
+"""List of large size that we've moved to an external file."""
+
 dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
 
 majors  = ['African American Studies',

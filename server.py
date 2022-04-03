@@ -40,8 +40,9 @@ def homescreen():
     # if not logged in
     print('arriving at index, checking for username in session')
     if not session.get('username'):
-    # if not request.args.get('ticket'): # experiment 
-        return redirect(url_for('landing_page')) # go to landing page
+        auth.authenticate() #TODO land->login->home
+    # if not request.args.get('ticket'): # experiment
+        # return redirect(url_for('landing_page')) # go to landing page
     print('session recognizes existence of netid as', session.get('username'))
     if not profile.exists(session.get('username')):
         return redirect(url_for('create_form'))
@@ -72,7 +73,6 @@ def create_form():
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
     name = request.args.get('name').strip()
-    # netid = session.get('usernqame')
     netid = auth.authenticate()
     year = request.args.get('year')
     major = request.args.get('major')
@@ -88,13 +88,13 @@ def form():
     else:
         profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
-    # return redirect(url_for('homescreen'))
-    html = render_template('homescreen.html')
-    response = make_response(html)
-    return response
+    return redirect('/')
+    # html = render_template('homescreen.html')
+    # response = make_response(html)
+    # return response
 
 
-@app.route('/matchdummy', methods=['GET'])
+@app.route('/ondemand', methods=['GET'])
 def ondemand():
     html = render_template('ondemandmatch.html')
     response = make_response(html)
@@ -158,7 +158,7 @@ def scheduleland():
     response = make_response(html)
     return response
 
-@app.route('/schedulematch', methods = ['GET'])
+@app.route('/schedule', methods = ['GET'])
 def schedulematch():
      html = render_template('scheduledmatch.html')
      response = make_response(html)
