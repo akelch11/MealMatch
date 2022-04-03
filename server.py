@@ -40,6 +40,7 @@ def homescreen():
     # if not logged in
     print('arriving at index, checking for username in session')
     if not session.get('username'):
+    # if not request.args.get('ticket'): # experiment 
         return redirect(url_for('landing_page')) # go to landing page
     print('session recognizes existence of netid as', session.get('username'))
     if not profile.exists(session.get('username')):
@@ -57,8 +58,8 @@ def senior_year():
 @app.route('/edit_account', methods=['GET'])
 def create_form():
     # should go to home_screen if account created
-    # username = auth.authenticate()
-    username = session.get('username')
+    username = auth.authenticate()
+    # username = session.get('username')
     profile_dict = profile.get_profile(username)
     html = render_template('editaccount.html',
                     senior_class=senior_year(),
@@ -71,21 +72,23 @@ def create_form():
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
     name = request.args.get('name').strip()
-    netid = session.get('username')
+    # netid = session.get('usernqame')
+    netid = auth.authenticate()
     year = request.args.get('year')
     major = request.args.get('major')
     bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum').strip()
-
-    if bio is None:
-        bio = "Hi! My name is %s. I'm a %s major in the class of %s. \
-        Super excited to grab a meal with you. You can reach me at %s"\
-        % (name, dept_code[major], year, phonenum)
+    if bio == "":
+        tup = (name, dept_code[major], year, phonenum)
+        bio = ("Hi! My name is %s. I'm a %s major in the class of %s. "+\
+        "Super excited to grab a meal with you. You can reach me at %s.")\
+        % tup
     if profile.exists(netid):
         profile.edit_profile(netid, name, int(year), major, phonenum, bio)
     else:
         profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
+    # return redirect(url_for('homescreen'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
@@ -176,7 +179,7 @@ def logout():
 @app.route('/matches', methods = ['GET'])
 def get_matches():
 
-    session_netid = "6ocdq"
+    session_netid = auth.authenticate()
 
     all_matches = matcher.get_all_matches(session_netid)
 
