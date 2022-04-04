@@ -38,14 +38,12 @@ def go_to_cas():
 @app.route('/index', methods=['GET'])
 def homescreen():
     # if not logged in
-    print('arriving at index, checking for username in session')
     if not session.get('username'):
         auth.authenticate() #TODO land->login->home
     # if not request.args.get('ticket'): # experiment
         # return redirect(url_for('landing_page')) # go to landing page
-    print('session recognizes existence of netid as', session.get('username'))
     if not profile.exists(session.get('username')):
-        return redirect(url_for('create_form'))
+        return redirect('/edit_account')
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
@@ -57,13 +55,12 @@ def senior_year():
     
 #establish the route for creating/editing your account
 @app.route('/edit_account', methods=['GET'])
-def create_form():
+def update_form():
     # should go to home_screen if account created
     username = auth.authenticate()
 
     # username = session.get('username')
     profile_dict = profile.get_profile(username)
-    print(profile_dict, file=stderr)
 
 
     title_value = ""
@@ -85,6 +82,13 @@ def create_form():
     response = make_response(html)
     return response
 
+""" Strip the bio of all whitespace except the default-bio flag, chr(0x200a)"""
+def process_bio(req):
+    bio = req.strip()
+    if req and req[-1] == chr(0x200a):
+        bio += chr(0x200a)
+    return bio
+
 
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
@@ -92,12 +96,12 @@ def form():
     netid = auth.authenticate()
     year = request.args.get('year')
     major = request.args.get('major')
-    bio = request.args.get('bio').strip()
+    bio = process_bio(request.args.get('bio').strip())
     phonenum = request.args.get('phonenum').strip()
     if bio == "":
         tup = (name, dept_code[major], year, phonenum)
         bio = ("Hi! My name is %s. I'm a %s major in the class of %s. "+\
-        "Super excited to grab a meal with you. You can reach me at %s.")\
+        "Super excited to grab a meal with you. You can reach me at %s."+chr(0x200a))\
         % tup
     if profile.exists(netid):
         profile.edit_profile(netid, name, int(year), major, phonenum, bio)

@@ -39,12 +39,15 @@
                Year:
             </td>
             <td>
-               <select class = "form-select profileInput" name="year" required> <!-- Update to be dynamic - one of them needs the selected tag-->
+               <select class = "form-select profileInput" name="year" required>
                   <option disabled selected hidden value="">Select your year</option>
-                  <option name="senior_class">{{senior_class}}</option>
-                  <option name="junior_class">{{senior_class+1}}</option>
-                  <option name="sophomore_class">{{senior_class+2}}</option>
-                  <option name="freshman_class">{{senior_class+3}}</option>
+                  {%for i in range(4)%}
+                  {% if senior_class+i==existing_profile_info['year'] %}
+                  <option selected>{{senior_class+i}}</option>
+                  {% else %}
+                  <option>{{senior_class+i}}</option>
+                  {% endif %}
+                  {%endfor%}
                </select>
             </td>
          </tr>
@@ -52,11 +55,15 @@
             <td align="right">
                Major:
             </td>
-            <td> <!-- Update to be dynamic - one of them needs the selected tag-->
+            <td>
                <select class = "form-select profileInput" name="major" required>
                   <option disabled selected hidden value="">Choose your major</option>
                   {% for major in majors %}
-                  <option>{{major}}</option>
+                  {% if major==existing_profile_info['major'] %}
+                  <option selected>{{major}}</option>
+                  {% else %}
+                  <option >{{major}}</option>
+                  {% endif %}
                   {% endfor %}
                </select>
             </td>
@@ -67,7 +74,7 @@
                Bio:
             </td>
             <td>
-               <textarea class = "form-control profileInput" name="bio" required>{{existing_profile_info['bio']}} </textarea>
+               <textarea class = "form-control profileInput" name="bio">{{existing_profile_info['bio']}}</textarea>
             </td>
          </tr>
          

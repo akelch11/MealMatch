@@ -1,4 +1,7 @@
+import re
 from sys import stdout
+from turtle import up
+from big_lists import dept_code
 import psycopg2
 
 def new_conn():
@@ -33,18 +36,16 @@ def get_profile(netid):
     keys = ["name","year","major","phonenum","bio"]
     return dict(zip(keys, vals))
 
-#Check with CAS authentication and see whether user
-#is logged in or not
-def get_loginstatus(netid):
-    login_status = True
-    return login_status
-    
-#Check with MongoDB and see whether this user
-#is logged in or not --> indication of whether
-#to go to login screen or the screen with 4 widgets
-def get_profilestatus(netid):
-    profile_status = True
-    return profile_status
+
+def check_bio(bio):
+    """ we are taking this as a statement they have not
+    filled in their bio"""
+    if bio[-1] == chr(0x200a): # if still using default, update with new info
+        return True, "Hi! My name is %s. I'm a %s major in the class of %s. "+\
+        "Super excited to grab a meal with you. You can reach me at %s."+chr(0x200a)
+    else:
+        return False, bio
+
 
 #Create profile for user and update MongoDB
 def create_profile(netid, name, year, major, phonenum, bio):
@@ -65,7 +66,12 @@ def edit_profile(netid, name, year, major, phonenum, bio):
     conn = new_conn()
     cur = conn.cursor()
     
-
+    print(ord(bio[-1]))
+    updated, bio = check_bio(bio) 
+    print(ord(bio[-1]))
+    print(name)
+    if updated:
+        bio = bio % (name, dept_code[major], year, phonenum)
     sql = "UPDATE users SET NAME=%s,YEAR=%s,MAJOR=%s,PHONENUM=%s,BIO=%s WHERE NETID=%s"
     val = (name, year, major, phonenum, bio, netid)
     cur.execute(sql, val)
