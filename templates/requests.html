@@ -17,7 +17,7 @@
 
    <table class = "table table-striped">
       <tr>
-         <td><b>Request ID</b></td>
+         <!-- <td><b>Request ID</b></td> -->
          <td><b>Begin Time</b></td>
          <td><b>End Time</b></td>
          <td><b>Lunch</b></td>
@@ -27,11 +27,12 @@
          <td><b>CJL</b></td>
          <td><b>Whitman</b></td>
          <td><b>At a Dhall</b></td>
+         <td></td>
 
       </tr>
       {% for matches in all_requests: %}
       <tr>
-         <td>{{matches[9]}}</td>
+         <!-- <td>{{matches[9]}}</td> -->
          <td>{{matches[0]}}</td> 
          <td>{{matches[1]}}</td>
          <td>{{matches[2]}}</td>
@@ -41,6 +42,7 @@
          <td>{{matches[6]}}</td> 
          <td>{{matches[7]}}</td>
          <td>{{matches[8]}}</td>
+         <td><form action = "/removerequest?requestid={{matches[9]}}"><button class = 'btn-sm' style = "background-color: #c55353; color: white;">Cancel Request</button></form></td>
 
       </tr>
       {% endfor %}
