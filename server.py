@@ -96,7 +96,7 @@ def form():
     netid = auth.authenticate()
     year = request.args.get('year')
     major = request.args.get('major')
-    bio = process_bio(request.args.get('bio').strip())
+    bio = process_bio(request.args.get('bio'))
     phonenum = request.args.get('phonenum').strip()
     if bio == "":
         tup = (name, dept_code[major], year, phonenum)
