@@ -108,7 +108,7 @@ def form():
     else:
         profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
-    return redirect('/')
+    return redirect('/index')
     # html = render_template('homescreen.html')
     # response = make_response(html)
     # return response
@@ -214,6 +214,16 @@ def get_matches():
     html = render_template('matches.html', all_matches = all_matches)
     response = make_response(html)
     return response
+
+
+@app.route('/removerequest', methods = ['GET'])
+def remove_requests():
+
+    requestid = request.args.get("requestid")
+    matcher.remove_request(requestid)
+    html = render_template('homescreen.html')
+    response = make_response(html)
+    return redirect(url_for('get_requests'))
 
 
 @app.route('/requests', methods = ['GET'])
