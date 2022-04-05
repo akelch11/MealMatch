@@ -1,6 +1,5 @@
 import re
 from sys import stdout
-from turtle import up
 from big_lists import dept_code
 import psycopg2
 
