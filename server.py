@@ -223,9 +223,7 @@ def remove_requests():
     matcher.remove_request(requestid)
     html = render_template('homescreen.html')
     response = make_response(html)
-    return redirect(url_for('requests'))
-
-
+    return redirect(url_for('get_requests'))
 
 
 @app.route('/requests', methods = ['GET'])
