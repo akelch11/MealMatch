@@ -79,8 +79,8 @@ def create_matches_table():
             FIRST_NETID TEXT NOT NULL,
             SECOND_NETID TEXT NOT NULL,
             MATCH_TIME TIMESTAMP NOT NULL,
-            DINING_HALL TEXT NOT NULL
-            START_WINDOW TIMESTAMP NOT NULL
+            DINING_HALL TEXT NOT NULL,
+            START_WINDOW TIMESTAMP NOT NULL,
             END_WINDOW TIMESTAMP NOT NULL);'''
     
     cur.execute(create_table_query)
@@ -100,7 +100,7 @@ def match_requests():
 
         parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL AND ACTIVE + TRUE\n".format(dhall)
+        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL AND ACTIVE = TRUE\n".format(dhall)
         parse_requests_din += "ORDER BY BEGINTIME ASC"
 
         execute_match_query(parse_requests_lunch, dhall)
@@ -215,7 +215,8 @@ def get_all_requests(netid):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
     query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall, requestid FROM requests as r
-            WHERE r.netid = %s"""
+            WHERE r.netid = %s
+            AND r.active = TRUE"""
 
     cur.execute(query, [netid])
     rows=cur.fetchall()

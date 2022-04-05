@@ -206,7 +206,7 @@ def logout():
 def get_matches():
 
     session_netid = auth.authenticate()
-    session_netid = "ddalia"
+    # session_netid = "ddalia"
 
     all_matches = matcher.get_all_matches(session_netid)
 
@@ -216,13 +216,11 @@ def get_matches():
     return response
 
 
-@app.route('/removerequest', methods = ['GET'])
+@app.route('/removerequest', methods = ['POST'])
 def remove_requests():
 
     requestid = request.args.get("requestid")
     matcher.remove_request(requestid)
-    html = render_template('homescreen.html')
-    response = make_response(html)
     return redirect(url_for('get_requests'))
 
 
@@ -230,7 +228,7 @@ def remove_requests():
 def get_requests():
 
     session_netid = auth.authenticate()
-    session_netid = "ddalia"
+    # session_netid = "ddalia"
 
     all_requests = matcher.get_all_requests(session_netid)
 
@@ -240,4 +238,5 @@ def get_requests():
     return response
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)
