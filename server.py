@@ -108,7 +108,7 @@ def form():
     else:
         profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
-    return redirect('/')
+    return redirect('/index')
     # html = render_template('homescreen.html')
     # response = make_response(html)
     # return response
