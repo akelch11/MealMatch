@@ -79,7 +79,9 @@ def create_matches_table():
             FIRST_NETID TEXT NOT NULL,
             SECOND_NETID TEXT NOT NULL,
             MATCH_TIME TIMESTAMP NOT NULL,
-            DINING_HALL TEXT NOT NULL);'''
+            DINING_HALL TEXT NOT NULL
+            START_WINDOW TIMESTAMP NOT NULL
+            END_WINDOW TIMESTAMP NOT NULL);'''
     
     cur.execute(create_table_query)
     conn.commit()
@@ -93,12 +95,12 @@ def match_requests():
         # Create queries for both lunch and dinner request matching
         parse_requests_lunch = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NULL\n".format(dhall)
+        parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NULL AND ACTIVE = TRUE\n".format(dhall)
         parse_requests_lunch += "ORDER BY BEGINTIME ASC"
 
         parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
                             FROM requests\n'''
-        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL\n".format(dhall)
+        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL AND ACTIVE + TRUE\n".format(dhall)
         parse_requests_din += "ORDER BY BEGINTIME ASC"
 
         execute_match_query(parse_requests_lunch, dhall)
@@ -112,46 +114,58 @@ def execute_match_query(parse_requests, dhall):
 
     cur = conn.cursor()
     cur.execute(parse_requests)
-    rows = []
-    row = cur.fetchone()
-    # Add all current requests to rows for further processing
-    while(row):
-        rows.append(row)
-        row = cur.fetchone()
-
-    # Remove last element from requests if there are an odd number
-    # of requests
-    if len(rows)%2 == 1:
-        rows.pop()    
-    # Use requests in rows to create matches in pairs of two
-    while(rows):
-        # get data for first and second student to be matched
-        first = rows.pop(0)
-        second = rows.pop(0)
-
-        # Obtain matchid
-        match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
-        first_netid = first[1]
-        second_netid = second[1]
-
-        # Current time for match made
-        now = datetime.now()
-
-        sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL) "
-        sql += "VALUES (%s, %s, %s, %s, %s)"
-
-        val = (match_id, first_netid, second_netid, now, dhall)
-
-        cur.execute(sql, val)
-
-        # Remove requests after match is made
-        modify_request(first[0], match_id)
-        modify_request(second[0], match_id)
+    rows = cur.fetchall()
     
+    matched = []
+    # iterate through requests, comparing pairs to examine match 
+    for i in range(len(rows)):
+        for j in range(i+1,len(rows)):
+
+            # Do not attempt to find match if row is already matched
+            if i in matched or j in matched:
+                continue
+
+            first = rows[i] # First request
+            second = rows[j] # Second request
+
+            overlap = find_overlap(first[2], first[3], second[2], second[3])
+            
+            # if there is no valid overlap between current requests 
+            # then skip current pairing
+            if not overlap:
+                continue
+            
+            # Establish start and end windows for match
+            start_int = overlap[0]
+            end_int = overlap[1]
+
+
+            # Obtain matchid
+            match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+            first_netid = first[1]
+            second_netid = second[1]
+
+
+            # Current time for match made
+            now = datetime.now()
+
+            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW) "
+            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s)"
+
+            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int)
+
+            cur.execute(sql, val)
+
+            # Modify requests after match is made
+            modify_request(first[0], match_id)
+            modify_request(second[0], match_id)
+
+            # cache the row numbers being matched
+            matched.append(i)
+            matched.append(j)
+
     conn.commit()
     conn.close()
-
-    pass
 
 # Remove request from request table 
 def modify_request(request_id, match_id):
@@ -166,7 +180,7 @@ def modify_request(request_id, match_id):
 
     conn.commit()
     conn.close()    
-    print("Removed request")
+    print("Modified request")
 
 def get_all_matches(netid):
     all_matches = []
@@ -216,3 +230,22 @@ def get_all_requests(netid):
 
     cur.close()
     return all_requests
+
+# Find overlap between two datetime intervals, used in finding matches
+# between two requests
+# inter_1 and inter_2 are tuples of datetime object
+def find_overlap(start_A, end_A, start_B, end_B):
+    start_int = max(start_A, start_B)
+    end_int = min(end_A, end_B)
+
+    # There is no overlap in input intervals
+    if start_int >= end_int:
+        return False
+    
+    # Check if overlap is smaller than 30 minutes, not suitable for 
+    # adequate meal time
+    if (end_int - start_int).total_seconds() / 60.0 < 30:
+        return False
+    
+    # return the start and end of the overlap
+    return (start_int, end_int)
