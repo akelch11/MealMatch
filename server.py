@@ -126,11 +126,17 @@ def matchland():
     dhall = request.args.get('location')
     start_time = request.args.get('start')
     end_time = request.args.get('end')
+    at_dhall = request.args.get('atdhall')
 
     if meal_type == "lunch":
         meal_type = True
     else:
         meal_type = False
+
+    if at_dhall == "True":
+        at_dhall = True
+    else:
+        at_dhall = False
 
     dhall_arr = []
 
@@ -160,7 +166,7 @@ def matchland():
 
     end_time_datetime = parser.parse(end_time)
 
-    matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr)
+    matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     return redirect("/matches")
 
 
@@ -200,28 +206,28 @@ def logout():
 def get_matches():
 
     session_netid = auth.authenticate()
+    session_netid = "ddalia"
 
     all_matches = matcher.get_all_matches(session_netid)
 
-    cleaned_matches = []
-    curr_match = []
-    for i in range(len(all_matches)):
-        row = all_matches[i]
-        netid = row[5]
-        if netid != session_netid:
-            curr_match.append(netid) #Netid
-            curr_match.append(row[4]) #Dhall
-            curr_match.append(row[3]) #Match Time
-            curr_match.append(row[6]) #Name
-            curr_match.append(row[7]) #Year
-            curr_match.append(row[8]) #Major
-            curr_match.append(row[9]) #Phone Number
-            cleaned_matches.append(curr_match)
 
-    html = render_template('matches.html', all_matches = cleaned_matches)
+    html = render_template('matches.html', all_matches = all_matches)
     response = make_response(html)
     return response
 
+
+@app.route('/requests', methods = ['GET'])
+def get_requests():
+
+    session_netid = auth.authenticate()
+    session_netid = "ddalia"
+
+    all_requests = matcher.get_all_requests(session_netid)
+
+
+    html = render_template('requests.html', all_requests = all_requests)
+    response = make_response(html)
+    return response
 
 port = int(os.environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)

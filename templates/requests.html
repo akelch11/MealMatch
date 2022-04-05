@@ -17,23 +17,29 @@
 
    <table class = "table table-striped">
       <tr>
-         <td><b>Netid</b></td>
-         <td><b>Name</b></td>
-         <td><b>Dining Hall</b></td>
-         <td><b>Match Time</b></td>
-         <td><b>Year</b></td>
-         <td><b>Major</b></td>
-         <td><b>Phone Number</b></td>
+         <td><b>Begin Time</b></td>
+         <td><b>End Time</b></td>
+         <td><b>Lunch</b></td>
+         <td><b>Wucox</b></td>
+         <td><b>Roma</b></td>
+         <td><b>Forbes</b></td>
+         <td><b>CJL</b></td>
+         <td><b>Whitman</b></td>
+         <td><b>At a Dhall</b></td>
+
       </tr>
-      {% for matches in all_matches: %}
+      {% for matches in all_requests: %}
       <tr>
-         <td>{{matches[5]}}</td> 
-         <td>{{matches[6]}}</td>
+         <td>{{matches[0]}}</td> 
+         <td>{{matches[1]}}</td>
+         <td>{{matches[2]}}</td>
+         <td>{{matches[3]}}</td> 
          <td>{{matches[4]}}</td>
-         <td>{{matches[3]}}</td>
+         <td>{{matches[5]}}</td>
+         <td>{{matches[6]}}</td> 
          <td>{{matches[7]}}</td>
          <td>{{matches[8]}}</td>
-         <td>{{matches[9]}}</td>
+
       </tr>
       {% endfor %}
    </table>
