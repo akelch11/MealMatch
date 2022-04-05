@@ -6,7 +6,7 @@ import string
 from datetime import datetime
 dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
 
-def add_request(netid, meal_type, start_time, end_time, dhall_arr):
+def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
 
@@ -23,7 +23,7 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr):
     for i in range(len(dhall_arr)):
         val.append(dhall_arr[i])
 
-    val.append(True)
+    val.append(atdhall)
     cur.execute(sql, tuple(val))
 
     conn.commit()
@@ -162,9 +162,10 @@ def get_all_matches(netid):
             WHERE (m.first_netid = u.netid
             OR m.second_netid = u.netid)
             AND (m.first_netid = %s OR m.second_netid = %s)
+            AND (u.netid != %s)
             ORDER BY match_time ASC"""
 
-    cur.execute(query, (netid, netid))
+    cur.execute(query, (netid, netid, netid))
     rows=cur.fetchall()
     
     for row in rows:
@@ -177,3 +178,25 @@ def get_all_matches(netid):
 
     cur.close()
     return all_matches
+
+def get_all_requests(netid):
+    all_requests = []
+
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall FROM requests as r
+            WHERE r.netid = %s"""
+
+    cur.execute(query, [netid])
+    rows=cur.fetchall()
+    
+    for row in rows:
+        row_arr = []
+        for col in row:
+            row_arr.append(col)
+        all_requests.append(row_arr)
+
+
+
+    cur.close()
+    return all_requests
