@@ -212,6 +212,18 @@ def get_matches():
     return response
 
 
+@app.route('/removerequest', methods = ['GET'])
+def remove_requests():
+
+    requestid = request.args.get("requestid")
+    matcher.remove_request(requestid)
+    html = render_template('homescreen.html')
+    response = make_response(html)
+    return redirect(url_for('requests'))
+
+
+
+
 @app.route('/requests', methods = ['GET'])
 def get_requests():
 

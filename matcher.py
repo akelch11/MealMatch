@@ -1,4 +1,5 @@
 from tracemalloc import start
+from urllib import request
 from venv import create
 import psycopg2
 import random
@@ -15,7 +16,7 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     for i in range(len(dhall_list)):
         sql = sql + "{},".format(dhall_list[i])
 
-    sql = sql + "ATDHALL) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s)"
+    sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s, %s)"
     requestId = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
 
 
@@ -24,15 +25,30 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
         val.append(dhall_arr[i])
 
     val.append(atdhall)
+    val.append(True)
     cur.execute(sql, tuple(val))
-
     conn.commit()
     conn.close()
 
     match_requests()
 
+
+def remove_request(requestid):
+    sql = """ UPDATE requests
+                SET active = %s
+                WHERE requestid = %s"""
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    cur.execute(sql, (False, requestid))
+
+    conn.commit()
+    conn.close()
+
+
+
 def create_requests_table():
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+
 
     cur = conn.cursor()
 
@@ -47,7 +63,7 @@ def create_requests_table():
     for i in range(len(dhall_list)):
         create_table_query = create_table_query + "{} BOOLEAN NOT NULL,\n".format(dhall_list[i])
 
-    create_table_query = create_table_query + "ATDHALL BOOLEAN);"
+    create_table_query = create_table_query + "ATDHALL BOOLEAN, \n ACTIVE BOOLEAN NOT NULL);"
 
     cur.execute(create_table_query)
     conn.commit()
@@ -184,7 +200,7 @@ def get_all_requests(netid):
 
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
-    query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall FROM requests as r
+    query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall, requestid FROM requests as r
             WHERE r.netid = %s"""
 
     cur.execute(query, [netid])
