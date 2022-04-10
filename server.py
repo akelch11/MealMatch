@@ -1,9 +1,5 @@
 ##
-from ast import parse
-from curses import endwin
-import re
 from sys import stderr
-# from urllib import response
 from flask import Flask, request, make_response, redirect, url_for, session
 from flask import render_template
 import profile
@@ -56,7 +52,6 @@ def senior_year():
 #establish the route for creating/editing your account
 @app.route('/edit_account', methods=['GET'])
 def update_form():
-    # should go to home_screen if account created
     username = auth.authenticate()
 
     # username = session.get('username')
@@ -82,13 +77,6 @@ def update_form():
     response = make_response(html)
     return response
 
-""" Strip the bio of all whitespace except the default-bio flag, chr(0x200a)"""
-def process_bio(req):
-    bio = req.strip()
-    if req and req[-1] == chr(0x200a):
-        bio += chr(0x200a)
-    return bio
-
 
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
@@ -96,12 +84,12 @@ def form():
     netid = auth.authenticate()
     year = request.args.get('year')
     major = request.args.get('major')
-    bio = process_bio(request.args.get('bio'))
+    bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum').strip()
     if bio == "":
         tup = (name, dept_code[major], year, phonenum)
-        bio = ("Hi! My name is %s. I'm a %s major in the class of %s. "+\
-        "Super excited to grab a meal with you. You can reach me at %s."+chr(0x200a))\
+        bio = "Hi! My name is %s. I'm a %s major in the class of %s. "+\
+        "Super excited to grab a meal with you. You can reach me at %s."\
         % tup
     if profile.exists(netid):
         profile.edit_profile(netid, name, int(year), major, phonenum, bio)
@@ -206,10 +194,7 @@ def logout():
 def get_matches():
 
     session_netid = auth.authenticate()
-    # session_netid = "ddalia"
-
     all_matches = matcher.get_all_matches(session_netid)
-
 
     html = render_template('matches.html', all_matches = all_matches)
     response = make_response(html)
@@ -228,15 +213,12 @@ def remove_requests():
 def get_requests():
 
     session_netid = auth.authenticate()
-    # session_netid = "ddalia"
-
     all_requests = matcher.get_all_requests(session_netid)
-
 
     html = render_template('requests.html', all_requests = all_requests)
     response = make_response(html)
     return response
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
-# app.run(host='localhost', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)

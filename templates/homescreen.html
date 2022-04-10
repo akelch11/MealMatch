@@ -1,19 +1,17 @@
 <!DOCTYPE html> <!--- homescreen-->
 <html>
     <head>
-        
+        <title> MealMatch</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/font.css">
         <meta name = "viewport" content="width=device-width, initial-scale=1">
     </head>
 
 <body>
-    <div class = "jumbotron container-fluid">
-        <span><h1 class="col-sm-6">MealMatch</h1></span>  
-   </div>
-
+{% include 'header.html' %}
 <center>
     <div class= "container-fluid btn-group" id = "mainContainer">
         <div class = "row w-100" id = "rowTest">  
@@ -21,7 +19,7 @@
             <div class = "col-sm-3">
                 <form action = '/ondemand'>
                     <button class = "btn-lg btn-block homeButton" id = "grabMealButton">
-                    <img src = "/static/diningchairslogo.png" alt = "grab meal" style = "width: 100px; height: 100px;"> </img>
+                    <img class="home_img_class" src = "/static/diningchairslogo.png" alt = "grab meal"> </img>
                     <br>
                     I'M AT A DHALL
                 </button>
@@ -30,9 +28,9 @@
 
             <div class = 'col-sm-3'>
                 <form action="/schedule"> 
-                    <button class = "btn-lg btn-block homeButton" id = "bigButtons2">
+                    <button class = "btn-lg btn-block homeButton">
                         
-                    <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                    <img class="home_img_class" src = "/static/diningchairslogo.png" alt = "schedule a meal"> </img>
                     <br>
                     SCHEDULE A MEAL
                     </button>
@@ -41,9 +39,9 @@
 
             <div class = 'col-sm-3'>
                 <form action="/requests"> 
-                    <button class = "btn-lg btn-block homeButton" id = "bigButtons4">
+                    <button class = "btn-lg btn-block homeButton">
                         
-                    <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                    <img class="home_img_class" src = "/static/diningchairslogo.png" alt = "scheduled meals"> </img>
                     <br>
                     REQUESTS
                     </button>
@@ -53,9 +51,8 @@
             
             <div class = 'col-sm-3'>
                 <form action="/matches">
-                    <button class = "btn-lg btn-block homeButton" id = "bigButtons">
-                        
-                    <img src = "/static/diningchairslogo.png" alt = "scheduled meals" style = "width: 100px; height: 100px;"> </img>
+                    <button class = "btn-lg btn-block homeButton"> 
+                    <img class="home_img_class" src = "/static/diningchairslogo.png" alt = "matches"> </img>
                     <br>
                     MATCHES
                     </button>
@@ -65,8 +62,8 @@
 
             <div class = 'col-sm-3'>
                 <form action="/edit_account">
-                    <button class ="btn-lg btn-block homeButton" id = "bigButtons">
-                        <img src = "/static/profilepiclogowhite.png" style="width: 100px; height: 100px;" ></img>
+                    <button class ="btn-lg btn-block homeButton">
+                        <img class="home_img_class" src = "/static/profilepiclogowhite.png"></img>
                         <br>
                         MY PROFILE
                     </button>
@@ -84,12 +81,14 @@
 
 </html>
 <style>
-    * {
+* {
 	box-sizing: border-box;
     font-family: "Maven Pro", sans-serif;
-
 }
-
+.home_img_class{
+    width: 100px;
+    height: 100px;
+}
 #mainContainer {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -98,43 +97,7 @@
 
 .homeButton {
     margin: 20px;
-}
-
-.jumbotron {
-    background-color: rgba(255, 159, 70, 1);
-    color: rgba(255,255,255, 1);
-    text-align: left;
-    font-size: 16px;
-    height: 70px;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-#netIdButton {
-    text-align: right;
-   
-    color: black;
-
-}
-#bigButtons {
     background-color: #ff9f46;
     color: white;
 }
-
-#bigButtons2 {
-    background-color: #ff9f46;
-    color: white;
-}
-
-#bigButtons4 {
-    background-color: #ff9f46;
-    color: white;
-}
-
-#grabMealButton {
-    background-color: #ff9f46;
-    color: white;
-}
-
 </style>

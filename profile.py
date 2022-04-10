@@ -25,14 +25,14 @@ def exists(netid):
 def get_profile(netid):
     conn = new_conn()
     cur = conn.cursor()
-    stmt = 'select name,year,major,phonenum,bio from users where netid=%s'
+    stmt = 'select netid,name,year,major,phonenum,bio from users where netid=%s'
     cur.execute(stmt, (netid,))
     vals = cur.fetchone()
     if not vals: # TODO need a default value in the dropdown menus to correspond to the first time
-        vals = [""] * 5
+        vals = [""] * 6
     conn.commit()
     conn.close()
-    keys = ["name","year","major","phonenum","bio"]
+    keys = ["netid", "name","year","major","phonenum","bio"]
     return dict(zip(keys, vals))
 
 
