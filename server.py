@@ -104,7 +104,8 @@ def form():
 
 @app.route('/ondemand', methods=['GET'])
 def ondemand():
-    html = render_template('ondemandmatch.html')
+    html = render_template('ondemandmatch.html',
+                            dhalls=dhall_list)
     response = make_response(html)
     return response
 
@@ -181,7 +182,8 @@ def schedulematch():
 
 @app.route('/match', methods=['GET'])
 def match():
-    html = render_template('ondemandmatch.html')
+    html = render_template('ondemandmatch.html',
+                            dhalls=dhall_list)
     print('call match route')
     response = make_response(html)
     return response

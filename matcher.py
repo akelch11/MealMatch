@@ -5,7 +5,9 @@ import psycopg2
 import random
 import string
 from datetime import datetime
-dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
+from big_lists import dhall_list
+
+dhall_list = [a.upper() for a in dhall_list]
 
 def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")

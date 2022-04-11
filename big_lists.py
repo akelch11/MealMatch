@@ -1,7 +1,7 @@
 
 """List of large size that we've moved to an external file."""
 
-dhall_list = ["WUCOX", "ROMA", "FORBES", "CJL", "WHITMAN"]
+dhall_list = ["Wucox", "RoMa", "Forbes", "CJL", "Whitman"]
 
 majors  = ['African American Studies',
  'Anthropology', 'Architecture',
