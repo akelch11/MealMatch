@@ -20,7 +20,8 @@ app.secret_key = keys.APP_SECRET_KEY
 @app.route('/', methods=['GET'])
 @app.route('/landing', methods=['GET'])
 def landing_page():
-    html = render_template('landing.html')
+    html = render_template('landing.html',
+                            landing=True)
     response = make_response(html)
     return response
 

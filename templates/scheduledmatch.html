@@ -4,13 +4,12 @@
         
         <link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@600;900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@600;900&display=swap">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="static/font.css">
-		<!-- {% include 'header.html' %} -->	 
         <meta name = "viewport" content="width=device-width, initial-scale=1">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>	
-        
+		<title> Meal Match | Schedule a Meal!</title>
 	</head>
 
 <body>
@@ -19,60 +18,80 @@
 <center>
 
 	<div id = 'mealType' class = "container">
-
 		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
 			I want to eat:
 			<button class = 'btn-lg' id = 'lunchButton'> Lunch </button>
 			<button class = 'btn-lg' id = 'dinnerButton'> Dinner </button>
 		</div>
-	
 	</div>
 
-<div id = 'hallType' class = "container">
-
+	<div id = 'hallType' class = "container">
+		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
+			I want to eat at:
+			<button class = 'btn-lg dHallType' id = 'RoMa'> RoMa </button>
+			<button class = 'btn-lg dHallType' id = 'Whitman'> Whitman </button>
+			<button class = 'btn-lg dHallType' id = 'Wucox'> Wucox </button>
+			<button class = 'btn-lg dHallType' id = 'Forbes'> Forbes </button>
+			<button class = 'btn-lg dHallType' id = 'CJL'> CJL </button>
+		</div>
+	</div>
 	
-	<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
-		I want to eat at:
-		<button class = 'btn-lg dHallType' id = 'RoMa'> RoMa </button>
-		<button class = 'btn-lg dHallType' id = 'Whitman'> Whitman </button>
-		<button class = 'btn-lg dHallType' id = 'Wucox'> Wucox </button>
-		<button class = 'btn-lg dHallType' id = 'Forbes'> Forbes </button>
-		<button class = 'btn-lg dHallType' id = 'CJL'> CJL </button>
+	<div class = container>
+		<a target="_blank" href="https://tigermenus.herokuapp.com/">Check out what the dining halls are serving</a><br>
 	</div>
 
-</div>
-
-
-
-<div id = 'mealTimes' class = "container row">
-
-	
-	<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
-		I'm free from:
-		<input class = 'btn-sm' type = 'time' step = '60' id = 'startTimeButton'></button> 
-		to
-		<input class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'></button>
-		
+	<div id = 'mealTimes' class = "container row">
+		<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
+			I'm free from:
+			<input required class = 'btn-sm' type = 'time' step = '60' id = 'startTimeButton'></button> 
+			to
+			<input required class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'></button>
+		</div>
 	</div>
 
-</div>
-
-<div>
 	<div class = 'container row'>
-		<a id = "submitButtonForm" action = "/" href = "/">
+		<a id = "submitButtonForm" action = "/" href = "/index">
 			<button class = 'btn-lg submitButton'> Find me a match!</button>
 		</a>
 	</div>
-</div>
-
 </center>
    
 </body>
 
 </html>
 
-
 <script>
+	function isDinnerTime(){
+		let hour = dateTime.getHours();
+		return (14 <= hour) && (hour <= 19);
+	}
+	function isLunchTime(){
+		let hour = dateTime.getHours();
+		let minute = dateTime.getMinutes();
+		return (12 <= hour || (11==hour && minute>=30)) && (hour <= 13);
+	}
+
+	function updateTimeBoundaries(meal){
+		let startTimeEL =  document.getElementById('startTimeButton')
+		let endTimeEL =  document.getElementById('endTimeButton')
+		let dateTime = new Date();
+		// format string 
+		curr = ("0"+dateTime.getHours()).slice(-2)+":"+("0"+dateTime.getMinutes()).slice(-2)
+		if(meal==="dinner"){
+			endTimeEL.setAttribute('max', '20:00');
+			endTimeEL.setAttribute('min', curr);
+			// startTimeEL.setAttribute('min', curr); TODO
+			// startTimeEL.setAttribute('max', smthng);
+		}
+		else if(isLunchTime()){
+			endTimeEL.setAttribute('max', '14:00');
+			endTimeEL.setAttribute('min', curr);
+			// startTimeEL.setAttribute('min', curr); TODO
+			// startTimeEL.setAttribute('max', smthng);
+		}
+	}
+	
+
 	
 		let lunchButton = document.getElementById("lunchButton");
 		let dinnerButton = document.getElementById("dinnerButton");
@@ -83,6 +102,7 @@
 		lunchButton.addEventListener('click', function onClick() {
 			activeMeal = 'lunch';
 			console.log('lunch Pressed');
+			// updateTimeBoundaries(activeMeal)
 			lunchButton.style.backgroundColor = "#ff9f46";
 			dinnerButton.style.backgroundColor = 'white';
 
@@ -91,14 +111,14 @@
 		dinnerButton.addEventListener('click', function onClick() {
 			activeMeal = 'dinner';
 			console.log('dinner Pressed');
+			// updateTimeBoundaries(activeMeal)
 			dinnerButton.style.backgroundColor = "#ff9f46";
 			lunchButton.style.backgroundColor = 'white';
 
 		});
 
 
-		let dHallButtons = document.getElementsByClassName('dHallType')
-		;
+		let dHallButtons = document.getElementsByClassName('dHallType');
 
 		for(let i = 0; i < dHallButtons.length; i++)
 		{
@@ -128,26 +148,28 @@
 		//
 
 		let submitButtonForm = document.getElementById("submitButtonForm");
-
-
 		
-			// update url to contain proper match request information
+		// update url to contain proper match request information
 		updateUrl =  function() {
-
-
-		
 			let url = "/matchlanddummy"
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
+			if(endTime === "" || startTime === "" || activeMeal === "")
+				return;
+
 			url += "?meal=" + activeMeal;
 			url += "&location=";
 
-            let dHallOptions = "";
+            let selected = false;
+			let dHallOptions = "";
             for(var dh in activeDhalls)
-                if(activeDhalls[dh])
+                if(activeDhalls[dh]){
                     dHallOptions += (dh + "-");
-            
+					selected = true;
+				}
+            if( !selected)
+				return;
             url+= dHallOptions.slice(0,-1);
 			url += "&start=" + startTime;
 			url += "&end=" + endTime;
@@ -173,6 +195,7 @@
 		// update url on changing times
 		startTimeButton.addEventListener('change', updateUrl);
 		endTimeButton.addEventListener('change', updateUrl)
+		// TODO add more listeners so that times cant be reversed
 
 
 </script>
