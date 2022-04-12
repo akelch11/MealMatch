@@ -109,6 +109,11 @@ def ondemand():
     response = make_response(html)
     return response
 
+@app.route('/forcematches', methods=['GET'])
+def force_matches():
+    matcher.match_requests()
+    return redirect("/matches")
+
 @app.route('/matchlanddummy', methods = ['GET'])
 def matchland():
     meal_type = request.args.get('meal')
@@ -146,7 +151,7 @@ def matchland():
             else:
                 dhall_arr.append(False)
 
-    netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
+    # netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
     if start_time == "now":
         start_time_datetime = datetime.now()
@@ -155,7 +160,7 @@ def matchland():
 
     end_time_datetime = parser.parse(end_time)
 
-    matcher.add_request(netid, meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
+    matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     return redirect("/matches")
 
 
@@ -209,6 +214,13 @@ def remove_requests():
     requestid = request.args.get("requestid")
     matcher.remove_request(requestid)
     return redirect(url_for('get_requests'))
+
+
+@app.route('/cancelmatch', methods = ['POST'])
+def remove_matches():
+    matchid = request.args.get("matchid")
+    matcher.remove_match(matchid)
+    return redirect(url_for('get_matches'))
 
 
 @app.route('/requests', methods = ['GET'])
