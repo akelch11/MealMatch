@@ -34,10 +34,13 @@
          {% for i in range(9) %}
          <td>{{matches[i]}}</td>
          {%endfor%}
-         <td><form method = "POST" action = "/removerequest?requestid={{matches[9]}}"><button class = 'btn-sm' style = "background-color: #c55353; color: white;">Cancel Request</button></form></td>
+         <td><form method = "POST" action = "/removerequest?requestid={{matches[9]}}">
+            <button class = 'btn-sm' 
+                  style = "background-color: #c55353; color: white;">Cancel Request</button>
+         </form></td>
       </tr>
       {% endfor %}
-   </table>
+   </table> 
 </body>
 
 </html>
