@@ -48,7 +48,7 @@
 
 <div>
 	<div class = 'container row'>
-		<a id = "submitButtonForm" action = "/" href = "/index">
+		<a id = "submitButtonForm" action = "/" href = "/">
 			<button class = 'btn-lg submitButton'> Find me a match!</button>
 		</a>
 	</div>
@@ -68,15 +68,15 @@
 	'use strict';
 	// Jeremy's work to error-prove the UI
 	function isWeekend(){
-		let dateTime = new Date();
-		let dayOfWeek = dateTime.getDay();
+		let dayOfWeek = (new Date()).getDay();
 		return (dayOfWeek == 6) || (dayOfWeek == 0);
 	}
 	function isDinnerTime(){
-		let hour = dateTime.getHours();
+		let hour = (new Date()).getHours();
 		return (17 <= hour) && (hour <= 19);
 	}
 	function isLunchTime(){
+		let dateTime = new Date();
 		let hour = dateTime.getHours();
 		let minute = dateTime.getMinutes();
 		return (12 <= hour || (11==hour && minute>=30)) && (hour <= 13);
@@ -89,7 +89,7 @@
 		else if(isLunchTime())
 			endTimeEL.setAttribute('max', '14:00');
 	}
-	$('document').ready(updateEndTime);
+	// $('document').ready(updateEndTime);
 
 	
 		// let lunchButton = document.getElementById("lunchButton");
@@ -141,8 +141,8 @@
 
 		
 			// update url to contain proper match request information
-		updateUrl =  function() {
-			
+		function updateUrl() {
+			console.log('called updateurl')
 			
 			let url = "/matchlanddummy"
 			let endTime = document.getElementById("endTimeButton").value;
