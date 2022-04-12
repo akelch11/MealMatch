@@ -191,8 +191,8 @@ def execute_match_query(parse_requests, dhall):
             modify_request(first[0], match_id)
             modify_request(second[0], match_id)
 
-            notifications.send_message(first[4], first[5])
-            notifications.send_message(second[4], second[5])
+            notifications.send_message(first[4], second[5])
+            notifications.send_message(second[4], first[5])
 
             # cache the row numbers being matched
             matched.append(i)
