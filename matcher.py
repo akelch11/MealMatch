@@ -14,7 +14,6 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
 
-    clean_requests()
     flag = validate_reqeust(netid, meal_type, start_time, end_time, dhall_arr, atdhall)
     if not flag:
         print("Cannot add request: there is already a request in the current meal period")
@@ -38,6 +37,8 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     cur.execute(sql, tuple(val))
     conn.commit()
     conn.close()
+
+    clean_requests()
 
     match_requests()
 
