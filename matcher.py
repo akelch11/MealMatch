@@ -4,6 +4,7 @@ from venv import create
 import psycopg2
 import random
 import string
+import notifications
 from datetime import datetime
 from big_lists import dhall_list
 
@@ -46,6 +47,17 @@ def remove_request(requestid):
     conn.commit()
     conn.close()
 
+def remove_match(matchid):
+    sql = """ UPDATE matches
+                SET active = %s
+                WHERE match_id = %s"""
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    cur.execute(sql, (False, matchid))
+
+    conn.commit()
+    conn.close()
+
 
 
 def create_requests_table():
@@ -83,7 +95,8 @@ def create_matches_table():
             MATCH_TIME TIMESTAMP NOT NULL,
             DINING_HALL TEXT NOT NULL,
             START_WINDOW TIMESTAMP NOT NULL,
-            END_WINDOW TIMESTAMP NOT NULL);'''
+            END_WINDOW TIMESTAMP NOT NULL,
+            ACTIVE BOOLEAN NOT NULL);'''
     
     cur.execute(create_table_query)
     conn.commit()
@@ -123,6 +136,7 @@ def execute_match_query(parse_requests, dhall):
     for i in range(len(rows)):
         for j in range(i+1,len(rows)):
 
+
             # Do not attempt to find match if row is already matched
             if i in matched or j in matched:
                 continue
@@ -130,17 +144,24 @@ def execute_match_query(parse_requests, dhall):
             first = rows[i] # First request
             second = rows[j] # Second request
 
+            print("Test!")
+            print(first[1])
+            print(second[1])
+
             overlap = find_overlap(first[2], first[3], second[2], second[3])
             
             # if there is no valid overlap between current requests 
             # then skip current pairing
             if not overlap:
+                print("Continue")
+                continue
+
+            if first[1] == second[1]:
                 continue
             
             # Establish start and end windows for match
             start_int = overlap[0]
             end_int = overlap[1]
-
 
             # Obtain matchid
             match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
@@ -151,16 +172,19 @@ def execute_match_query(parse_requests, dhall):
             # Current time for match made
             now = datetime.now()
 
-            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW) "
-            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, ACTIVE) "
+            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
-            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int)
+            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, True)
 
             cur.execute(sql, val)
 
             # Modify requests after match is made
             modify_request(first[0], match_id)
             modify_request(second[0], match_id)
+
+            notifications.send_message(first_netid)
+            notifications.send_message(second_netid)
 
             # cache the row numbers being matched
             matched.append(i)
@@ -182,6 +206,8 @@ def modify_request(request_id, match_id):
 
     conn.commit()
     conn.close()    
+
+    remove_request(request_id)
     print("Modified request")
 
 def get_all_matches(netid):
@@ -195,6 +221,7 @@ def get_all_matches(netid):
             OR m.second_netid = u.netid)
             AND (m.first_netid = %s OR m.second_netid = %s)
             AND (u.netid != %s)
+            AND (m.active = TRUE)
             ORDER BY match_time ASC"""
 
     cur.execute(query, (netid, netid, netid))
