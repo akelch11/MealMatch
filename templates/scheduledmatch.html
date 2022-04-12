@@ -150,7 +150,7 @@
 		let submitButtonForm = document.getElementById("submitButtonForm");
 		
 		// update url to contain proper match request information
-		updateUrl =  function() {
+		function updateUrl() {
 			let url = "/matchlanddummy"
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
@@ -176,9 +176,8 @@
 			url += "&atdhall=False";
 
 			submitButtonForm.setAttribute('action', url);
-			submitButtonForm.setAttribute('href', url);
-			
-		};
+			submitButtonForm.setAttribute('href', url);	
+		}
 
 
 		lunchButton.addEventListener('click', updateUrl);
