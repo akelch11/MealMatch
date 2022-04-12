@@ -17,10 +17,20 @@ app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
 
 
-@app.route('/', methods=['GET'])
 @app.route('/landing', methods=['GET'])
 def landing_page():
     html = render_template('landing.html',
+                        landing=True)
+    response = make_response(html)
+    return response
+
+
+@app.route('/', methods=['GET'])
+def home_page():
+    if session.get('username'):
+           html = render_template('homescreen.html')
+    else:
+        html = render_template('landing.html',
                             landing=True)
     response = make_response(html)
     return response
@@ -34,10 +44,7 @@ def go_to_cas():
 
 @app.route('/index', methods=['GET'])
 def homescreen():
-    # if not logged in
     if not session.get('username'):
-        # auth.authenticate() #TODO land->login->home
-    # if not request.args.get('ticket'): # experiment
         return redirect(url_for('landing_page')) # go to landing page
     if not profile.exists(session.get('username')):
         return redirect('/edit_account')
