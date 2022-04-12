@@ -14,6 +14,12 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
 
+    clean_requests()
+    flag = validate_reqeust(netid, meal_type, start_time, end_time, dhall_arr, atdhall)
+    if not flag:
+        print("Cannot add request: there is already a request in the current meal period")
+        return False
+
     sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
     
     for i in range(len(dhall_list)):
@@ -35,6 +41,60 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
 
     match_requests()
 
+    return True
+
+def validate_reqeust(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    flag = True
+    # search for active requests made by user with netid
+    sql = """SELECT *
+            FROM requests
+            WHERE netid = %s AND active = TRUE AND LUNCH  = %s"""
+    cur.execute(sql, (netid, meal_type))
+
+    rows = cur.fetchall()
+
+    if(len(rows) > 0):
+        flag = False
+    
+    conn.commit()
+    conn.close()
+
+    return flag
+
+def clean_requests():
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    sql = """SELECT *
+            FROM requests"""
+
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    now = datetime.now()
+
+    old_requests = []
+
+    for row in rows:
+        # Check if endtime of request has passed
+        end_time = row[3]
+        #
+        if end_time < now:
+            old_requests.append(row[0])
+    
+    sql = """ UPDATE requests
+                SET active = %s
+                WHERE requestid = %s"""
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    for id in old_requests:
+        cur.execute(sql, (False, id))
+        
+    cur.close()
+    conn.commit()
+    conn.close()
 
 def remove_request(requestid):
     sql = """ UPDATE requests
