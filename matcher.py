@@ -113,10 +113,23 @@ def match_requests():
         parse_requests_lunch += "WHERE {} = TRUE AND LUNCH = TRUE AND MATCHID IS NULL AND ACTIVE = TRUE\n".format(dhall)
         parse_requests_lunch += "ORDER BY BEGINTIME ASC"
 
-        parse_requests_din = '''SELECT REQUESTID, NETID, BEGINTIME, ENDTIME
-                            FROM requests\n'''
-        parse_requests_din += "WHERE {} = TRUE AND LUNCH = FALSE AND MATCHID IS NULL AND ACTIVE = TRUE\n".format(dhall)
-        parse_requests_din += "ORDER BY BEGINTIME ASC"
+        parse_requests_lunch = """SELECT * FROM requests as r, users as u 
+                                    WHERE r.{} = TRUE 
+                                    AND r.LUNCH = TRUE 
+                                    AND r.MATCHID IS NULL 
+                                    AND r.ACTIVE = TRUE
+                                    AND r.netid = u.netid
+                                    ORDER BY BEGINTIME ASC
+                                    """
+
+        parse_requests_din = """SELECT * FROM requests as r, users as u 
+                                    WHERE r.{} = TRUE 
+                                    AND r.LUNCH = FALSE 
+                                    AND r.MATCHID IS NULL 
+                                    AND r.ACTIVE = TRUE
+                                    AND r.netid = u.netid
+                                    ORDER BY BEGINTIME ASC
+                                    """
 
         execute_match_query(parse_requests_lunch, dhall)
         execute_match_query(parse_requests_din, dhall)
