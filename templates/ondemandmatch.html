@@ -15,14 +15,14 @@
 <body>
    {% include 'header.html' %}
 <center>
-	
-	<div id = 'mealType' class = "container">
+	<!-- can remove, will be implied by the current time -->
+	<!-- <div id = 'mealType' class = "container">
 		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
 			I want to eat:
 			<button class = 'btn-lg' id = 'lunchButton'> Lunch </button>
 			<button class = 'btn-lg' id = 'dinnerButton'> Dinner </button>
 		</div>
-	</div>
+	</div> -->
 
 <div id = 'hallType' class = "container">
 
@@ -35,27 +35,23 @@
 	</div>
 
 </div>
-
-
+<div class = container>
+	<a target="_blank" href="https://tigermenus.herokuapp.com/">Check out what the dining halls are serving</a><br>
+</div>
 
 <div id = 'mealTimes' class = "container row">
-
-	
 	<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
 		I'm free until:
-		<input class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'></button>
-		
+		<input required class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'>
 	</div>
-
 </div>
 
 <div>
-
-		<div class = 'container row'>
-			<a id = "submitButtonForm" action = "/" href = "/">
-				<button class = 'btn-lg submitButton'> Find me a match!</button>
-			</a>
-		</div>
+	<div class = 'container row'>
+		<a id = "submitButtonForm" action = "/" href = "/index">
+			<button class = 'btn-lg submitButton'> Find me a match!</button>
+		</a>
+	</div>
 </div>
 
 
@@ -69,26 +65,54 @@
 
 
 <script>
+	'use strict';
+	// Jeremy's work to error-prove the UI
+	function isWeekend(){
+		let dateTime = new Date();
+		let dayOfWeek = dateTime.getDay();
+		return (dayOfWeek == 6) || (dayOfWeek == 0);
+	}
+	function isDinnerTime(){
+		let hour = dateTime.getHours();
+		return (14 <= hour) && (hour <= 19);
+	}
+	function isLunchTime(){
+		let hour = dateTime.getHours();
+		let minute = dateTime.getMinutes();
+		return (12 <= hour || (11==hour && minute>=30)) && (hour <= 13);
+	}
+	function updateEndTime(){
+		let endTimeEL =  document.getElementById('endTimeButton')
+		let dateTime = new Date();
+		if(isDinnerTime())
+			endTimeEL.setAttribute('max', '20:00')
+		else if(isLunchTime())
+			endTimeEL.setAttribute('max', '14:00');
+	}
+	$('document').ready(updateEndTime);
+
+</script>
+<script>
 	
-		let lunchButton = document.getElementById("lunchButton");
-		let dinnerButton = document.getElementById("dinnerButton");
-		let activeMeal = "";
+		// let lunchButton = document.getElementById("lunchButton");
+		// let dinnerButton = document.getElementById("dinnerButton");
+		// let activeMeal = "";
 
-		lunchButton.addEventListener('click', function onClick() {
-			activeMeal = 'lunch';
-			console.log('lunch Pressed');
-			lunchButton.style.backgroundColor = "#ff9f46";
-			dinnerButton.style.backgroundColor = 'white';
+		// lunchButton.addEventListener('click', function onClick() {
+		// 	activeMeal = 'lunch';
+		// 	console.log('lunch Pressed');
+		// 	lunchButton.style.backgroundColor = "#ff9f46";
+		// 	dinnerButton.style.backgroundColor = 'white';
 
-		});
+		// });
 
-		dinnerButton.addEventListener('click', function onClick() {
-			activeMeal = 'dinner';
-			console.log('dinner Pressed');
-			dinnerButton.style.backgroundColor = "#ff9f46";
-			lunchButton.style.backgroundColor = 'white';
+		// dinnerButton.addEventListener('click', function onClick() {
+		// 	activeMeal = 'dinner';
+		// 	console.log('dinner Pressed');
+		// 	dinnerButton.style.backgroundColor = "#ff9f46";
+		// 	lunchButton.style.backgroundColor = 'white';
 
-		});
+		// });
 
 
 		let dHallButtons = document.getElementsByClassName('dHallType')
@@ -120,11 +144,18 @@
 		
 			// update url to contain proper match request information
 		updateUrl =  function() {
-
-
-		
+			
+			
 			let url = "/matchlanddummy"
 			let endTime = document.getElementById("endTimeButton").value;
+			if(activeDhall === "" || endTime === "")
+				return;
+
+			let activeMeal = "";
+			if(isDinnerTime())
+				activeMeal = 'dinner';
+			else
+				activeMeal = 'lunch';
 
 			url += "?meal=" + activeMeal;
 			url += "&location=" + activeDhall;
@@ -142,8 +173,8 @@
 		
 
 
-		lunchButton.addEventListener('click', updateUrl);
-		dinnerButton.addEventListener('click', updateUrl);
+		// lunchButton.addEventListener('click', updateUrl);
+		// dinnerButton.addEventListener('click', updateUrl);
 
 		for(let i = 0; i < dHallButtons.length; i++)
 			dHallButtons[i].addEventListener('click', updateUrl)

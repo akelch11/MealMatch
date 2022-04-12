@@ -7,8 +7,13 @@
     <body>
         <div class = "jumbotron container-fluid">
             <nav class="navbar">
-                <h1 class="col-sm-6"><a class="navbar-brand" id="HomeButton"   href="/index" >MealMatch</a></h1>
+                <h1 class="col-sm-6"><a class="navbar-brand" id="HomeButton" href="/index" >MealMatch</a></h1>
+                {% if landing %}
+                <h6 class="col-sm-6" style="text-align: right"><a class="navbar-brand" id="LogoutButton" href="/next">Log In</a></h6>
+                {% else %}
+                <!-- Change to Login if at homescreen, href=/next -->
                 <h6 class="col-sm-6" style="text-align: right"><a class="navbar-brand" id="LogoutButton" href="/logout">Logout</a></h6>
+                {%endif%}
             </nav>
         </div>
     </body>
