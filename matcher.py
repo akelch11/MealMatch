@@ -68,7 +68,8 @@ def clean_requests():
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
     sql = """SELECT *
-            FROM requests"""
+            FROM requests
+            WHERE active = TRUE"""
 
     cur.execute(sql)
 
