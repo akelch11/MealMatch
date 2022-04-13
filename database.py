@@ -43,8 +43,7 @@ def create_matches_table():
     close_connection(cur, conn)
 
 def create_requests_table():
-    from big_lists import dhall_list as dl
-    dhall_list = [a.upper() for a in dl]
+    from big_lists import dhall_list
     create_table_query = '''CREATE TABLE requests
             (REQUESTID TEXT PRIMARY KEY NOT NULL,
             NETID TEXT NOT NULL,
@@ -53,8 +52,8 @@ def create_requests_table():
             LUNCH BOOLEAN NOT NULL,
             MATCHID TEXT,\n'''
 
-    for i in range(len(dhall_list)):
-        create_table_query = create_table_query + "{} BOOLEAN NOT NULL,\n".format(dhall_list[i])
+    for i in dhall_list:
+        create_table_query = create_table_query + "{} BOOLEAN NOT NULL,\n".format(i)
 
     create_table_query = create_table_query + "ATDHALL BOOLEAN, \n ACTIVE BOOLEAN NOT NULL);"
 

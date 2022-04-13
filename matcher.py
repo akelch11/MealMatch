@@ -1,4 +1,3 @@
-import re
 from sys import stderr
 import random
 import string
@@ -14,13 +13,14 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
         return False
 
     sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
-    for i in range(len(dhall_list)):
-        sql = sql + "{},".format(dhall_list[i])
+    for i in dhall_list:
+        sql = sql + "{},".format(i)
     # add %s for each dining hall
     dhall_strargs = "%s, "*len(dhall_list)
     sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, " + dhall_strargs + "%s, %s)"
 
-    requestId = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
+    all_chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    requestId = ''.join(random.choice(all_chars) for _ in range(16))
 
     val = [requestId, netid, start_time, end_time, meal_type]
     val += dhall_arr
@@ -50,7 +50,7 @@ def validate_request(netid, meal_type):
     return len(rows) == 0
 
 def clean_requests():
-    sql = """SELECT *
+    sql = """SELECT endtime
             FROM requests
             WHERE active = TRUE"""
 
@@ -58,21 +58,15 @@ def clean_requests():
     cur.execute(sql)
 
     now = datetime.now()
-    old_requests = []
-
-    for row in cur.fetchall():
-        # Check if endtime of request has passed
-        end_time = row[3]
-        #
-        if end_time < now:
-            old_requests.append(row[0])
+    # Check if endtime of request has passed
+    old_requests = [row[0] for row in cur.fetchall() if row[0]<now]
     
     sql = """ UPDATE requests
-                SET active = %s
+                SET active = FALSE
                 WHERE requestid = %s"""
     
     for id in old_requests:
-        cur.execute(sql, (False, id))
+        cur.execute(sql, [id])
         
     close_connection(cur, conn)
 
@@ -80,20 +74,20 @@ def clean_requests():
 
 def remove_request(requestid):
     sql = """ UPDATE requests
-                SET active = %s
+                SET active = FALSE
                 WHERE requestid = %s"""
     
     cur, conn = new_connection()
-    cur.execute(sql, (False, requestid))
+    cur.execute(sql, [requestid])
     close_connection(cur, conn)
 
 def remove_match(matchid):
     sql = """ UPDATE matches
-                SET active = %s
+                SET active = FALSE
                 WHERE match_id = %s"""
     
     cur, conn = new_connection()
-    cur.execute(sql, (False, matchid))
+    cur.execute(sql, [matchid])
     close_connection(cur, conn)
     
     
@@ -231,9 +225,9 @@ def get_all_matches(netid):
 def get_all_requests(netid):
     all_requests = []
 
-    query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall, requestid FROM requests as r
+    query="""SELECT begintime, endtime, lunch, {}, atdhall, requestid FROM requests as r
             WHERE r.netid = %s
-            AND r.active = TRUE"""
+            AND r.active = TRUE""".format(', '.join(dhall_list))
 
     cur, conn = new_connection()
     cur.execute(query, [netid])
