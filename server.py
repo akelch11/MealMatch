@@ -140,24 +140,14 @@ def matchland():
     else:
         at_dhall = False
 
-    dhall_arr = []
 
     # multiple dhalls were selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
-    if '-' in dhall:
-        # 
-        for hall_name in dhall_list:
-            if hall_name not in dhall:
-                dhall_arr.append(False)
-            else:
-                dhall_arr.append(True)
-    else:
-        # one dining hall selected
-        for i in range(len(dhall_list)):
-            if dhall_list[i].lower() == dhall.lower():
-                dhall_arr.append(True)
-            else:
-                dhall_arr.append(False)
+    dhall = dhall.split('-')
+    print('dhall_list:', dhall_list)
+    print(dhall)
+    dhall_arr = [(hall_name in dhall) for hall_name in dhall_list]
+    print('dhall_arr:', dhall_arr)
 
     # netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
@@ -188,7 +178,8 @@ def scheduleland():
 
 @app.route('/schedule', methods = ['GET'])
 def schedulematch():
-     html = render_template('scheduledmatch.html')
+     html = render_template('scheduledmatch.html',
+                            dhalls=dhall_list)
      response = make_response(html)
      return response
     
@@ -237,7 +228,9 @@ def get_requests():
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
 
-    html = render_template('requests.html', all_requests = all_requests)
+    html = render_template('requests.html', 
+                            all_requests=all_requests,
+                            dhalls=dhall_list)
     response = make_response(html)
     return response
 

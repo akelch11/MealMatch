@@ -20,17 +20,16 @@
          <td><b>Begin Time</b></td>
          <td><b>End Time</b></td>
          <td><b>Lunch</b></td>
-         <td><b>Wucox</b></td>
-         <td><b>Roma</b></td>
-         <td><b>Forbes</b></td>
-         <td><b>CJL</b></td>
-         <td><b>Whitman</b></td>
+         {% for dhall in dhalls%}
+         <td><b>{{dhall}}</b></td>
+			{% endfor %}
          <td><b>At a Dhall</b></td>
          <td></td>
       </tr>
       {% for matches in all_requests %}
       <tr>
          <!-- <td>{{matches[9]}}</td> -->
+         <!-- TODO update 9 -->
          {% for i in range(9) %}
          <td>{{matches[i]}}</td>
          {%endfor%}
@@ -44,21 +43,3 @@
 </body>
 
 </html>
-
-<style>
-
-
-.jumbotron {
-    background-color: rgba(255, 159, 70, 1);
-    color: rgba(255,255,255, 1);
-    text-align: left;
-    font-size: 16px;
-    height: 70px;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-
-
-</style>

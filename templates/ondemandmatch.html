@@ -89,7 +89,7 @@
 		else if(isLunchTime())
 			endTimeEL.setAttribute('max', '14:00');
 	}
-	// $('document').ready(updateEndTime);
+	$('document').ready(updateEndTime);
 
 	
 		// let lunchButton = document.getElementById("lunchButton");
@@ -153,6 +153,7 @@
 			if(isDinnerTime())
 				activeMeal = 'dinner';
 			else
+			// else if(isLunchTime()) use in deployment
 				activeMeal = 'lunch';
 
 			url += "?meal=" + activeMeal;

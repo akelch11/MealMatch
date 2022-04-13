@@ -28,11 +28,9 @@
 	<div id = 'hallType' class = "container">
 		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
 			I want to eat at:
-			<button class = 'btn-lg dHallType' id = 'RoMa'> RoMa </button>
-			<button class = 'btn-lg dHallType' id = 'Whitman'> Whitman </button>
-			<button class = 'btn-lg dHallType' id = 'Wucox'> Wucox </button>
-			<button class = 'btn-lg dHallType' id = 'Forbes'> Forbes </button>
-			<button class = 'btn-lg dHallType' id = 'CJL'> CJL </button>
+			{% for dhall in dhalls%}
+			<button class = 'btn-lg dHallType' id = '{{dhall}}'>{{dhall}}</button>
+			{% endfor %}
 		</div>
 	</div>
 	
@@ -50,7 +48,7 @@
 	</div>
 
 	<div class = 'container row'>
-		<a id = "submitButtonForm" action = "/" href = "/index">
+		<a id = "submitButtonForm" action = "/" href = "/schedule">
 			<button class = 'btn-lg submitButton'> Find me a match!</button>
 		</a>
 	</div>
@@ -96,7 +94,7 @@
 		let lunchButton = document.getElementById("lunchButton");
 		let dinnerButton = document.getElementById("dinnerButton");
 		let activeMeal = "";
-        let activeDhalls = {'ROMA': false, 'WHITMAN': false, 'WUCOX': false, "FORBES": false, 'CJL': false};
+        let activeDhalls = {'RoMa': false, 'Whitman': false, 'Wucox': false, "Forbes": false, 'CJL': false};
 
 
 		lunchButton.addEventListener('click', function onClick() {
@@ -126,7 +124,7 @@
 			btn.addEventListener('click',
 			function() {
 				
-                dhall = btn.id.toUpperCase();
+                dhall = btn.id;
                
                // select Dhall
                 if(!activeDhalls[dhall]) 
@@ -194,9 +192,7 @@
 		// update url on changing times
 		startTimeButton.addEventListener('change', updateUrl);
 		endTimeButton.addEventListener('change', updateUrl)
-		// TODO add more listeners so that times cant be reversed
-
-
+		// TODO add more listeners so that times cant be backwards
 </script>
 
 

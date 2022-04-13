@@ -1,85 +1,66 @@
-from tracemalloc import start
-from urllib import request
-from venv import create
-import psycopg2
+import re
+from sys import stderr
 import random
 import string
 import notifications
 from datetime import datetime
 from big_lists import dhall_list
+from database import new_connection, close_connection
 
-dhall_list = [a.upper() for a in dhall_list]
 
 def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
-
-    flag = validate_reqeust(netid, meal_type, start_time, end_time, dhall_arr, atdhall)
-    if not flag:
-        print("Cannot add request: there is already a request in the current meal period")
+    if not validate_request(netid, meal_type):
+        print("Cannot add request: there is already a request in the current meal period", file=stderr)
         return False
 
     sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
-    
     for i in range(len(dhall_list)):
         sql = sql + "{},".format(dhall_list[i])
+    # add %s for each dining hall
+    dhall_strargs = "%s, "*len(dhall_list)
+    sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, " + dhall_strargs + "%s, %s)"
 
-    sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s,%s, %s, %s)"
     requestId = ''.join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in range(16))
 
-
     val = [requestId, netid, start_time, end_time, meal_type]
-    for i in range(len(dhall_arr)):
-        val.append(dhall_arr[i])
-
-    val.append(atdhall)
-    val.append(True)
+    val += dhall_arr
+    val += [atdhall, True]
+    
+    cur, conn = new_connection()
     cur.execute(sql, tuple(val))
-    conn.commit()
-    conn.close()
+    close_connection(cur, conn)
 
     clean_requests()
-
     match_requests()
 
     return True
 
-def validate_reqeust(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
-    flag = True
+def validate_request(netid, meal_type):
     # search for active requests made by user with netid
     sql = """SELECT *
             FROM requests
             WHERE netid = %s AND active = TRUE AND LUNCH  = %s"""
-    cur.execute(sql, (netid, meal_type))
-
-    rows = cur.fetchall()
-
-    if(len(rows) > 0):
-        flag = False
     
-    conn.commit()
-    conn.close()
+    cur, conn = new_connection()
+    cur.execute(sql, (netid, meal_type))
+    rows = cur.fetchall()
+    close_connection(cur, conn)    
 
-    return flag
+    # Return True if there are no conflicting requests, i.e. the list is empty
+    return len(rows) == 0
 
 def clean_requests():
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
     sql = """SELECT *
             FROM requests
             WHERE active = TRUE"""
 
+    cur, conn = new_connection()
     cur.execute(sql)
 
-    rows = cur.fetchall()
-
     now = datetime.now()
-
     old_requests = []
 
-    for row in rows:
+    for row in cur.fetchall():
         # Check if endtime of request has passed
         end_time = row[3]
         #
@@ -89,84 +70,34 @@ def clean_requests():
     sql = """ UPDATE requests
                 SET active = %s
                 WHERE requestid = %s"""
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
+    
     for id in old_requests:
         cur.execute(sql, (False, id))
         
-    cur.close()
-    conn.commit()
-    conn.close()
+    close_connection(cur, conn)
+
+
 
 def remove_request(requestid):
     sql = """ UPDATE requests
                 SET active = %s
                 WHERE requestid = %s"""
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
+    
+    cur, conn = new_connection()
     cur.execute(sql, (False, requestid))
-
-    conn.commit()
-    conn.close()
+    close_connection(cur, conn)
 
 def remove_match(matchid):
     sql = """ UPDATE matches
                 SET active = %s
                 WHERE match_id = %s"""
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
+    
+    cur, conn = new_connection()
     cur.execute(sql, (False, matchid))
-
-    conn.commit()
-    conn.close()
-
-
-
-def create_requests_table():
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-
-
-    cur = conn.cursor()
-
-    create_table_query = '''CREATE TABLE requests
-            (REQUESTID TEXT PRIMARY KEY NOT NULL,
-            NETID TEXT NOT NULL,
-            BEGINTIME TIMESTAMP NOT NULL,
-            ENDTIME TIMESTAMP NOT NULL,
-            LUNCH BOOLEAN NOT NULL,
-            MATCHID TEXT,\n'''
-
-    for i in range(len(dhall_list)):
-        create_table_query = create_table_query + "{} BOOLEAN NOT NULL,\n".format(dhall_list[i])
-
-    create_table_query = create_table_query + "ATDHALL BOOLEAN, \n ACTIVE BOOLEAN NOT NULL);"
-
-    cur.execute(create_table_query)
-    conn.commit()
-    conn.close()
-
-def create_matches_table():
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-
-    cur = conn.cursor()
-
-    create_table_query = '''CREATE TABLE matches
-            (MATCH_ID TEXT PRIMARY KEY NOT NULL,
-            FIRST_NETID TEXT NOT NULL,
-            SECOND_NETID TEXT NOT NULL,
-            MATCH_TIME TIMESTAMP NOT NULL,
-            DINING_HALL TEXT NOT NULL,
-            START_WINDOW TIMESTAMP NOT NULL,
-            END_WINDOW TIMESTAMP NOT NULL,
-            ACTIVE BOOLEAN NOT NULL);'''
-    
-    cur.execute(create_table_query)
-    conn.commit()
-    conn.close()
+    close_connection(cur, conn)
     
     
-def match_requests():
-    
+def match_requests():   
     for dhall in dhall_list:
 
         # Create queries for both lunch and dinner request matching
@@ -195,9 +126,7 @@ def match_requests():
 def execute_match_query(parse_requests, dhall):
     # Number of characters in id
     N = 16
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-
-    cur = conn.cursor()
+    cur, conn = new_connection()
     cur.execute(parse_requests)
     rows = cur.fetchall()
     
@@ -260,22 +189,16 @@ def execute_match_query(parse_requests, dhall):
             matched.append(i)
             matched.append(j)
 
-    conn.commit()
-    conn.close()
+    close_connection(cur, conn)
 
 # Remove request from request table 
 def modify_request(request_id, match_id):
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-
-    cur = conn.cursor()
-
     sql = "UPDATE requests SET MATCHID = %s WHERE REQUESTID = %s"
     val = (match_id, request_id)
 
+    cur, conn = new_connection()
     cur.execute(sql, val)
-
-    conn.commit()
-    conn.close()    
+    close_connection(cur, conn)
 
     remove_request(request_id)
     print("Modified request")
@@ -283,8 +206,6 @@ def modify_request(request_id, match_id):
 def get_all_matches(netid):
     all_matches = []
 
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
     query="""SELECT * 
             FROM matches as m, users as u
             WHERE (m.first_netid = u.netid
@@ -294,31 +215,30 @@ def get_all_matches(netid):
             AND (m.active = TRUE)
             ORDER BY match_time ASC"""
 
+    cur, conn = new_connection()
     cur.execute(query, (netid, netid, netid))
-    rows=cur.fetchall()
-    
+    rows = cur.fetchall()
+    close_connection(cur, conn)
+
     for row in rows:
         row_arr = []
         for col in row:
             row_arr.append(col)
         all_matches.append(row_arr)
 
-
-
-    cur.close()
     return all_matches
 
 def get_all_requests(netid):
     all_requests = []
 
-    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
-    cur = conn.cursor()
     query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall, requestid FROM requests as r
             WHERE r.netid = %s
             AND r.active = TRUE"""
 
+    cur, conn = new_connection()
     cur.execute(query, [netid])
     rows=cur.fetchall()
+    close_connection(cur, conn)
     
     for row in rows:
         row_arr = []
@@ -327,8 +247,6 @@ def get_all_requests(netid):
         all_requests.append(row_arr)
 
 
-
-    cur.close()
     return all_requests
 
 # Find overlap between two datetime intervals, used in finding matches
