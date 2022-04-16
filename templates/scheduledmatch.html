@@ -48,8 +48,8 @@
 	</div>
 
 	<div class = 'container row'>
-		<a id = "submitButtonForm" action = "/" href = "/schedule">
-			<button class = 'btn-lg submitButton'> Find me a match!</button>
+		<a id = "submitButtonForm" href = "/schedule">
+			<button class = 'btn-lg submitButton'>Find me a match!</button>
 		</a>
 	</div>
 </center>
@@ -173,7 +173,6 @@
 			url += "&end=" + endTime;
 			url += "&atdhall=False";
 
-			submitButtonForm.setAttribute('action', url);
 			submitButtonForm.setAttribute('href', url);	
 		}
 

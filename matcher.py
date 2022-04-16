@@ -119,7 +119,7 @@ def match_requests():
 
 def execute_match_query(parse_requests, dhall):
     # Number of characters in id
-    N = 16
+    N = 16 # length of match id
     cur, conn = new_connection()
     cur.execute(parse_requests)
     rows = cur.fetchall()
