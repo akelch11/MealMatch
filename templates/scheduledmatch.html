@@ -53,8 +53,8 @@
 		</a>
 	</div>
 
-	<div class="container row">
-		<p id = "errorBox" style = "color: red"></p>
+	<div class="container row" id = "errorBox" style = "color: red">
+
 	</div>
 </center>
    
@@ -169,10 +169,10 @@
 					dhallSelected = true;
 				}
 
-            if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
-			{	console.log('invalid match request')
-				return;
-			}
+            // if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+			// {	console.log('invalid match request')
+			// 	return;
+			// }
 
 			// only update url if time, meal type, and location are all specified
             url+= dHallOptions.slice(0,-1);
@@ -204,15 +204,27 @@
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
+			console.log(startTime + " " + endTime);
+
 			let dHallSelected = false;
             for(var dh in activeDhalls)
                 if(activeDhalls[dh])
 					dhallSelected = true;
-				
+
+			let timesInOrder
+			
+			document.getElementById('errorBox').innerHTML = ""
+
 			if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+			{
 				console.log('attempt to send invalid meal request')
-				document.getElementById('errorBox').innerHTML = "*Please select all fields to make a match request"
+				
+				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
+				// prevents submission
 				event.preventDefault();
+			}
+
+
 
 		});
 		// TODO add more listeners so that times cant be backwards
