@@ -190,9 +190,9 @@
 			let min1 = Number(t1.substring(3));
 			let min2 = Number(t2.substring(3));
 
-			if(hour1 != hour2) return hour1 < hour2;
+			if(hour1 != hour2) return hour1 - hour2;
 			else
-				return min1 < min2;
+				return min1 - min2;
 		};
 
 
@@ -239,7 +239,7 @@
 			document.getElementById('errorBox').innerHTML = ""
 			
 			let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
-			let timesInOrder = compareTimeStrings(startTime, endTime)
+			let timesInOrder = compareTimeStrings(startTime, endTime) > 0
 
 			console.log('empty: ' + emptyFields)
 
