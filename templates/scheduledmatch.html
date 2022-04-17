@@ -98,7 +98,7 @@
 		let lunchButton = document.getElementById("lunchButton");
 		let dinnerButton = document.getElementById("dinnerButton");
 		let activeMeal = "";
-        let activeDhalls = {'RoMa': false, 'Whitman': false, 'Wucox': false, "Forbes": false, 'CJL': false};
+        let activeDhalls = {'CJL': false, "Forbes": false, 'RoMa': false, 'Whitman': false, 'Wucox': false};
 
 
 		lunchButton.addEventListener('click', function onClick() {
@@ -152,7 +152,7 @@
 		let submitButtonForm = document.getElementById("submitButtonForm");
 		
 		// update url to contain proper match request information
-		function updateUrl() {
+		function updateUrl(event) {
 			let url = "/matchlanddummy"
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
@@ -163,14 +163,17 @@
 
             let dHallSelected = false;
 			let dHallOptions = "";
-            for(var dh in activeDhalls)
-                if(activeDhalls[dh]){
-                    dHallOptions += (dh + "-");
-					dhallSelected = true;
+            for(var dh in activeDhalls){
+				if(activeDhalls[dh]){
+					dHallOptions += (dh + "-");
+					dHallSelected = true;
 				}
+			}
 
-            if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+            if(endTime === "" || startTime === "" || activeMeal === "" || !dHallSelected)
 			{	console.log('invalid match request')
+				document.getElementById('errorBox').innerHTML = "*Please select all fields to make a match request"
+				event.preventDefault();
 				return;
 			}
 
@@ -183,37 +186,8 @@
 			submitButtonForm.setAttribute('href', url);	
 		}
 
-
-		lunchButton.addEventListener('click', updateUrl);
-		dinnerButton.addEventListener('click', updateUrl);
-
-		for(let i = 0; i < dHallButtons.length; i++)
-			dHallButtons[i].addEventListener('click', updateUrl)
-		
-		let startTimeButton = document.getElementById("startTimeButton");
-		let endTimeButton = document.getElementById("endTimeButton");
-
-		startTimeButton.addEventListener('click', updateUrl);
-		endTimeButton.addEventListener('click', updateUrl);
-		// update url on changing times
-		startTimeButton.addEventListener('change', updateUrl);
-		endTimeButton.addEventListener('change', updateUrl)
-
 		submitButtonForm.addEventListener('click', function(event){
-
-			let startTime = document.getElementById("startTimeButton").value;
-			let endTime = document.getElementById("endTimeButton").value;
-
-			let dHallSelected = false;
-            for(var dh in activeDhalls)
-                if(activeDhalls[dh])
-					dhallSelected = true;
-				
-			if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
-				console.log('attempt to send invalid meal request')
-				document.getElementById('errorBox').innerHTML = "*Please select all fields to make a match request"
-				event.preventDefault();
-
+			updateUrl(event)
 		});
 		// TODO add more listeners so that times cant be backwards
 </script>

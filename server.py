@@ -163,27 +163,14 @@ def matchland():
     else:
         at_dhall = False
 
-    dhall_list = ["Wucox", "RoMa", "Forbes", "CJL", "Whitman"]
     dhall_arr = []
 
-    # multiple dhalls were selected via scheduled match
+    # multiple dhalls can be selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
    
-    if '-' in dhall:
-        print('multiple dhalls')
-        for hall_name in dhall_list:
-            if hall_name not in dhall:
-                dhall_arr.append(False)
-            else:
-                dhall_arr.append(True)
-    else:
-        # one dining hall selected
-        for i in range(len(dhall_list)):
-            if dhall_list[i].lower() == dhall.lower():
-                dhall_arr.append(True)
-            else:
-                dhall_arr.append(False)
-    print(dhall_arr, file = stderr)
+    dhall_arr = [hall_name in dhall.split('-')
+                for hall_name in dhall_list]
+    print('dhall_arr: ', dhall_arr, file=stdout)
 
 
     if start_time == "now":
@@ -260,24 +247,22 @@ def get_requests():
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
     
-    dHall_indexes = {3: 'Wucox', 4: 'Roma', 5: 'Forbes', 6: 'CJL', 7: 'Whitman'}
     req_locations = []
-    
     for req in all_requests:
-        loc = ""
-        for i in range(3,8):
-            print(req)
-            if req[i]:
-                loc += (dHall_indexes[i] + "/")
-                print(dHall_indexes[i])
-        loc = loc[:-1]
+        # get lists of booleans from database
+        dhalls_bools_in_req = req[3:3+len(dhall_list)]
+        # get which dining halls have true values
+        dhalls_in_req = [dhall_list[i] 
+        for i in range(len(dhall_list)) if dhalls_bools_in_req[i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
         req_locations.append(loc)
 
-
-    html = render_template('requests.html', all_requests = all_requests, \
-                    locations = req_locations, length = len(all_requests))
-    print(all_requests, file = stderr)
-    print(req_locations)
+    html = render_template('requests.html', 
+                        all_requests=all_requests,
+                        locations=req_locations)
+    print("allreqs:", all_requests, file=stderr)
+    print("req_locations:", req_locations, file=stderr)
     response = make_response(html)
     return response
 
