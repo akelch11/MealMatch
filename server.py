@@ -256,10 +256,14 @@ def get_matches():
         else:
             all_matches[i][5] = ""
 
-        print(all_matches[0][5])
+
+    if (len(all_matches) == 0):
+        html = render_template('nomatches.html')
+    else:
+        html = render_template('matches.html', all_matches = all_matches)
 
 
-    html = render_template('matches.html', all_matches = all_matches)
+
     response = make_response(html)
     return response
 
@@ -310,16 +314,23 @@ def get_requests():
         req_locations.append(loc)
 
 
-    html = render_template('requests.html', all_requests = all_requests, \
+    if (len(all_requests) == 0):
+        html = render_template('norequests.html')
+    else:
+        html = render_template('requests.html', all_requests = all_requests, \
                     locations = req_locations, length = len(all_requests))
-    print(all_requests, file = stderr)
-    print(req_locations)
+
     response = make_response(html)
     return response
 
 @app.route('/logout', methods=['GET'])
 def logout():
     auth.logout()
+
+
+@app.route('/test404', methods=['GET'])
+def test404(e):
+    return render_template('page404.html')
 
 @app.errorhandler(404)
 def error404(e):

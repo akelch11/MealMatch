@@ -2,7 +2,7 @@
 <html>
 
 <head>
-   <title>MealMatch | Missing Page</title>
+   <title>MealMatch | No Requests</title>
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@600;900&display=swap">
@@ -14,10 +14,9 @@
 
 <body>
    {% include 'header.html' %}
-   <h2>Broken Plate!</h2>
    <div class = "container-fluid">
-       <img class="img_class" src="/static/brokenplate.png">
-       <p> Looks like you've thrown our page for a loop (500 Error). You should probably head back to the <a href="/index">home page</a> instead, and let <a href="/about#developers">one of our developers know.</a></p>
+      <h2 id = "bigMatch" class = "matchesText"> You don't have any active requests! </h2>
+       <p id = "description" class = "matchesText"> This means that you haven't submitted any requests to eat with anyone or that your requests have expired or been cancelled by you! </p>
    </div>
 </body>
 </html>
@@ -28,4 +27,19 @@
     width: 200px;
     height: 200px;
 }
+
+#bigMatch {
+   margin-top: 30px;
+}
+
+.matchesText {
+   margin-top: 10px;
+   text-align: center;
+}
+
+#description {
+   font-size: 20px;
+}
+
+
 </style>
