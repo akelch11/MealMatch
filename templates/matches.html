@@ -22,17 +22,18 @@
          <td><b>Year</b></td>
          <td><b>Major</b></td>
          <td><b>Phone Number</b></td>
+         <td><b>Match Status</b></td>
          <td><b></b></td>
       </tr>
       {% for matches in all_matches %}
       <tr>
-         <td>{{matches[8]}}</td> 
-         <td>{{matches[9]}}</td>
+         <td>{{matches[10]}}</td> 
+         <td>{{matches[11]}}</td>
          <td>{{matches[4]}}</td>
          <td>{{matches[3]}}</td>
+         <td>{{matches[9]}}</td>
          <td>{{matches[10]}}</td>
          <td>{{matches[11]}}</td>
-         <td>{{matches[12]}}</td>
          <td><form method = "POST" action = "/cancelmatch?matchid={{matches[0]}}"><button class = 'btn-sm' style = "background-color: #c55353; color: white;">Cancel Match</button></form></td>
       </tr>
       {% endfor %}

@@ -27,9 +27,9 @@
       <tr>
          <td><b>{{locations[i]}}</b></td>
          <td><b>{% if all_requests[i][2]%}
-                  Dinner
-                {% else %}
                   Lunch
+                {% else %}
+                  Dinner
                 {%endif%}
          </b></td>
          <td><b>{{all_requests[i][0].strftime("%m/%d/%Y")}}</b></td>

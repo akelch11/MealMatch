@@ -214,7 +214,36 @@ def get_matches():
     session_netid = auth.authenticate()
     all_matches = matcher.get_all_matches(session_netid)
 
-    html = render_template('matches.html', all_matches = all_matches)
+    for i in range(len(all_matches)):
+        match = all_matches[i]
+
+        you_accepted = False
+        opponent_accepted = True
+
+        if session_netid == match[1]:
+           you_accepted = match[5]
+           opponent_accepted = match[6] 
+        elif session_netid == match[2]:
+           you_accepted = match[6]
+           opponent_accepted = match[5]
+
+        if you_accepted and opponent_accepted:
+            all_matches[i][5] = "Both Accepted!"
+        elif you_accepted and not opponent_accepted:
+            all_matches[i][5] = "You Accepted"
+        elif not you_accepted and opponent_accepted:
+            all_matches[i][5] = ""
+        else:
+            all_matches[i][5] = ""
+
+
+    if (len(all_matches) == 0):
+        html = render_template('nomatches.html')
+    else:
+        html = render_template('matches.html', all_matches = all_matches)
+
+
+
     response = make_response(html)
     return response
 
@@ -226,10 +255,21 @@ def remove_requests():
     return redirect(url_for('get_requests'))
 
 
+@app.route('/acceptmatch', methods = ['POST'])
+def accept_match():
+    matchid = request.args.get("matchid")
+    phonenum = request.args.get("phonenum")
+
+    matcher.accept_match(auth.authenticate(), matchid, phonenum)
+    return redirect(url_for('get_matches'))
+
+
 @app.route('/cancelmatch', methods = ['POST'])
 def remove_matches():
     matchid = request.args.get("matchid")
-    matcher.remove_match(matchid)
+    phonenum = request.args.get("phonenum")
+
+    matcher.remove_match(auth.authenticate(), matchid, phonenum)
     return redirect(url_for('get_matches'))
 
 
@@ -250,17 +290,26 @@ def get_requests():
         loc = '/'.join(dhalls_in_req)
         req_locations.append(loc)
 
-    html = render_template('requests.html', 
+    if (len(all_requests) == 0):
+        html = render_template('norequests.html')
+    else:
+        html = render_template('requests.html', 
                         all_requests=all_requests,
                         locations=req_locations)
     print("allreqs:", all_requests, file=stderr)
     print("req_locations:", req_locations, file=stderr)
+
     response = make_response(html)
     return response
 
 @app.route('/logout', methods=['GET'])
 def logout():
     auth.logout()
+
+
+@app.route('/test404', methods=['GET'])
+def test404(e):
+    return render_template('page404.html')
 
 @app.errorhandler(404)
 def error404(e):
