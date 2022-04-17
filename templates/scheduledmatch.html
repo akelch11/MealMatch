@@ -239,7 +239,7 @@
 			document.getElementById('errorBox').innerHTML = ""
 			
 			let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
-			let timesInOrder = compareTimeStrings(startTime, endTime) > 0
+			let timesInOrder = compareTimeStrings(startTime, endTime) < 0
 
 			console.log('empty: ' + emptyFields)
 
