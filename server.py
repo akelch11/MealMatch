@@ -114,7 +114,7 @@ def form():
             redirect("/create_account")
     if bio == "":
         tup = (name, dept_code[major],  yeardict[year], phonenum)
-        print(tup)
+        print('bio tuple:', tup, file=stdout)
         bio = ("Hi! My name is %s. I'm a %s major in the %s. "
         "Super excited to grab a meal with you. You can reach me at %s.")\
         % tup
@@ -146,11 +146,11 @@ def ondemand():
 
 @app.route('/matchlanddummy', methods = ['GET'])
 def matchland():
-    print('match making thing went through')
+    print('match has been made', file=stdout)
     meal_type = request.args.get('meal')
-    print('Meal type', meal_type)
+    print('Meal type', meal_type, file=stdout)
     dhall = request.args.get('location')
-    print('DHALL STRING', dhall)
+    print('DHALL STRING:', dhall, file=stdout)
     start_time = request.args.get('start')
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
@@ -158,32 +158,12 @@ def matchland():
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
 
-    if at_dhall == "True":
-        at_dhall = True
-    else:
-        at_dhall = False
-
-    dhall_list = ["Wucox", "RoMa", "Forbes", "CJL", "Whitman"]
-    dhall_arr = []
-
-    # multiple dhalls were selected via scheduled match
+    # multiple dhalls can be selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
    
-    if '-' in dhall:
-        print('multiple dhalls')
-        for hall_name in dhall_list:
-            if hall_name not in dhall:
-                dhall_arr.append(False)
-            else:
-                dhall_arr.append(True)
-    else:
-        # one dining hall selected
-        for i in range(len(dhall_list)):
-            if dhall_list[i].lower() == dhall.lower():
-                dhall_arr.append(True)
-            else:
-                dhall_arr.append(False)
-    print(dhall_arr, file = stderr)
+    dhall_arr = [hall_name in dhall.split('-')
+                for hall_name in dhall_list]
+    print('dhall_arr: ', dhall_arr, file=stdout)
 
 
     if start_time == "now":
@@ -270,7 +250,6 @@ def get_matches():
 
 @app.route('/removerequest', methods = ['POST'])
 def remove_requests():
-
     requestid = request.args.get("requestid")
     matcher.remove_request(requestid)
     return redirect(url_for('get_requests'))
@@ -300,25 +279,25 @@ def get_requests():
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
     
-    dHall_indexes = {3: 'Wucox', 4: 'Roma', 5: 'Forbes', 6: 'CJL', 7: 'Whitman'}
     req_locations = []
-    
     for req in all_requests:
-        loc = ""
-        for i in range(3,8):
-            print(req)
-            if req[i]:
-                loc += (dHall_indexes[i] + "/")
-                print(dHall_indexes[i])
-        loc = loc[:-1]
+        # get lists of booleans from database
+        dhalls_bools_in_req = req[3:3+len(dhall_list)]
+        # get which dining halls have true values
+        dhalls_in_req = [dhall_list[i] 
+        for i in range(len(dhall_list)) if dhalls_bools_in_req[i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
         req_locations.append(loc)
-
 
     if (len(all_requests) == 0):
         html = render_template('norequests.html')
     else:
-        html = render_template('requests.html', all_requests = all_requests, \
-                    locations = req_locations, length = len(all_requests))
+        html = render_template('requests.html', 
+                        all_requests=all_requests,
+                        locations=req_locations)
+    print("allreqs:", all_requests, file=stderr)
+    print("req_locations:", req_locations, file=stderr)
 
     response = make_response(html)
     return response

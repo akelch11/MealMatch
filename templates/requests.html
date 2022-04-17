@@ -23,7 +23,7 @@
          <td><b>End Time</b></td>
          <td></td>
       </tr>
-      {% for i in range(length) %}
+      {% for i in range(all_requests|length) %}
       <tr>
          <td><b>{{locations[i]}}</b></td>
          <td><b>{% if all_requests[i][2]%}
