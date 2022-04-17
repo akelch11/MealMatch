@@ -211,6 +211,31 @@ def get_matches():
     session_netid = auth.authenticate()
     all_matches = matcher.get_all_matches(session_netid)
 
+    for i in range(len(all_matches)):
+        match = all_matches[i]
+
+        you_accepted = False
+        opponent_accepted = True
+
+        if session_netid == match[1]:
+           you_accepted = match[5]
+           opponent_accepted = match[6] 
+        elif session_netid == match[2]:
+           you_accepted = match[6]
+           opponent_accepted = match[5]
+
+        if you_accepted and opponent_accepted:
+            all_matches[i][5] = "Both Accepted!"
+        elif you_accepted and not opponent_accepted:
+            all_matches[i][5] = "You Accepted"
+        elif not you_accepted and opponent_accepted:
+            all_matches[i][5] = ""
+        else:
+            all_matches[i][5] = ""
+
+        print(all_matches[0][5])
+
+
     html = render_template('matches.html', all_matches = all_matches)
     response = make_response(html)
     return response
@@ -224,10 +249,21 @@ def remove_requests():
     return redirect(url_for('get_requests'))
 
 
+@app.route('/acceptmatch', methods = ['POST'])
+def accept_match():
+    matchid = request.args.get("matchid")
+    phonenum = request.args.get("phonenum")
+
+    matcher.accept_match(auth.authenticate(), matchid, phonenum)
+    return redirect(url_for('get_matches'))
+
+
 @app.route('/cancelmatch', methods = ['POST'])
 def remove_matches():
     matchid = request.args.get("matchid")
-    matcher.remove_match(matchid)
+    phonenum = request.args.get("phonenum")
+
+    matcher.remove_match(matchid, phonenum)
     return redirect(url_for('get_matches'))
 
 
@@ -236,11 +272,12 @@ def get_requests():
 
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
+        
 
     html = render_template('requests.html', all_requests = all_requests)
     response = make_response(html)
     return response
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
-# app.run(host='localhost', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)

@@ -108,16 +108,17 @@ def remove_request(requestid):
     conn.commit()
     conn.close()
 
-def remove_match(matchid):
+def remove_match(matchid, phonenum):
     sql = """ UPDATE matches
                 SET active = %s
                 WHERE match_id = %s"""
     conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
     cur = conn.cursor()
     cur.execute(sql, (False, matchid))
-
     conn.commit()
     conn.close()
+
+    notifications.cancel_request_message(phonenum)
 
 
 
@@ -155,6 +156,8 @@ def create_matches_table():
             SECOND_NETID TEXT NOT NULL,
             MATCH_TIME TIMESTAMP NOT NULL,
             DINING_HALL TEXT NOT NULL,
+            FIRST_ACCEPTED BOOLEAN NOT NULL,
+            SECOND_ACCEPTED BOOLEAN NOT NULL,
             START_WINDOW TIMESTAMP NOT NULL,
             END_WINDOW TIMESTAMP NOT NULL,
             ACTIVE BOOLEAN NOT NULL);'''
@@ -241,10 +244,10 @@ def execute_match_query(parse_requests, dhall):
             # Current time for match made
             now = datetime.now()
 
-            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, ACTIVE) "
-            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE) "
+            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, True)
+            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True)
 
             cur.execute(sql, val)
 
@@ -252,8 +255,10 @@ def execute_match_query(parse_requests, dhall):
             modify_request(first[0], match_id)
             modify_request(second[0], match_id)
 
-            notifications.send_message(first[4], second[5])
-            notifications.send_message(second[4], first[5])
+            message = "You matched with {} on MealMatch! Check the app for more information on your match."
+
+            notifications.send_message(message.format(first[4]), second[5])
+            notifications.send_message(message.format(second[4]), first[5])
 
             # cache the row numbers being matched
             matched.append(i)
@@ -303,9 +308,41 @@ def get_all_matches(netid):
         all_matches.append(row_arr)
 
 
-
     cur.close()
     return all_matches
+
+
+
+def accept_match(netid, matchid, phonenum):
+
+    print("AACEPT MATCH")
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    query="""SELECT match_id, first_netid, second_netid, first_accepted, second_accepted FROM matches
+            WHERE match_id = %s"""
+
+    cur.execute(query, [matchid])
+    row=cur.fetchone()
+
+    netid_type = ""
+
+    if row[1] == netid:
+        #We know that the user is the first_netid
+        netid_type = 'FIRST_ACCEPTED'
+
+
+    elif row[2] == netid:
+        # We know that the user if the second_netid
+        netid_type = 'SECOND_ACCEPTED'
+
+    query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
+
+
+    cur.execute(query, [matchid])
+    conn.commit()
+    conn.close()
+
+
 
 def get_all_requests(netid):
     all_requests = []
