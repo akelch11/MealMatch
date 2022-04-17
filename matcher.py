@@ -108,7 +108,7 @@ def remove_request(requestid):
     conn.commit()
     conn.close()
 
-def remove_match(matchid, phonenum):
+def remove_match(netid, matchid, phonenum):
     sql = """ UPDATE matches
                 SET active = %s
                 WHERE match_id = %s"""
@@ -118,7 +118,9 @@ def remove_match(matchid, phonenum):
     conn.commit()
     conn.close()
 
-    notifications.cancel_request_message(phonenum)
+    message = "{} cancelled your match. Check the MealMatch app for more information".format(get_name_from_netid(netid))
+
+    notifications.send_message(message, phonenum)
 
 
 
@@ -311,6 +313,15 @@ def get_all_matches(netid):
     cur.close()
     return all_matches
 
+def get_name_from_netid(netid):
+    conn = psycopg2.connect(database="d4p66i6pnk5690", user = "uvqmavpcfqtovz", password = "e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2", host = "ec2-44-194-167-63.compute-1.amazonaws.com", port = "5432")
+    cur = conn.cursor()
+    query="""SELECT name FROM users WHERE netid = 'avaidya'"""
+    cur.execute(query, [netid])
+    row = cur.fetchone()
+    conn.close()
+
+    return row[0]
 
 
 def accept_match(netid, matchid, phonenum):
@@ -329,11 +340,27 @@ def accept_match(netid, matchid, phonenum):
     if row[1] == netid:
         #We know that the user is the first_netid
         netid_type = 'FIRST_ACCEPTED'
+        if not row[4]:
+            #If the other person has accepted, notify the other person that theres a match
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(get_name_from_netid(netid))
+            notifications.send_message(message, phonenum)
+        else:
+            #If the other person has not accepted, notify the other person that match is confirmed
+            message = "{} also accepted the match! Have fun eating!".format(et_name_from_netid(netid))
+            notifications.send_message(message, phonenum)
 
-
+            
     elif row[2] == netid:
         # We know that the user if the second_netid
         netid_type = 'SECOND_ACCEPTED'
+        if not row[3]:
+            #If the other person has accepted, notify the other person that theres a match
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(netid)
+            notifications.send_message(message, phonenum)
+        else:
+            #If the other person has not accepted, notify the other person that match is confirmed
+            message = "{} also accepted the match! Have fun eating!".format(netid)
+            notifications.send_message(message, phonenum)
 
     query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
 

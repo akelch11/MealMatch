@@ -286,7 +286,7 @@ def remove_matches():
     matchid = request.args.get("matchid")
     phonenum = request.args.get("phonenum")
 
-    matcher.remove_match(matchid, phonenum)
+    matcher.remove_match(auth.authenticate(), matchid, phonenum)
     return redirect(url_for('get_matches'))
 
 
