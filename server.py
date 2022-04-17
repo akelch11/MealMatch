@@ -1,12 +1,12 @@
 ##
-from sys import stdout
+from sys import stdout, stderr
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
 import profile
 import matcher
 import auth
 import keys
-from big_lists import majors, dhall_list, dept_code
+from big_lists import majors, dept_code, dhall_list
 from dateutil import parser
 from datetime import date, datetime
 import os
@@ -128,14 +128,14 @@ def form():
     # response = make_response(html)
     # return response
 
-########
+
 
 @app.route('/forcematches', methods=['GET'])
 def force_matches():
     matcher.match_requests()
     return redirect("/matches")
 
-#######
+
 
 @app.route('/ondemand', methods=['GET'])
 def ondemand():
@@ -146,8 +146,11 @@ def ondemand():
 
 @app.route('/matchlanddummy', methods = ['GET'])
 def matchland():
+    print('match making thing went through')
     meal_type = request.args.get('meal')
+    print('Meal type', meal_type)
     dhall = request.args.get('location')
+    print('DHALL STRING', dhall)
     start_time = request.args.get('start')
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
@@ -155,12 +158,32 @@ def matchland():
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
 
+    if at_dhall == "True":
+        at_dhall = True
+    else:
+        at_dhall = False
+
+    dhall_list = ["Wucox", "RoMa", "Forbes", "CJL", "Whitman"]
+    dhall_arr = []
 
     # multiple dhalls were selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
-    dhall_arr = [hall_name in dhall.split('-')
-                for hall_name in dhall_list]
-    print('dhall_arr:', dhall_arr, file=stdout)
+   
+    if '-' in dhall:
+        print('multiple dhalls')
+        for hall_name in dhall_list:
+            if hall_name not in dhall:
+                dhall_arr.append(False)
+            else:
+                dhall_arr.append(True)
+    else:
+        # one dining hall selected
+        for i in range(len(dhall_list)):
+            if dhall_list[i].lower() == dhall.lower():
+                dhall_arr.append(True)
+            else:
+                dhall_arr.append(False)
+    print(dhall_arr, file = stderr)
 
 
     if start_time == "now":
@@ -236,10 +259,25 @@ def get_requests():
 
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
+    
+    dHall_indexes = {3: 'Wucox', 4: 'Roma', 5: 'Forbes', 6: 'CJL', 7: 'Whitman'}
+    req_locations = []
+    
+    for req in all_requests:
+        loc = ""
+        for i in range(3,8):
+            print(req)
+            if req[i]:
+                loc += (dHall_indexes[i] + "/")
+                print(dHall_indexes[i])
+        loc = loc[:-1]
+        req_locations.append(loc)
 
-    html = render_template('requests.html', 
-                            all_requests=all_requests,
-                            dhalls=dhall_list)
+
+    html = render_template('requests.html', all_requests = all_requests, \
+                    locations = req_locations, length = len(all_requests))
+    print(all_requests, file = stderr)
+    print(req_locations)
     response = make_response(html)
     return response
 

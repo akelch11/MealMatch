@@ -48,9 +48,13 @@
 	</div>
 
 	<div class = 'container row'>
-		<a id = "submitButtonForm" href = "/schedule">
-			<button class = 'btn-lg submitButton'>Find me a match!</button>
+		<a id = "submitButtonForm" href = "/index">
+			<button class = 'btn-lg submitButton'> Find me a match!</button>
 		</a>
+	</div>
+
+	<div class="container row">
+		<p id = "errorBox" style = "color: red"></p>
 	</div>
 </center>
    
@@ -153,21 +157,24 @@
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
-			if(endTime === "" || startTime === "" || activeMeal === "")
-				return;
 
 			url += "?meal=" + activeMeal;
 			url += "&location=";
 
-            let selected = false;
+            let dHallSelected = false;
 			let dHallOptions = "";
             for(var dh in activeDhalls)
                 if(activeDhalls[dh]){
                     dHallOptions += (dh + "-");
-					selected = true;
+					dhallSelected = true;
 				}
-            if( !selected)
+
+            if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+			{	console.log('invalid match request')
 				return;
+			}
+
+			// only update url if time, meal type, and location are all specified
             url+= dHallOptions.slice(0,-1);
 			url += "&start=" + startTime;
 			url += "&end=" + endTime;
@@ -191,6 +198,23 @@
 		// update url on changing times
 		startTimeButton.addEventListener('change', updateUrl);
 		endTimeButton.addEventListener('change', updateUrl)
+
+		submitButtonForm.addEventListener('click', function(event){
+
+			let startTime = document.getElementById("startTimeButton").value;
+			let endTime = document.getElementById("endTimeButton").value;
+
+			let dHallSelected = false;
+            for(var dh in activeDhalls)
+                if(activeDhalls[dh])
+					dhallSelected = true;
+				
+			if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+				console.log('attempt to send invalid meal request')
+				document.getElementById('errorBox').innerHTML = "*Please select all fields to make a match request"
+				event.preventDefault();
+
+		});
 		// TODO add more listeners so that times cant be backwards
 </script>
 
