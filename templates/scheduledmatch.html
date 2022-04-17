@@ -142,6 +142,8 @@
                     activeDhalls[dhall] = false;
                 }
 
+				console.log(activeDhalls)
+
 			});
 		}
 
@@ -183,6 +185,18 @@
 			submitButtonForm.setAttribute('href', url);	
 		}
 
+		// compare times in string format HH:MM
+		function compareTimeStrings(t1, t2){
+			let hour1 = Number(t1.substring(0,2));
+			let hour2 = Number(t2.substring(0,2));
+			let min1 = Number(t1.substring(3));
+			let min2 = Number(t2.substring(3));
+
+			if(hour1 != hour2) return hour1 - hour2;
+			else
+				return min1 - min2;
+		};
+
 
 		lunchButton.addEventListener('click', updateUrl);
 		dinnerButton.addEventListener('click', updateUrl);
@@ -199,34 +213,42 @@
 		startTimeButton.addEventListener('change', updateUrl);
 		endTimeButton.addEventListener('change', updateUrl)
 
+		// validate request fields, prevent submission if invalid
 		submitButtonForm.addEventListener('click', function(event){
 
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
+			let timesInOrder = (compareTimeStrings(startTime, endTime) < 0)
 
 			console.log(startTime + " " + endTime);
 
-			let dHallSelected = false;
+			// determine if any dhall buttons have been pressed 'ON'
+			let selected = false;
             for(var dh in activeDhalls)
                 if(activeDhalls[dh])
-					dhallSelected = true;
+					selected = true;
 
-			let timesInOrder
+			console.log('dhallselected' + selected)
+			
 			
 			document.getElementById('errorBox').innerHTML = ""
 
-			if(endTime === "" || startTime === "" || activeMeal === "" || !dhallSelected)
+			let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
+			console.log('empty: ' + emptyFields)
+			if(emptyFields || !timesInOrder)
 			{
 				console.log('attempt to send invalid meal request')
+				if(emptyFields)
+					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
+				if(!timesInOrder)
+					document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
 				
-				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
 				// prevents submission
 				event.preventDefault();
 			}
-
-
-
 		});
+
+
 		// TODO add more listeners so that times cant be backwards
 </script>
 
