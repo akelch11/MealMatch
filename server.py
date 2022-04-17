@@ -1,16 +1,14 @@
 ##
-from sys import stderr
-from flask import Flask, request, make_response, redirect, url_for, session
-from flask import render_template
+from sys import stdout, stderr
+from flask import Flask, request, session
+from flask import render_template, make_response, redirect, url_for
 import profile
 import matcher
 import auth
 import keys
-from big_lists import majors, dhall_list, dept_code
+from big_lists import majors, dept_code, dhall_list
 from dateutil import parser
 from datetime import date, datetime
-import random
-import string
 import os
 
 app = Flask(__name__)
@@ -47,22 +45,29 @@ def homescreen():
     if not session.get('username'):
         return redirect(url_for('landing_page')) # go to landing page
     if not profile.exists(session.get('username')):
-        return redirect('/edit_account')
+        return redirect('/create_account')
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
 
+@app.route('/about', methods=['GET'])
+def about_method():
+    html = render_template('about.html')
+    response = make_response(html)
+    return response
 # get what the senior class's year is right now 
 def senior_year():
     td = date.today()
     return td.year if td.month<8 else td.year+1
     
+##########
+
 #establish the route for creating/editing your account
 @app.route('/edit_account', methods=['GET'])
+@app.route('/create_account', methods=['GET'])
 def update_form():
     username = auth.authenticate()
 
-    # username = session.get('username')
     profile_dict = profile.get_profile(username)
 
 
@@ -94,10 +99,24 @@ def form():
     major = request.args.get('major')
     bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum').strip()
+    yeardict = {}
+    for i in range(4):
+        y = str(senior_year()+i)
+        yeardict[y] = 'class of '+str(y)
+    if year == "Grad College":
+        y=str(senior_year()-1)
+        yeardict[y] = year
+        year = y
+    if name == "":
+        if profile.exists(netid):
+            redirect("/edit_account")
+        else:
+            redirect("/create_account")
     if bio == "":
-        tup = (name, dept_code[major], year, phonenum)
-        bio = "Hi! My name is %s. I'm a %s major in the class of %s. "+\
-        "Super excited to grab a meal with you. You can reach me at %s."\
+        tup = (name, dept_code[major],  yeardict[year], phonenum)
+        print(tup)
+        bio = ("Hi! My name is %s. I'm a %s major in the %s. "
+        "Super excited to grab a meal with you. You can reach me at %s.")\
         % tup
     if profile.exists(netid):
         profile.edit_profile(netid, name, int(year), major, phonenum, bio)
@@ -110,6 +129,14 @@ def form():
     # return response
 
 
+
+@app.route('/forcematches', methods=['GET'])
+def force_matches():
+    matcher.match_requests()
+    return redirect("/matches")
+
+
+
 @app.route('/ondemand', methods=['GET'])
 def ondemand():
     html = render_template('ondemandmatch.html',
@@ -117,35 +144,33 @@ def ondemand():
     response = make_response(html)
     return response
 
-@app.route('/forcematches', methods=['GET'])
-def force_matches():
-    matcher.match_requests()
-    return redirect("/matches")
-
 @app.route('/matchlanddummy', methods = ['GET'])
 def matchland():
+    print('match making thing went through')
     meal_type = request.args.get('meal')
+    print('Meal type', meal_type)
     dhall = request.args.get('location')
+    print('DHALL STRING', dhall)
     start_time = request.args.get('start')
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
 
-    if meal_type == "lunch":
-        meal_type = True
-    else:
-        meal_type = False
+    meal_type = (meal_type == "lunch")
+    at_dhall = (at_dhall == "True")
 
     if at_dhall == "True":
         at_dhall = True
     else:
         at_dhall = False
 
+    dhall_list = ["Wucox", "RoMa", "Forbes", "CJL", "Whitman"]
     dhall_arr = []
 
     # multiple dhalls were selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
+   
     if '-' in dhall:
-        # 
+        print('multiple dhalls')
         for hall_name in dhall_list:
             if hall_name not in dhall:
                 dhall_arr.append(False)
@@ -158,8 +183,8 @@ def matchland():
                 dhall_arr.append(True)
             else:
                 dhall_arr.append(False)
+    print(dhall_arr, file = stderr)
 
-    # netid = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
 
     if start_time == "now":
         start_time_datetime = datetime.now()
@@ -170,7 +195,6 @@ def matchland():
 
     matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     return redirect("/matches")
-
 
 
 @app.route('/schedulematchlanddummy', methods = ['GET'])
@@ -185,10 +209,12 @@ def scheduleland():
     
     response = make_response(html)
     return response
+######
 
 @app.route('/schedule', methods = ['GET'])
 def schedulematch():
-     html = render_template('scheduledmatch.html')
+     html = render_template('scheduledmatch.html',
+                            dhalls=dhall_list)
      response = make_response(html)
      return response
     
@@ -201,9 +227,6 @@ def match():
     response = make_response(html)
     return response
 
-@app.route('/logout', methods=['GET'])
-def logout():
-    auth.logout()
 
 @app.route('/matches', methods = ['GET'])
 def get_matches():
@@ -272,11 +295,40 @@ def get_requests():
 
     session_netid = auth.authenticate()
     all_requests = matcher.get_all_requests(session_netid)
-        
+    
+    dHall_indexes = {3: 'Wucox', 4: 'Roma', 5: 'Forbes', 6: 'CJL', 7: 'Whitman'}
+    req_locations = []
+    
+    for req in all_requests:
+        loc = ""
+        for i in range(3,8):
+            print(req)
+            if req[i]:
+                loc += (dHall_indexes[i] + "/")
+                print(dHall_indexes[i])
+        loc = loc[:-1]
+        req_locations.append(loc)
 
-    html = render_template('requests.html', all_requests = all_requests)
+
+    html = render_template('requests.html', all_requests = all_requests, \
+                    locations = req_locations, length = len(all_requests))
+    print(all_requests, file = stderr)
+    print(req_locations)
     response = make_response(html)
     return response
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    auth.logout()
+
+@app.errorhandler(404)
+def error404(e):
+    return render_template('page404.html'), 404
+
+@app.errorhandler(500)
+def error500(e):
+    return render_template('page500.html'), 500
+
 
 port = int(os.environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
