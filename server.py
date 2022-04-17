@@ -114,7 +114,7 @@ def form():
             redirect("/create_account")
     if bio == "":
         tup = (name, dept_code[major],  yeardict[year], phonenum)
-        print(tup)
+        print('bio tuple:', tup, file=stdout)
         bio = ("Hi! My name is %s. I'm a %s major in the %s. "
         "Super excited to grab a meal with you. You can reach me at %s.")\
         % tup
@@ -146,24 +146,17 @@ def ondemand():
 
 @app.route('/matchlanddummy', methods = ['GET'])
 def matchland():
-    print('match making thing went through')
+    print('match has been made', file=stdout)
     meal_type = request.args.get('meal')
-    print('Meal type', meal_type)
+    print('Meal type', meal_type, file=stdout)
     dhall = request.args.get('location')
-    print('DHALL STRING', dhall)
+    print('DHALL STRING:', dhall, file=stdout)
     start_time = request.args.get('start')
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
 
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
-
-    if at_dhall == "True":
-        at_dhall = True
-    else:
-        at_dhall = False
-
-    dhall_arr = []
 
     # multiple dhalls can be selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
@@ -228,7 +221,6 @@ def get_matches():
 
 @app.route('/removerequest', methods = ['POST'])
 def remove_requests():
-
     requestid = request.args.get("requestid")
     matcher.remove_request(requestid)
     return redirect(url_for('get_requests'))
