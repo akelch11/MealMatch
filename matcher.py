@@ -1,6 +1,6 @@
 import random
 import string
-from sys import stdout
+from sys import stdout, stderr
 import notifications
 from datetime import datetime
 from dateutil import parser
@@ -93,7 +93,9 @@ def remove_match(netid, matchid, phonenum):
     cur.execute(sql, (False, matchid))
     close_connection(cur, conn)
 
-    message = "{} cancelled your match. Check the MealMatch app for more information".format(get_name_from_netid(netid))
+    message = "{} cancelled your match. Check "
+    "the MealMatch app for more information"\
+    .format(get_name_from_netid(netid))
     notifications.send_message(message, phonenum)
 
 
@@ -120,11 +122,11 @@ def match_requests():
                                     ORDER BY BEGINTIME ASC
                                     """.format(dhall)
 
-        execute_match_query(parse_requests_lunch, dhall)
-        execute_match_query(parse_requests_din, dhall)
+        execute_match_query(parse_requests_lunch, dhall, isLunch= True)
+        execute_match_query(parse_requests_din, dhall, isLunch= False)
 
 
-def execute_match_query(parse_requests, dhall):
+def execute_match_query(parse_requests, dhall, isLunch):
     # Number of characters in id
     N = 16 
     cur, conn = new_connection()
@@ -145,8 +147,8 @@ def execute_match_query(parse_requests, dhall):
             second = rows[j] # Second request
 
             print("Test!")
-            print(first[1])
-            print(second[1])
+            print(first[1], file = stderr)
+            print(second[1], file = stderr)
 
             overlap = find_overlap(first[2], first[3], second[2], second[3])
             
@@ -172,10 +174,10 @@ def execute_match_query(parse_requests, dhall):
             # Current time for match made
             now = datetime.now()
 
-            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE) "
-            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
+            sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True)
+            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, isLunch)
 
             cur.execute(sql, val)
 
@@ -306,7 +308,7 @@ def accept_match(netid, matchid, phonenum):
         netid_type = 'SECOND_ACCEPTED'
         if not row[3]:
             #If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(get_name_from_netid(netid))
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(netid)
         else:
             #If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(netid)
