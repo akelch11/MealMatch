@@ -20,8 +20,8 @@
       <div class= "card">
          <div class = 'row align-content-center'>
             <div class ="card-body col-sm-9">
-               <strong class = "cardText"><b>{{matches[11]}}</b></strong><br>
-               <strong class = "cardText" >{{'Meal @ ' + matches[4] + ' from ' + (matches[7].strftime('%-I:%M%p')+ " - " + matches[8].strftime('%-I:%M%p') ) }}</strong>
+               <strong><b>{{matches[11]}}</b></strong><br>
+               <strong>{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " + matches[6].strftime('%-I:%M%p') ) }}</strong>
                <br>
                <strong class = "cardText">{{matches[12]}}{{", " + matches[13]}}</strong><br>
                <strong class = "cardText">Phone #: {{matches[14]}}</strong>
@@ -30,14 +30,14 @@
                
             <center>
                <div>
-                  {% if matches[5] == "Both Accepted!"%} 
-                     <strong style = "color: #4b9e4b;">Status: Match Made!</strong>
+                  {% if matches[7] != "Both Accepted!" %} 
+                     <strong>Status: Match Pending</strong>
                   {% else %}
                      <strong>Status: Match Pending</strong>
                   {%endif%}
                </div>
-               {% if matches[5] != '': %}
-               <a id = "matchStatus">{{matches[5]}}</a>
+               {% if matches[7] != '': %}
+               <a id = "matchStatus">{{matches[7]}}</a>
                {% else: %}
                <form id = "matchButton" method = "POST" action = "/acceptmatch?matchid={{matches[0]}}&phonenum={{matches[14]}}">
                   <button class = 'btn-sm' style = "background-color: #4b9e4b; color: white; border: 0cm">Accept Match
