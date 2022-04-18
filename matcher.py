@@ -92,9 +92,7 @@ def remove_match(netid, matchid, phonenum):
     cur.execute(sql, (False, matchid))
     close_connection(cur, conn)
 
-    message = "{} cancelled your match. Check "
-    "the MealMatch app for more information"\
-    .format(get_name_from_netid(netid))
+    message = "{} cancelled your match. Check the MealMatch app for more information".format(get_name_from_netid(netid))
     notifications.send_message(message, phonenum)
 
 
@@ -273,7 +271,7 @@ def accept_match(netid, matchid, phonenum):
         netid_type = 'SECOND_ACCEPTED'
         if not row[3]:
             #If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(netid)
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(get_name_from_netid(netid))
         else:
             #If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(netid)
