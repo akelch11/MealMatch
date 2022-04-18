@@ -25,8 +25,6 @@
 	</div> -->
 
 <div id = 'hallType' class = "container">
-
-	
 	<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
 		I'm currently at:
 		{% for dhall in dhalls %}
@@ -144,7 +142,7 @@
 		function updateUrl() {
 			console.log('called updateurl')
 			
-			let url = "/matchlanddummy"
+			let url = "/submitrequest"
 			let endTime = document.getElementById("endTimeButton").value;
 			if(activeDhall === "" || endTime === "")
 				return;

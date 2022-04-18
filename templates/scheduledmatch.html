@@ -54,7 +54,9 @@
 	</div>
 
 	<div class="container row" id = "errorBox" style = "color: red">
-
+		{% if error != '': %}
+		<p>*Please ensure that you do not submit multiple requests for the same meal period.</p><br>
+		{% endif %}
 	</div>
 </center>
    
@@ -94,8 +96,6 @@
 			// startTimeEL.setAttribute('max', smthng);
 		}
 	}
-	
-
 	
 		let lunchButton = document.getElementById("lunchButton");
 		let dinnerButton = document.getElementById("dinnerButton");
@@ -148,13 +148,12 @@
 
 			});
 		}
-		//
 
 		let submitButtonForm = document.getElementById("submitButtonForm");
 		
 		// update url to contain proper match request information
 		function updateUrl() {
-			let url = "/matchlanddummy"
+			let url = "/submitrequest"
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
@@ -221,24 +220,32 @@
             for(var dh in activeDhalls)
                 if(activeDhalls[dh])
 					selected = true;
-			
+
+			console.log('dHallselected' + selected)
+
+			// check if 
 			let validMealTimes = validateTimes(startTime, endTime, activeMeal);
-			let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
-					
-			console.log('dHallSelected' + selected)
+
 			console.log('valid mealtimes ' + validMealTimes)
 			console.log('lunch time? : ' + isLunchTime())
 			console.log('dinner time? : ' + isDinnerTime())
+			
+
+			
+			document.getElementById('errorBox').innerHTML = ""
+			
+			let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
+			let timesInOrder = compareTimeStrings(startTime, endTime) < 0
+
 			console.log('empty: ' + emptyFields)
 
 			// takeout validMealTimes to remove lunch/dinner time validation
-			document.getElementById('errorBox').innerHTML = ""
-			if(emptyFields || !validMealTimes)
+			if(emptyFields || !timesInOrder || !validMealTimes)
 			{
 				console.log('attempt to send invalid meal request')
 				if(emptyFields)
 					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-				if(!validMealTimes)
+				if(!timesInOrder || !validMealTimes)
 					document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
 				
 				// prevents submission
@@ -252,18 +259,30 @@
 			if(t1 === "" || t2 === "" || meal === "") return false;
 			else 
 			{
-				let dinner_bool = (compareTimeStrings("17:00", t1) <= 0) && 
-								  (compareTimeStrings(t1, t2) < 0) && 
-								  (compareTimeStrings(t2, "20:00") <= 0) && 
-								  meal === "dinner";
-				let lunch_bool =  (compareTimeStrings("11:30", t1) <= 0) &&
-								  (compareTimeStrings(t1, t2) < 0) && 
-								  (compareTimeStrings(t2, "14:00") <= 0) &&
-								  meal === 'lunch';
 
-				return lunch_bool || dinner_bool
+				let hour1 = Number(t1.substring(0,2));
+				let hour2 = Number(t2.substring(0,2));
+				let min1 = Number(t1.substring(3));
+				let min2 = Number(t2.substring(3));
+
+				if(isDinnerTime())
+				{
+					return (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
+							&& (compareTimeStrings(t2, "17:00") >= 0) && (compareTimeStrings(t2, "20:00") <= 0)
+							&& meal === "dinner";
+				}
+				else if(isLunchTime())
+				{
+					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
+							&& (compareTimeStrings(t2, "11:30") >= 0) && (compareTimeStrings(t2, "14:00") <= 0)
+							&& meal === 'lunch';
+				}
+				else
+					return false;
+				
 			}
 		}
+
 
 		// TODO add more listeners so that times cant be backwards
 </script>

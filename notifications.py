@@ -1,5 +1,6 @@
 from os import environ
 from twilio.rest import Client
+import vobject
 from profile import get_profile
 
 def generate_virtual_card(pdict):
