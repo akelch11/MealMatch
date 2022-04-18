@@ -267,7 +267,7 @@ def get_past_matches(netid):
         match_info['name'] = get_name_from_netid(other_netid)
         
         parsed_day = match[2]
-        match_info['day']  = parsed_day
+        match_info['day'] = parsed_day
         if parsed_day.hour<15:
             match_info['meal']  = 'Lunch'
         else:
