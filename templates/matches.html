@@ -23,7 +23,7 @@
          <div class = 'row align-content-center'>
             <div class ="card-body col-sm-9">
                <strong><b>{{matches[11]}}</b></strong><br>
-               <strong>{{'Meal @ ' + matches[4] + ' from ' + (matches[7].strftime('%-I:%M%p')+ " - " + matches[8].strftime('%-I:%M%p') ) }}</strong>
+               <strong>{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " + matches[6].strftime('%-I:%M%p') ) }}</strong>
                <br>
                <strong>{{matches[12]}}{{", " + matches[13]}}</strong><br>
                <strong>Phone #: {{matches[14]}}</strong>
@@ -32,14 +32,14 @@
                
             <center>
                <div>
-                  {% if matches[5] != "" and matches[5] == "You Accepted" %} 
+                  {% if matches[7] != "Both Accepted!" %} 
                      <strong>Status: Match Pending</strong>
                   {% else %}
                   <strong style = "color: #4b9e4b;">Status: Match Made!</strong>
                   {%endif%}
                </div>
-               {% if matches[5] != '': %}
-               <a id = "matchStatus">{{matches[5]}}</a>
+               {% if matches[7] != '': %}
+               <a id = "matchStatus">{{matches[7]}}</a>
                {% else: %}
                <form id = "matchButton" method = "POST" action = "/acceptmatch?matchid={{matches[0]}}&phonenum={{matches[14]}}"><button class = 'btn-sm' style = "background-color: #4b9e4b; color: white; border: 0cm">Accept Match</button></form>
                {% endif %}

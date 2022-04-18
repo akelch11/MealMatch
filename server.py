@@ -217,22 +217,22 @@ def get_matches():
 
         you_accepted = False
         opponent_accepted = True
-
+        
         if session_netid == match[1]:
-           you_accepted = match[5]
-           opponent_accepted = match[6] 
+           you_accepted = match[7]
+           opponent_accepted = match[8] 
         elif session_netid == match[2]:
-           you_accepted = match[6]
-           opponent_accepted = match[5]
+           you_accepted = match[8]
+           opponent_accepted = match[7]
 
         if you_accepted and opponent_accepted:
-            all_matches[i][5] = "Both Accepted!"
+            all_matches[i][7] = "Both Accepted!"
         elif you_accepted and not opponent_accepted:
-            all_matches[i][5] = "You Accepted"
+            all_matches[i][7] = "You Accepted"
         elif not you_accepted and opponent_accepted:
-            all_matches[i][5] = ""
+            all_matches[i][7] = ""
         else:
-            all_matches[i][5] = ""
+            all_matches[i][7] = ""
 
 
     if (len(all_matches) == 0):
