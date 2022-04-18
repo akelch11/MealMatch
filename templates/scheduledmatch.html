@@ -54,7 +54,9 @@
 	</div>
 
 	<div class="container row" id = "errorBox" style = "color: red">
-
+		{% if error != '': %}
+		<p>*Please ensure that you do not submit multiple requests for the same meal period.</p><br>
+		{% endif %}
 	</div>
 </center>
    
@@ -94,8 +96,6 @@
 			// startTimeEL.setAttribute('max', smthng);
 		}
 	}
-	
-
 	
 		let lunchButton = document.getElementById("lunchButton");
 		let dinnerButton = document.getElementById("dinnerButton");
@@ -149,15 +149,11 @@
 			});
 		}
 
-
-
-		//
-
 		let submitButtonForm = document.getElementById("submitButtonForm");
 		
 		// update url to contain proper match request information
 		function updateUrl() {
-			let url = "/matchlanddummy"
+			let url = "/submitrequest"
 			let startTime = document.getElementById("startTimeButton").value;
 			let endTime = document.getElementById("endTimeButton").value;
 
@@ -269,15 +265,17 @@
 				let min1 = Number(t1.substring(3));
 				let min2 = Number(t2.substring(3));
 
-				if(meal === "dinner")
+				if(meal == "dinner")
 				{
 					return (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
-							&& (compareTimeStrings(t2, "17:00") >= 0) && (compareTimeStrings(t2, "20:00") <= 0);
+							&& (compareTimeStrings(t2, "17:00") >= 0) && (compareTimeStrings(t2, "20:00") <= 0)
+							&& meal === "dinner";
 				}
 				else if(meal === "lunch")
 				{
 					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
-							&& (compareTimeStrings(t2, "11:30") >= 0) && (compareTimeStrings(t2, "14:00") <= 0);
+							&& (compareTimeStrings(t2, "11:30") >= 0) && (compareTimeStrings(t2, "14:00") <= 0)
+							&& meal === 'lunch';
 				}
 				else
 					return false;
