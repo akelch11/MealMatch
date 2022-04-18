@@ -256,9 +256,6 @@ def accept_match(netid, matchid, phonenum):
     cur.execute(query, [matchid])
     row=cur.fetchone()
     
-    query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
-    cur.execute(query, [matchid])
-    close_connection(cur, conn)
     netid_type = ""
 
     if row[1] == netid:
@@ -281,6 +278,11 @@ def accept_match(netid, matchid, phonenum):
             #If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(netid)
     notifications.send_message(message, phonenum)
+
+        query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
+    cur.execute(query, [matchid])
+    close_connection(cur, conn)
+
 
 
 def get_all_requests(netid):
