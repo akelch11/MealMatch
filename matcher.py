@@ -346,7 +346,7 @@ def accept_match(netid, matchid, phonenum):
             notifications.send_message(message, phonenum)
         else:
             #If the other person has not accepted, notify the other person that match is confirmed
-            message = "{} also accepted the match! Have fun eating!".format(et_name_from_netid(netid))
+            message = "{} also accepted the match! Have fun eating!".format(get_name_from_netid(netid))
             notifications.send_message(message, phonenum)
 
             
