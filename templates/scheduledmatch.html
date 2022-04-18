@@ -265,13 +265,13 @@
 				let min1 = Number(t1.substring(3));
 				let min2 = Number(t2.substring(3));
 
-				if(isDinnerTime())
+				if(meal == "dinner")
 				{
 					return (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
 							&& (compareTimeStrings(t2, "17:00") >= 0) && (compareTimeStrings(t2, "20:00") <= 0)
 							&& meal === "dinner";
 				}
-				else if(isLunchTime())
+				else if(meal === "lunch")
 				{
 					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
 							&& (compareTimeStrings(t2, "11:30") >= 0) && (compareTimeStrings(t2, "14:00") <= 0)
