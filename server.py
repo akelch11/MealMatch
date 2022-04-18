@@ -8,6 +8,7 @@ import auth
 import keys
 from big_lists import majors, dept_code, dhall_list
 from dateutil import parser
+from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import date, datetime
 import os
 
@@ -50,6 +51,7 @@ def homescreen():
     response = make_response(html)
     return response
 
+#ABOUT PAGE
 @app.route('/about', methods=['GET'])
 def about_method():
     html = render_template('about.html')
@@ -90,7 +92,7 @@ def update_form():
     response = make_response(html)
     return response
 
-
+#HOMESCREEN --- SUBMIT PROFILE FORM 
 @app.route('/submit_profile_form', methods=["GET"])
 def form():
     name = request.args.get('name').strip()
@@ -129,23 +131,16 @@ def form():
     # return response
 
 
-
+#TEST ROUTE --- FORCE MATCHES 
 @app.route('/forcematches', methods=['GET'])
 def force_matches():
     matcher.match_requests()
     return redirect("/matches")
 
 
-
-@app.route('/ondemand', methods=['GET'])
-def ondemand():
-    html = render_template('ondemandmatch.html',
-                            dhalls=dhall_list)
-    response = make_response(html)
-    return response
-
-@app.route('/matchlanddummy', methods = ['GET'])
-def matchland():
+#SUBMIT REQUEST 
+@app.route('/submitrequest', methods = ['GET'])
+def submit_request():
     print('match has been made', file=stdout)
     meal_type = request.args.get('meal')
     print('Meal type', meal_type, file=stdout)
@@ -173,41 +168,43 @@ def matchland():
 
     end_time_datetime = parser.parse(end_time)
 
-    matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
-    return redirect("/matches")
-
-
-@app.route('/schedulematchlanddummy', methods = ['GET'])
-def scheduleland():
-    meal_type = request.args.get('meal')
-    dhall = request.args.get('location')
-    start_time = request.args.get('start')
-    end_time = request.args.get('end')
-
-    html = render_template('matchlanddummy.html', \
-            meal = meal_type, location = dhall, start = start_time, end = end_time)
+    success = matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     
-    response = make_response(html)
-    return response
-######
+    if success:
+        return redirect("/matches")
+    else:
+        return redirect("/schedule?error=multiplerequests")
+    
 
+
+
+#HOMESCREEN -> SCHEDULE MATCH PAGE 
 @app.route('/schedule', methods = ['GET'])
 def schedulematch():
-     html = render_template('scheduledmatch.html',
-                            dhalls=dhall_list)
-     response = make_response(html)
-     return response
-    
+    error = request.args.get('error')
 
-@app.route('/match', methods=['GET'])
-def match():
+    if error is None:
+        error = ""
+
+    html = render_template('scheduledmatch.html',
+                            dhalls=dhall_list, error=error)
+    response = make_response(html)
+    return response
+    
+#HOMESCREEN -> SCHEDULE MATCH PAGE 
+@app.route('/ondemand', methods=['GET'])
+def ondemand():
+    error = request.args.get('error')
+
+    if error is None:
+        error = ""
+
     html = render_template('ondemandmatch.html',
-                            dhalls=dhall_list)
-    print('call match route')
+                            dhalls=dhall_list, error = error)
     response = make_response(html)
     return response
 
-
+#HOMESCREEN -> MATCHES PAGE 
 @app.route('/matches', methods = ['GET'])
 def get_matches():
 
@@ -242,38 +239,10 @@ def get_matches():
         html = render_template('nomatches.html')
     else:
         html = render_template('matches.html', all_matches = all_matches)
-
-
-
     response = make_response(html)
     return response
 
-
-@app.route('/removerequest', methods = ['POST'])
-def remove_requests():
-    requestid = request.args.get("requestid")
-    matcher.remove_request(requestid)
-    return redirect(url_for('get_requests'))
-
-
-@app.route('/acceptmatch', methods = ['POST'])
-def accept_match():
-    matchid = request.args.get("matchid")
-    phonenum = request.args.get("phonenum")
-
-    matcher.accept_match(auth.authenticate(), matchid, phonenum)
-    return redirect(url_for('get_matches'))
-
-
-@app.route('/cancelmatch', methods = ['POST'])
-def remove_matches():
-    matchid = request.args.get("matchid")
-    phonenum = request.args.get("phonenum")
-
-    matcher.remove_match(auth.authenticate(), matchid, phonenum)
-    return redirect(url_for('get_matches'))
-
-
+#HOMESCREEN -> REQUESTS PAGE 
 @app.route('/requests', methods = ['GET'])
 def get_requests():
 
@@ -304,11 +273,38 @@ def get_requests():
     response = make_response(html)
     return response
 
+#REMOVE REQUEST ON REQUESTS PAGE
+@app.route('/removerequest', methods = ['POST'])
+def remove_requests():
+    requestid = request.args.get("requestid")
+    matcher.remove_request(requestid)
+    return redirect(url_for('get_requests'))
+
+#ACCEPT MATCH ON MATCHES PAGE
+@app.route('/acceptmatch', methods = ['POST'])
+def accept_match():
+    matchid = request.args.get("matchid")
+    phonenum = request.args.get("phonenum")
+
+    matcher.accept_match(auth.authenticate(), matchid, phonenum)
+    return redirect(url_for('get_matches'))
+
+#CANCEL MATCH ON MATCHES PAGE
+@app.route('/cancelmatch', methods = ['POST'])
+def remove_matches():
+    matchid = request.args.get("matchid")
+    phonenum = request.args.get("phonenum")
+
+    matcher.remove_match(auth.authenticate(), matchid, phonenum)
+    return redirect(url_for('get_matches'))
+
+#CAS LOGOUT
 @app.route('/logout', methods=['GET'])
 def logout():
     auth.logout()
 
 
+#ERROR HANDLING
 @app.route('/test404', methods=['GET'])
 def test404(e):
     return render_template('page404.html')
@@ -321,6 +317,12 @@ def error404(e):
 def error500(e):
     return render_template('page500.html'), 500
 
+def clean_requests():
+    matcher.clean_requests()
+
+scheduler = BackgroundScheduler()
+job = scheduler.add_job(clean_requests, 'interval', hours=5)
+scheduler.start()
 
 port = int(os.environ.get('PORT', 5001))
 # app.run(host='0.0.0.0', port=port, debug=False)
