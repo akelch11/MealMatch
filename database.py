@@ -36,6 +36,8 @@ def create_matches_table():
             DINING_HALL TEXT NOT NULL,
             START_WINDOW TIMESTAMP NOT NULL,
             END_WINDOW TIMESTAMP NOT NULL,
+            FIRST_ACCEPTED BOOLEAN NOT NULL,
+            SECOND_ACCEPTED BOOLEAN NOT NULL,
             ACTIVE BOOLEAN NOT NULL);'''
     
     cur, conn = new_connection()
@@ -60,3 +62,7 @@ def create_requests_table():
     cur, conn = new_connection()
     cur.execute(create_table_query)
     close_connection(cur, conn)
+
+if __name__ == "__main__":
+    create_matches_table()
+    print('matches table created')
