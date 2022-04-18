@@ -1,1 +1,6 @@
 __pycache__
+*/.DS_Store
+database_poke.py
+.idea/
+.venv/
+.DS_Store
