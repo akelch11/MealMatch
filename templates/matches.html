@@ -17,7 +17,6 @@
    
    {% for matches in all_matches %}
    <div class = "container-fluid">
-   
       <div class= "card">
          <div class = 'row align-content-center'>
             <div class ="card-body col-sm-9">
@@ -31,13 +30,8 @@
                
             <center>
                <div>
-<<<<<<< HEAD
-                  {% if matches[5] != "" and matches[5] != "Both Accepted!" %} 
-                     <strong>Status: Match Pending</strong>
-=======
                   {% if matches[5] == "Both Accepted!"%} 
                      <strong style = "color: #4b9e4b;">Status: Match Made!</strong>
->>>>>>> af046a9941ee427de867dfba3828cf191a894510
                   {% else %}
                      <strong>Status: Match Pending</strong>
                   {%endif%}
@@ -51,7 +45,6 @@
             </center>
             </div>
          </div>
-
       </div>
    </div>
    {%endfor%}
