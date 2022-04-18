@@ -126,9 +126,6 @@ def form():
         profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
     return redirect('/index')
-    # html = render_template('homescreen.html')
-    # response = make_response(html)
-    # return response
 
 
 #TEST ROUTE --- FORCE MATCHES 
@@ -191,7 +188,7 @@ def schedulematch():
     response = make_response(html)
     return response
     
-#HOMESCREEN -> SCHEDULE MATCH PAGE 
+#HOMESCREEN -> ON DEMAND MATCH PAGE 
 @app.route('/ondemand', methods=['GET'])
 def ondemand():
     error = request.args.get('error')
@@ -208,8 +205,8 @@ def ondemand():
 @app.route('/matches', methods = ['GET'])
 def get_matches():
 
-    session_netid = auth.authenticate()
-    all_matches = matcher.get_all_matches(session_netid)
+    netid = auth.authenticate()
+    all_matches = matcher.get_all_matches(netid)
 
     for i in range(len(all_matches)):
         match = all_matches[i]
@@ -218,10 +215,10 @@ def get_matches():
         you_accepted = False
         opponent_accepted = True
 
-        if session_netid == match[1]:
+        if netid == match[1]:
            you_accepted = match[5]
            opponent_accepted = match[6] 
-        elif session_netid == match[2]:
+        elif netid == match[2]:
            you_accepted = match[6]
            opponent_accepted = match[5]
 
@@ -229,18 +226,27 @@ def get_matches():
             all_matches[i][5] = "Both Accepted!"
         elif you_accepted and not opponent_accepted:
             all_matches[i][5] = "You Accepted"
-        elif not you_accepted and opponent_accepted:
-            all_matches[i][5] = ""
         else:
             all_matches[i][5] = ""
 
 
-    if (len(all_matches) == 0):
+    if len(all_matches) == 0:
         html = render_template('nomatches.html')
     else:
         html = render_template('matches.html', all_matches = all_matches)
     response = make_response(html)
     return response
+
+#HOMESCREEN -> HISTORY PAGE
+@app.route('/history', methods=['GET'])
+def past_matches():
+    netid = auth.authenticate()
+    past_matches = matcher.get_past_matches(netid)
+    html = render_template('history.html', 
+                             past_matches=past_matches)
+    response = make_response(html)
+    return response
+    
 
 #HOMESCREEN -> REQUESTS PAGE 
 @app.route('/requests', methods = ['GET'])

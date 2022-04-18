@@ -3,6 +3,7 @@ import string
 from sys import stdout
 import notifications
 from datetime import datetime
+from dateutil import parser
 from big_lists import dhall_list
 from database import new_connection, close_connection
 
@@ -240,9 +241,43 @@ def get_name_from_netid(netid):
     query="""SELECT name FROM users WHERE netid = %s"""
     cur.execute(query, [netid])
     row = cur.fetchone()
-    conn.close()
-
+    close_connection(cur, conn)
     return row[0]
+
+
+def get_past_matches(netid):
+    query="""SELECT first_netid, second_netid,
+            end_window, dining_hall, match_id
+            FROM matches
+            WHERE first_netid = %s
+            OR second_netid = %s
+            ORDER BY end_window DESC"""
+
+    cur, conn = new_connection()
+    cur.execute(query, (netid, netid))
+    matches = cur.fetchmany(4)
+    close_connection(cur, conn)
+
+    past_matches = []
+    for match in matches:
+        match_info = {}
+        other_netid = match[0] if match[1] == netid else match[1]
+        
+        match_info['netid'] = other_netid
+        match_info['dhall'] = match[3]
+        match_info['id'] = match[4]
+        match_info['name'] = get_name_from_netid(other_netid)
+        
+        parsed_day = match[2]
+        match_info['day']  = parsed_day
+        if parsed_day.hour<15:
+            match_info['meal']  = 'Lunch'
+        else:
+            match_info['meal']  = 'Dinner'
+
+        past_matches.append(match_info)
+
+    return past_matches
 
 
 def accept_match(netid, matchid, phonenum):
