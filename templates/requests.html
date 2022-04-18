@@ -19,8 +19,7 @@
          <td><b>Dining Hall</b></td>
          <td><b>Meal Type</b></td>
          <td><b>Date</b></td>
-         <td><b>Begin Time</b></td>
-         <td><b>End Time</b></td>
+         <td><b>Time</b></td>
          <td></td>
       </tr>
       {% for i in range(all_requests|length) %}
@@ -33,8 +32,7 @@
                 {%endif%}
          </b></td>
          <td><b>{{all_requests[i][0].strftime("%m/%d/%Y")}}</b></td>
-         <td><b>{{all_requests[i][0].strftime('%-I:%M%p')}}</b></td>
-         <td><b>{{all_requests[i][1].strftime('%-I:%M%p')}}</b></td>
+         <td><b>{{all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')}}</b></td>
          <td><form method = "POST" action = "/removerequest?requestid={{all_requests[i][9]}}">
             <button class = 'btn-sm' 
                   style = "background-color: #c55353; color: white;">Cancel Request</button>

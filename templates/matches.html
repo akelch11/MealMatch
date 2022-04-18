@@ -15,25 +15,23 @@
    {% include 'header.html' %}
    <table class = "table table-striped">
       <tr>
-         <td><b>Netid</b></td>
          <td><b>Name</b></td>
          <td><b>Dining Hall</b></td>
-         <td><b>Match Time</b></td>
+         <td><b>Time</b></td>
          <td><b>Year</b></td>
          <td><b>Major</b></td>
          <td><b>Phone Number</b></td>
-         <td><b>Match Status</b></td>
+         <td></td>
          <td><b></b></td>
       </tr>
       {% for matches in all_matches %}
       <tr>
-         <td>{{matches[10]}}</td> 
-         <td>{{matches[11]}}</td>
-         <td>{{matches[4]}}</td>
-         <td>{{matches[3]}}</td>
-         <td>{{matches[9]}}</td>
-         <td>{{matches[10]}}</td>
-         <td>{{matches[11]}}</td>
+         <td><b>{{matches[11]}}</b></td>
+         <td><b>{{matches[4]}}</b></td>
+         <td><b>{{(matches[7].strftime('%-I:%M%p')+ " - " + matches[8].strftime('%-I:%M%p') )}}</b></td>
+         <td><b>{{matches[12]}}</b></td>
+         <td><b>{{matches[13]}}</b></td>
+         <td><b>{{matches[14]}}</b></td>
          <td><form method = "POST" action = "/cancelmatch?matchid={{matches[0]}}"><button class = 'btn-sm' style = "background-color: #c55353; color: white;">Cancel Match</button></form></td>
       </tr>
       {% endfor %}

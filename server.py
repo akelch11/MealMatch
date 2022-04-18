@@ -216,6 +216,7 @@ def get_matches():
 
     for i in range(len(all_matches)):
         match = all_matches[i]
+        print('match row: ', match, file = stderr)
 
         you_accepted = False
         opponent_accepted = True
