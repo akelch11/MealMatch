@@ -244,12 +244,12 @@
 			console.log('empty: ' + emptyFields)
 
 			// takeout validMealTimes to remove lunch/dinner time validation
-			if(emptyFields || !timesInOrder || !validMealTimes)
+			if(emptyFields || !timesInOrder /* || !validMealTimes*/)
 			{
 				console.log('attempt to send invalid meal request')
 				if(emptyFields)
 					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-				if(!timesInOrder || !validMealTimes)
+				if(!timesInOrder /*|| !validMealTimes*/)
 					document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
 				
 				// prevents submission
