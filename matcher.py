@@ -279,7 +279,7 @@ def accept_match(netid, matchid, phonenum):
             message = "{} also accepted the match! Have fun eating!".format(netid)
     notifications.send_message(message, phonenum)
 
-        query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
+    query="""UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
     cur.execute(query, [matchid])
     close_connection(cur, conn)
 
