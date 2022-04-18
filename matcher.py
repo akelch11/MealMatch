@@ -231,7 +231,7 @@ def get_all_matches(netid):
 def get_all_requests(netid):
     all_requests = []
 
-    query="""SELECT begintime, endtime, lunch, wucox, roma, forbes, cjl, whitman, atdhall, requestid FROM requests as r
+    query="""SELECT begintime, endtime, lunch, cjl, forbes, roma, whitman, wucox, atdhall, requestid FROM requests as r
             WHERE r.netid = %s
             AND r.active = TRUE"""
 
