@@ -288,6 +288,7 @@ def get_requests():
         for i in range(len(dhall_list)) if dhalls_bools_in_req[i]]
         # append dining halls into a string split by /
         loc = '/'.join(dhalls_in_req)
+        print('REQ: ', req, "\n Loc: ", loc)
         req_locations.append(loc)
 
     if (len(all_requests) == 0):
