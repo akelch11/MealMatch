@@ -54,6 +54,11 @@
 
 
 
+	<div class="container row" id = "errorBox" style = "color: red">
+		
+		
+	</div>
+
 
 </center>
    
@@ -90,25 +95,6 @@
 	$('document').ready(updateEndTime);
 
 	
-		// let lunchButton = document.getElementById("lunchButton");
-		// let dinnerButton = document.getElementById("dinnerButton");
-		// let activeMeal = "";
-
-		// lunchButton.addEventListener('click', function onClick() {
-		// 	activeMeal = 'lunch';
-		// 	console.log('lunch Pressed');
-		// 	lunchButton.style.backgroundColor = "#ff9f46";
-		// 	dinnerButton.style.backgroundColor = 'white';
-
-		// });
-
-		// dinnerButton.addEventListener('click', function onClick() {
-		// 	activeMeal = 'dinner';
-		// 	console.log('dinner Pressed');
-		// 	dinnerButton.style.backgroundColor = "#ff9f46";
-		// 	lunchButton.style.backgroundColor = 'white';
-
-		// });
 
 
 		let dHallButtons = document.getElementsByClassName('dHallType')
@@ -164,7 +150,121 @@
 			
 		};
 
+		// compare times in string format HH:MM
+		function compareTimeStrings(t1, t2){
+			let hour1 = Number(t1.substring(0,2));
+			let hour2 = Number(t2.substring(0,2));
+			let min1 = Number(t1.substring(3));
+			let min2 = Number(t2.substring(3));
 
+			if(hour1 != hour2) return hour1 - hour2;
+			else
+				return min1 - min2;
+		};
+
+
+
+
+		// validate request fields, prevent submission if invalid
+		submitButtonForm.addEventListener('click', function(event){
+			
+			event.preventDefault();
+			
+			let endTime = document.getElementById("endTimeButton").value;
+			console.log(endTime);
+			
+			// determine if any dhall buttons have been pressed 'ON'
+			let selected = activeDhall != ""
+
+			console.log(activeDhall)
+
+			// check if 
+			let validMealTimes = validateTimes(endTime);
+
+			console.log('valid mealtimes ' + validMealTimes)
+			console.log('lunch time? : ' + isLunchTime())
+			console.log('dinner time? : ' + isDinnerTime())
+			
+
+			
+			document.getElementById('errorBox').innerHTML = ""
+			
+			let emptyFields = (endTime === "" || !selected)
+			
+
+			console.log('empty: ' + emptyFields)
+
+			// takeout validMealTimes to remove lunch/dinner time validation
+			if(emptyFields || !validMealTimes)
+			{
+				console.log('attempt to send invalid meal request')
+				if(emptyFields)
+					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
+				if(!validMealTimes)
+					document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
+				
+				// prevents submission
+				event.preventDefault();
+			}
+			// else 
+			// {
+			// 	console.log('submission')
+			// 	updateUrl()
+			// }
+			event.preventDefault();
+
+		});
+
+		function validateTimes(t1) {
+			console.log("validation, time: " + t1)
+			if(t1 === "") return false;
+			else 
+			{
+
+				let hour1 = Number(t1.substring(0,2));
+				let min1 = Number(t1.substring(3));
+				let now = new Date()
+
+				let nowHour = String(now.getHours())
+				let nowMin = String(now.getMinutes())
+				
+				// zero pad times
+				if(now.getHours() < 10)
+					nowHour = "0" + nowHour;
+				if(now.getMinutes() < 10)
+					nowMin = "0" + nowMin
+
+				let nowTime = nowHour+":"+nowMin;
+				console.log(nowTime)
+
+
+
+				if(isDinnerTime())
+				{
+					let b = (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
+							&& (compareTimeStrings(t1, nowTime) >= 0);
+					console.log("RETURN ME, dinner: " + b);
+					return ("RET: "+compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
+							&& (compareTimeStrings(t1, nowTime) >= 0);
+				}
+				else if(isLunchTime())
+				{
+					let b = (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
+							&& (compareTimeStrings(t1, nowTime) >= 0);
+					console.log("RETURN ME, lunch: " + b);
+					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
+							&& (compareTimeStrings(t1, nowTime) >= 0);
+				}
+				else{
+					
+					console.log("RET :" + false)
+
+					return false;
+				}
+					
+				
+			}
+		}
 		
 
 
