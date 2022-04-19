@@ -155,15 +155,34 @@
 		if (t1 === "" || t2 === "" || meal === "") return false;
 		else {
 
+
+			let now = new Date()
+			let nowHour = String(now.getHours())
+			let nowMin = String(now.getMinutes())
+
+			// zero pad times
+			if(now.getHours() < 10)
+					nowHour = "0" + nowHour;
+			if(now.getMinutes() < 10)
+					nowMin = "0" + nowMin
+	
+			let nowTime = nowHour+":"+nowMin;
+
+			// times are within lunch range and not in past
 			let lunch_bool = (meal === 'lunch') &&
 				(compareTimeStrings("11:30", t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
-				(compareTimeStrings(t2, "14:00") <= 0);
+				(compareTimeStrings(t2, "14:00") <= 0) &&
+				(compareTimeStrings(t1, nowTime) >= 0) &&
+				(compareTimeStrings(t2, nowTime) >= 0);
 
+			// times are within dinner range and not in past
 			let dinner_bool = (meal === "dinner") &&
 				(compareTimeStrings("17:00", t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
-				(compareTimeStrings(t2, "20:00") <= 0);
+				(compareTimeStrings(t2, "20:00") <= 0)
+				(compareTimeStrings(t1, nowTime) >= 0) &&
+				(compareTimeStrings(t2, nowTime) >= 0);
 
 			return lunch_bool || dinner_bool;
 		}
