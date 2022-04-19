@@ -63,12 +63,18 @@
 	}
 	function isDinnerTime() {
 		let hour = (new Date()).getHours();
+		// dinner time is from 5pm-8pm
+		// do not worry about matches being made exactly at 8pm,
+		// will not be valid for matches due to < 30 min availability
 		return (17 <= hour) && (hour <= 19);
 	}
 	function isLunchTime() {
 		let dateTime = new Date();
 		let hour = dateTime.getHours();
 		let minute = dateTime.getMinutes();
+		// lunch time is from 11:30am-2pm
+		// do not worry about matches being made exactly at 2pm,
+		// will not be valid for matches due to < 30 min availability
 		return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
 	}
 	function updateEndTime() {
