@@ -1,56 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> MealMatch | Match Now!</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@600;900&display=swap">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-		<link rel="stylesheet" href="static/font.css">
-        <meta name = "viewport" content="width=device-width, initial-scale=1">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>	
-        
-	</head>
+
+<head>
+	<title>MealMatch | Match Now!</title>
+	{% include 'imports.html' %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
 
 <body>
-   {% include 'header.html' %}
-<center>
-	<!-- can remove, will be implied by the current time -->
-	<!-- <div id = 'mealType' class = "container">
-		<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
-			I want to eat:
-			<button class = 'btn-lg' id = 'lunchButton'> Lunch </button>
-			<button class = 'btn-lg' id = 'dinnerButton'> Dinner </button>
+	{% include 'header.html' %}
+	<center>
+		<div id='hallType' class="container">
+			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+				I'm currently at:
+				{% for dhall in dhalls %}
+				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
+				{%endfor%}
+			</div>
+
 		</div>
-	</div> -->
+		<div class=container>
+			<a target="_blank" href="https://tigermenus.herokuapp.com/">Check out what the dining halls are
+				serving</a><br>
+		</div>
 
-<div id = 'hallType' class = "container">
-	<div class = "btn-group-sm menuButton" style = "font-size: 18px;"> 
-		I'm currently at:
-		{% for dhall in dhalls %}
-			<button class = 'btn-lg dHallType' id ='{{dhall}}'>{{dhall}}</button>
-		{%endfor%}
-	</div>
+		<div id='mealTimes' class="container row">
+			<div class="btn-group-sm dropdown" id='time' style="font-size: 18px;">
+				I'm free until:
+				<input required class='btn-sm' type='time' step='60' id='endTimeButton'>
+			</div>
+		</div>
 
-</div>
-<div class = container>
-	<a target="_blank" href="https://tigermenus.herokuapp.com/">Check out what the dining halls are serving</a><br>
-</div>
+		<div>
+			<div class='container row'>
+				<a id="submitButtonForm" href="/ondemand">
+					<button class='btn-lg submitButton'>Find me a match!</button>
+				</a>
+			</div>
+		</div>
 
-<div id = 'mealTimes' class = "container row">
-	<div class = "btn-group-sm dropdown" id = 'time' style = "font-size: 18px;"> 
-		I'm free until:
-		<input required class = 'btn-sm' type = 'time' step = '60' id = 'endTimeButton'>
-	</div>
-</div>
-
-<div>
-	<div class = 'container row'>
-		<a id = "submitButtonForm" href = "/ondemand">
-			<button class = 'btn-lg submitButton'>Find me a match!</button>
-		</a>
-	</div>
-</div>
 
 
 
@@ -60,36 +48,35 @@
 	</div>
 
 
-</center>
-   
 
 </body>
+
 </html>
 
 
 <script>
 	'use strict';
 	// Jeremy's work to error-prove the UI
-	function isWeekend(){
+	function isWeekend() {
 		let dayOfWeek = (new Date()).getDay();
 		return (dayOfWeek == 6) || (dayOfWeek == 0);
 	}
-	function isDinnerTime(){
+	function isDinnerTime() {
 		let hour = (new Date()).getHours();
 		return (17 <= hour) && (hour <= 19);
 	}
-	function isLunchTime(){
+	function isLunchTime() {
 		let dateTime = new Date();
 		let hour = dateTime.getHours();
 		let minute = dateTime.getMinutes();
-		return (12 <= hour || (11==hour && minute>=30)) && (hour <= 13);
+		return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
 	}
-	function updateEndTime(){
-		let endTimeEL =  document.getElementById('endTimeButton')
+	function updateEndTime() {
+		let endTimeEL = document.getElementById('endTimeButton')
 		let dateTime = new Date();
-		if(isDinnerTime())
+		if (isDinnerTime())
 			endTimeEL.setAttribute('max', '20:00')
-		else if(isLunchTime())
+		else if (isLunchTime())
 			endTimeEL.setAttribute('max', '14:00');
 	}
 	$('document').ready(updateEndTime);
@@ -97,58 +84,60 @@
 	
 
 
-		let dHallButtons = document.getElementsByClassName('dHallType')
-		let activeDhall = "";
+	let dHallButtons = document.getElementsByClassName('dHallType')
+	let activeDhall = "";
 
-		for(let i = 0; i < dHallButtons.length; i++)
-		{
-			let btn = dHallButtons[i];
-			btn.addEventListener('click',
-			function() {
+	for (let i = 0; i < dHallButtons.length; i++) {
+		let btn = dHallButtons[i];
+		btn.addEventListener('click',
+			function () {
 				activeDhall = btn.id;
 				btn.style.backgroundColor = "#ff9f46";
-				
-				
-				for(let j = 0; j < dHallButtons.length; j++)
-					if(dHallButtons[j].id != btn.id)
-					{
+
+
+				for (let j = 0; j < dHallButtons.length; j++)
+					if (dHallButtons[j].id != btn.id) {
 						dHallButtons[j].style.backgroundColor = "white";
-						
+
 					}
 			});
-		}
+	}
 
-		//
+	//
 
-		let submitButtonForm = document.getElementById("submitButtonForm");
+	let submitButtonForm = document.getElementById("submitButtonForm");
 
 
-		
-			// update url to contain proper match request information
-		function updateUrl() {
-			console.log('called updateurl')
-			
-			let url = "/submitrequest"
-			let endTime = document.getElementById("endTimeButton").value;
-			if(activeDhall === "" || endTime === "")
-				return;
 
-			let activeMeal = "";
-			if(isDinnerTime())
-				activeMeal = 'dinner';
-			else
+	// update url to contain proper match request information
+	function updateUrl() {
+		console.log('called updateurl')
+
+		let url = "/submitrequest"
+		let endTime = document.getElementById("endTimeButton").value;
+		if (activeDhall === "" || endTime === "")
+			return;
+
+		let activeMeal = "";
+		if (isDinnerTime())
+			activeMeal = 'dinner';
+		else
 			// else if(isLunchTime()) use in deployment
-				activeMeal = 'lunch';
+			activeMeal = 'lunch';
 
-			url += "?meal=" + activeMeal;
-			url += "&location=" + activeDhall;
-			url += "&start=now";
-			url += "&end=" + endTime;
-			url += "&atdhall=True";
+		url += "?meal=" + activeMeal;
+		url += "&location=" + activeDhall;
+		url += "&start=now";
+		url += "&end=" + endTime;
+		url += "&atdhall=True";
 
-			submitButtonForm.setAttribute('href', url);
-			
-		};
+		submitButtonForm.setAttribute('href', url);
+
+	};
+
+
+
+
 
 		// compare times in string format HH:MM
 		function compareTimeStrings(t1, t2){
@@ -268,88 +257,81 @@
 		
 
 
-		// lunchButton.addEventListener('click', updateUrl);
-		// dinnerButton.addEventListener('click', updateUrl);
+	let endTimeButton = document.getElementById("endTimeButton");
 
-		for(let i = 0; i < dHallButtons.length; i++)
-			dHallButtons[i].addEventListener('click', updateUrl)
-		
-		
-		let endTimeButton = document.getElementById("endTimeButton");
 
-		
-		endTimeButton.addEventListener('click', updateUrl);
-		// update url on changing times
-		endTimeButton.addEventListener('change', updateUrl);
+	endTimeButton.addEventListener('click', updateUrl);
+	// update url on changing times
+	endTimeButton.addEventListener('change', updateUrl);
 
 </script>
 
 
 <style>
-    * {
-	box-sizing: border-box;
-}
+	* {
+		box-sizing: border-box;
+	}
 
-body {
-	font-family: "Maven Pro", sans-serif;
-	font-weight: normal;
-}
-
-
-.jumbotron {
-	font-family: "Maven Pro", sans-serif;
-}
+	body {
+		font-family: "Maven Pro", sans-serif;
+		font-weight: normal;
+	}
 
 
-#header {
-	font-weight: 900;
-}
+	.jumbotron {
+		font-family: "Maven Pro", sans-serif;
+	}
 
-.outlineBox {
-	width: 100%;
-	height: 727px;
-	background: rgba(255, 255, 255, 1);
-	opacity: 1;
-	position: absolute;
-	
-	border-top-left-radius: 16px;
-	border-top-right-radius: 16px;
-	border-bottom-left-radius: 16px;
-	border-bottom-right-radius: 16px;
-	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-	overflow: hidden;
-}
 
-#mealType {
-	margin: 20px;
-    margin-top: 20px;	
-}
+	#header {
+		font-weight: 900;
+	}
 
-.menuButton {
-	padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-	padding-right: 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	margin-left: 20px;
-	margin-right: 20px;
-}
+	.outlineBox {
+		width: 100%;
+		height: 727px;
+		background: rgba(255, 255, 255, 1);
+		opacity: 1;
+		position: absolute;
 
-button {
-	background-color: white;
-}
+		border-top-left-radius: 16px;
+		border-top-right-radius: 16px;
+		border-bottom-left-radius: 16px;
+		border-bottom-right-radius: 16px;
+		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+		overflow: hidden;
+	}
 
-.submitButton {
-	background-color: rgba(255, 159, 70, 1);
-	padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-	padding-right: 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	margin-left: 20px;
-	margin-right: 20px;
-	color: white;
-}
+	#mealType {
+		margin: 20px;
+		margin-top: 20px;
+	}
+
+	.menuButton {
+		padding-left: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		margin-left: 20px;
+		margin-right: 20px;
+	}
+
+	button {
+		background-color: white;
+	}
+
+	.submitButton {
+		background-color: rgba(255, 159, 70, 1);
+		padding-left: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-right: 10px;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		margin-left: 20px;
+		margin-right: 20px;
+		color: white;
+	}
 </style>

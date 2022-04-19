@@ -2,106 +2,68 @@
 <html>
 
 <head>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&display=swap">
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-   <link rel="stylesheet" href="static/font.css">
-   <meta name ="viewport" content="width=device-width, initial-scale=1">    
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<title>MealMatch | View Past Matches! </title>
+	{% include 'imports.html' %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
 </head>
 
 <body>
-    {% include 'header.html' %}
-    <center>
-    <div class="container">
-        {% for match in past_matches %}
-            <button id="{{match['id']}}_Button" type="button" 
-            class="btn btn-primary lrg_button" data-toggle="modal" 
-            data-target="#{{match['id']}}_Modal">
-                <span>{{match["name"]}}</span><br>
-                <span>{{match["meal"]}}</span><br>
-                <span>{{match["day"].strftime("%a, %B %d")}}</span><br>
-            </button>
-            <div id="{{match['id']}}_Modal" class="modal fade" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">{{match["name"]}}</h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <span>{{match["name"]}} - {{match["netid"]}}</span><br>
-                            <span>{{match["meal"]}}</span><br>
-                            <span>{{match["dhall"]}}</span><br>
-                            <span>{{match["day"].strftime("%A, %B %d")}}</span><br>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary sml_button" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    </center>
+	{% include 'header.html' %}
+	<center>
+		<div class="container">
+			{% for match in past_matches %}
+			<button type="button" class="btn btn-primary lrg_button" data-bs-toggle="modal"
+				data-bs-target="#Modal_{{match['id']}}">
+				<span>{{match["name"]}}</span><br>
+				<span>{{match["meal"]}}</span><br>
+				<span>{{match["day"].strftime("%a, %B %d")}}</span><br>
+			</button>
+			<div class="modal fade" id="Modal_{{match['id']}}" tabindex="-1"
+				aria-labelledby="ModalLabel_{{match['id']}}" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="ModalLabel_{{match['id']}}">
+								{{match["meal"]}} with {{match["name"]}}</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<span>Netid: </span><span class='italics'>{{match["netid"]}}</span><br>
+							<span>{{match["dhall"]}} on {{match["day"].strftime("%A, %B %d")}}</span><br>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary sml_button"
+								data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</center>
 </body>
-</html>
-<script>
-    // $('document').ready(function(){
-    //     $("#4TSHBRY5GSEBGDA4T_Button").click(function(){
-    //         $("#4TSHBRY5GSEBGDA4T_Modal").modal();
-    //     });
 
-        // let buttons = document.getElementsByClassName('lrg_button');
-        // for(const button of buttons){
-        //     button.addEventListener('click', function() {
-        //         console.log(button.getAttribute("data-target"));
-        //         let modal = $(button.getAttribute("data-target"));
-        //         console.log(modal);
-        //         modal.show()
-        //         // modal.style.display = "block"; 
-        //     });
-        // }
-        // let modals = document.getElementsByClassName('modal')
-        // buttons = document.getElementsByClassName('close');
-        // for (const button of buttons) {
-        //     button.addEventListener('click', function(){
-        //         for(modal of modals){
-        //             // modal.style.display = "none";
-        //             modal.modal();
-        //             console.log(modal.id)
-        //         }
-        //         // modal = button.parentElement.parentElement.parentElement.parentElement;
-        //         // modal.style.display = "none";
-        //     }); 
-        // }
-        // window.onclick = function(event) {
-        //     for(modal of modals){
-        //         if (event.target == modal) {
-        //             modal.style.display = "none";
-        //         }
-        //     }
-        // }
-    // });
-    // $('document').ready(setup)
-</script>
+</html>
 <style>
-* {
-	box-sizing: border-box;
-    font-family: "Maven Pro", sans-serif;
-}
-.lrg_button {
-    margin: 20px;
-    background-color: #ff9f46;
-    color: white;
-    border: none;
-    width: 200px;
-    height: 200px;
-}
-.sml_button {
-    background-color: #ff9f46;
-    color: white;
-}
+	* {
+		box-sizing: border-box;
+		font-family: "Maven Pro", sans-serif;
+	}
+
+	.lrg_button {
+		margin: 20px;
+		background-color: #ff9f46;
+		color: white;
+		border: none;
+		width: 200px;
+		height: 200px;
+	}
+
+	.sml_button {
+		background-color: #ff9f46;
+		color: white;
+	}
 </style>
