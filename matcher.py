@@ -21,7 +21,7 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
         sql = sql + "{},".format(dhall_list[i])
 
     dhall_strargs = "%s, "*len(dhall_list)
-    sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, " + dhall_strargs + "%s, %s)"
+    sql = sql + ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
 
     requestId = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
     
@@ -216,11 +216,11 @@ def execute_match_query(parse_requests, lunch):
         second_netid = second[1]
 
 
+        sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
+        sql += "VALUES ({})".format( ",".join(["%s"]*11) )
+        
         # Current time for match made
         now = datetime.now()
-
-        sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
-        sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, lunch)
 
@@ -304,7 +304,7 @@ def get_name_from_netid(netid):
 
 def get_past_matches(netid):
     query="""SELECT first_netid, second_netid,
-            end_window, dining_hall, match_id
+            end_window, dining_hall, match_id, lunch
             FROM matches
             WHERE first_netid = %s
             OR second_netid = %s
@@ -321,16 +321,11 @@ def get_past_matches(netid):
         other_netid = match[0] if match[1] == netid else match[1]
         
         match_info['netid'] = other_netid
+        match_info['name'] = get_name_from_netid(other_netid)
+        match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
-        match_info['name'] = get_name_from_netid(other_netid)
-        
-        parsed_day = match[2]
-        match_info['day']  = parsed_day
-        if parsed_day.hour<15:
-            match_info['meal']  = 'Lunch'
-        else:
-            match_info['meal']  = 'Dinner'
+        match_info['meal']  = 'Lunch' if match[5] else 'Dinner'
 
         past_matches.append(match_info)
 
