@@ -2,112 +2,116 @@
 <html>
 
 <head>
-   <title>MealMatch | {{title_value}}</title>
-   {% include 'imports.html' %}
+	<title>MealMatch | {{title_value}}</title>
+	{% include 'imports.html' %}
 </head>
 
 <body>
-   {% include 'header.html' %}
+	{% include 'header.html' %}
 
-   <div class = "container-fluid">
-      <div style = "margin-top: 10px;"><h2>{{title_value}}</h2></div>
-      <hr>
-   <form action="/submit_profile_form" method="get">
-      
-   
-      <table>
-         <tr>
-            <td align="right">Name:</td>
-            <td>
-                <input class = "form-control profileInput" name="name" required value="{{existing_profile_info['name']}}">
-            </td>
-         </tr>
-         <tr>
-            <td align="right">Year:</td>
-            <td>
-               <select class = "form-select profileInput" name="year" required>
-                  <option disabled selected hidden value="">Select your year</option>
-                  {%for i in range(-1, 4)%}
-                     {%set output = senior_class+i %}
-                     {% if i == -1 %}
-                     {%set output = "Grad College" %}
-                     {% endif %}
-                     {% if senior_class+i==existing_profile_info['year'] %}
-                     <option selected>{{output}}</option>
-                     {% else %}
-                     <option>{{output}}</option>
-                     {% endif %}
-                  {%endfor%}
-               </select>
-            </td>
-         </tr>
-         <tr>
-            <td align="right">Major:</td>
-            <td>
-               <select class = "form-select profileInput" name="major" required>
-                  <option disabled selected hidden value="">Choose your major</option>
-                  {% for major in majors %}
-                  {% if major==existing_profile_info['major'] %}
-                  <option selected>{{major}}</option>
-                  {% else %}
-                  <option >{{major}}</option>
-                  {% endif %}
-                  {% endfor %}
-               </select>
-            </td>
-         </tr>
+	<div class="container-fluid">
+		<div style="margin-top: 10px;">
+			<h2>{{title_value}}</h2>
+		</div>
+		<hr>
+		<form action="/submit_profile_form" method="get">
+			<table>
+				<tr>
+					<td align="right">Name:</td>
+					<td>
+						<input class="form-control profileInput" name="name" required
+							value="{{existing_profile_info['name']}}">
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Year:</td>
+					<td>
+						<select class="form-select profileInput" name="year" required>
+							<option disabled selected hidden value="">Select your year</option>
+							{%for i in range(-1, 4)%}
+							{%set output = senior_class+i %}
+							{% if i == -1 %}
+							{%set output = "Grad College" %}
+							{% endif %}
+							{% if senior_class+i==existing_profile_info['year'] %}
+							<option selected>{{output}}</option>
+							{% else %}
+							<option>{{output}}</option>
+							{% endif %}
+							{%endfor%}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Major:</td>
+					<td>
+						<select class="form-select profileInput" name="major" required>
+							<option disabled selected hidden value="">Choose your major</option>
+							{% for major in majors %}
+							{% if major==existing_profile_info['major'] %}
+							<option selected>{{major}}</option>
+							{% else %}
+							<option>{{major}}</option>
+							{% endif %}
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
 
-         <tr>
-            <td align="right">Bio:</td>
-            <td>
-               <textarea class = "form-control profileInput" name="bio">{{existing_profile_info['bio']}}</textarea>
-            </td>
-         </tr>
-         
-         <tr>
-            <td align="right">Phone Number:</td>
-            <td>
-               <input class = "form-control profileInput" type="tel" name="phonenum"
-               placeholder="10 digits, no dashes etc." pattern="[0-9]{10}" 
-               required value="{{existing_profile_info['phonenum']}}">
-            </td>
-         </tr>
-         <tr>
-            <td></td>
-            <td>
-               <input class = "form-control profileInput" style = "background-color: rgba(255, 159, 70, 1);" type="submit" value="{{button_value}}">
-            </td>
-         </tr>
-      </table>
-   </form>
-</div>
-<hr>
+				<tr>
+					<td align="right">Bio:</td>
+					<td>
+						<textarea class="form-control profileInput"
+							name="bio">{{existing_profile_info['bio']}}</textarea>
+					</td>
+				</tr>
+
+				<tr>
+					<td align="right">Phone Number:</td>
+					<td>
+						<input class="form-control profileInput" type="tel" name="phonenum"
+							placeholder="10 digits, no dashes etc." pattern="[0-9]{10}" required
+							value="{{existing_profile_info['phonenum']}}">
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input class="form-control profileInput" style="background-color: rgba(255, 159, 70, 1);"
+							type="submit" value="{{button_value}}">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<hr>
 </body>
+
 </html>
 
 <style>
-   .jumbotron {
-    background-color: rgba(255, 159, 70, 1);
-    color: rgba(255,255,255, 1);
-    text-align: left;
-    font-size: 16px;
-    height: 70px;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-	font-family: "Maven Pro", sans-serif;
-	
-}
+	.jumbotron {
+		background-color: rgba(255, 159, 70, 1);
+		color: rgba(255, 255, 255, 1);
+		text-align: left;
+		font-size: 16px;
+		height: 70px;
+		padding-left: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		font-family: "Maven Pro", sans-serif;
 
-.profileInput {
-   padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
+	}
 
-body {
-   font-family: "Maven Pro", sans-serif;
-}
+	.profileInput {
+		padding-left: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	body {
+		font-family: "Maven Pro", sans-serif;
+	}
 </style>

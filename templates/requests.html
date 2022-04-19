@@ -2,39 +2,41 @@
 <html>
 
 <head>
-   <title>MealMatch | View Meal Requests</title>
-   {% include 'imports.html' %}
+	<title>MealMatch | View Meal Requests</title>
+	{% include 'imports.html' %}
 </head>
 
 <body>
-   {% include 'header.html' %}
-   <table class = "table table-striped">
-      <tr>
-         <!-- <td><b>Request ID</b></td> -->
-         <td><b>Dining Hall</b></td>
-         <td><b>Meal Type</b></td>
-         <td><b>Date</b></td>
-         <td><b>Time</b></td>
-         <td></td>
-      </tr>
-      {% for i in range(all_requests|length) %}
-      <tr>
-         <td><b>{{locations[i]}}</b></td>
-         <td><b>{% if all_requests[i][2]%}
-                  Lunch
-                {% else %}
-                  Dinner
-                {%endif%}
-         </b></td>
-         <td><b>{{all_requests[i][0].strftime("%m/%d/%Y")}}</b></td>
-         <td><b>{{all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')}}</b></td>
-         <td><form method = "POST" action = "/removerequest?requestid={{all_requests[i][9]}}">
-            <button class = 'btn-sm' 
-                  style = "background-color: #c55353; color: white;">Cancel Request</button>
-         </form></td>
-      </tr>
-      {% endfor %}
-   </table> 
+	{% include 'header.html' %}
+	<table class="table table-striped">
+		<tr>
+			<!-- <td><b>Request ID</b></td> -->
+			<td><b>Dining Hall</b></td>
+			<td><b>Meal Type</b></td>
+			<td><b>Date</b></td>
+			<td><b>Time</b></td>
+			<td></td>
+		</tr>
+		{% for i in range(all_requests|length) %}
+		<tr>
+			<td><b>{{locations[i]}}</b></td>
+			<td><b>{% if all_requests[i][2]%}
+					Lunch
+					{% else %}
+					Dinner
+					{%endif%}
+				</b></td>
+			<td><b>{{all_requests[i][0].strftime("%m/%d/%Y")}}</b></td>
+			<td><b>{{all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')}}</b>
+			</td>
+			<td>
+				<form method="POST" action="/removerequest?requestid={{all_requests[i][9]}}">
+					<button class='btn-sm' style="background-color: #c55353; color: white;">Cancel Request</button>
+				</form>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
 </body>
 
 </html>

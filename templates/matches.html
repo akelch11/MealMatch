@@ -2,58 +2,64 @@
 <html>
 
 <head>
-   {% include 'imports.html' %}
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-   <title>MealMatch | View Upcoming Matches!</title>
+	<title>MealMatch | View Upcoming Matches!</title>
+	{% include 'imports.html' %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
-   {% include 'header.html' %}
-   
-   {% for matches in all_matches %}
-   <div class = "container-fluid">
-      <div class= "card">
-         <div class = 'row align-content-center'>
-            <div class ="card-body col-sm-9">
-               <strong class = "cardText"><b>{{matches[12]}}</b></strong><br>
-               <strong class = "cardText">{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " + matches[6].strftime('%-I:%M%p') ) }}</strong>
-               <br>
-               <strong class = "cardText">{{matches[13]}}{{", " + matches[14]}}</strong><br>
-               <strong class = "cardText">Phone #: {{matches[15]}}</strong>
-            </div>
-            <div class = "card-body col-sm-3 row">
-               
-            <center>
-               <div>
-                  {% if matches[7] != "Both Accepted!" %} 
-                     <strong>Status: Match Pending</strong>
-                  {% else %}
-                     <strong style = "color: #4b9e4b">Status: Match Made!</strong>
-                  {%endif%}
-               </div>
-               {% if matches[7] != '': %}
-               <a id = "matchStatus">{{matches[7]}}</a>
-               {% else: %}
-               <form id = "matchButton" method = "POST" action = "/acceptmatch?matchid={{matches[0]}}&phonenum={{matches[15]}}">
-                  <button class = 'btn-sm' style = "background-color: #4b9e4b; color: white; border: 0cm">Accept Match
-                  </button>
-               </form>
-               {% endif %}
-               <form id = "matchButton" method = "POST" action = "/cancelmatch?matchid={{matches[0]}}&phonenum={{matches[14]}}">
-                  <button class = 'btn-sm' style = "background-color: #c55353; color: white; border: 0cm">Cancel Match
-                  </button>
-               </form>
-            </center>
-            </div>
-         </div>
-      </div>
-   </div>
-   {%endfor%}
+	{% include 'header.html' %}
+
+	{% for matches in all_matches %}
+	<div class="container-fluid">
+		<div class="card">
+			<div class='row align-content-center'>
+				<div class="card-body col-sm-9">
+					<strong class="cardText"><b>{{matches[12]}}</b></strong><br>
+					<strong class="cardText">
+						{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " +
+						matches[6].strftime('%-I:%M%p') ) }}</strong>
+					<br>
+					<strong class="cardText">{{matches[13]}}{{", " + matches[14]}}</strong><br>
+					<strong class="cardText">Phone #: {{matches[15]}}</strong>
+				</div>
+				<div class="card-body col-sm-3 row">
+
+					<center>
+						<div>
+							{% if matches[7] != "Both Accepted!" %}
+							<strong>Status: Match Pending</strong>
+							{% else %}
+							<strong style="color: #4b9e4b">Status: Match Made!</strong>
+							{%endif%}
+						</div>
+						{% if matches[7] != '': %}
+						<a id="matchStatus">{{matches[7]}}</a>
+						{% else: %}
+						<form id="matchButton" method="POST"
+							action="/acceptmatch?matchid={{matches[0]}}&phonenum={{matches[15]}}">
+							<button class='btn-sm' style="background-color: #4b9e4b; color: white; border: 0cm">Accept
+								Match
+							</button>
+						</form>
+						{% endif %}
+						<form id="matchButton" method="POST"
+							action="/cancelmatch?matchid={{matches[0]}}&phonenum={{matches[14]}}">
+							<button class='btn-sm' style="background-color: #c55353; color: white; border: 0cm">Cancel
+								Match
+							</button>
+						</form>
+					</center>
+				</div>
+			</div>
+		</div>
+	</div>
+	{%endfor%}
 
 
 </body>
 <script>
-   
+
    // $('#matchStatus').ready( function() {
 
    //    if($('#matchStatus').value === "Both Accepted!")
@@ -63,20 +69,21 @@
    // })
 </script>
 <style>
-   #matchesHeader {
-      font: "Maven Pro", sans-serif;
-   }
+	#matchesHeader {
+		font: "Maven Pro", sans-serif;
+	}
 
-   #matchButton {
-      margin: 10px;
-   }
+	#matchButton {
+		margin: 10px;
+	}
 
-   .card {
-      margin-top: 20px;
-   }
+	.card {
+		margin-top: 20px;
+	}
 
-   .cardText {
-      margin-left: 30px;
-   }
+	.cardText {
+		margin-left: 30px;
+	}
 </style>
+
 </html>
