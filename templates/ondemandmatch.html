@@ -195,9 +195,10 @@
 				console.log('attempt to send invalid meal request')
 				if(emptyFields)
 					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-				if(!validMealTimes)
+				if(!validMealTimes && (isLunchTime() || isDinnerTime()))
 					document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
-				
+				if(!isLunchTime() && !isDinnerTime())
+				document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
 				// prevents submission
 				event.preventDefault();
 			}
