@@ -102,7 +102,7 @@ def remove_match(netid, matchid, phonenum):
 def match_requests():
     
     # Create queries for both lunch and dinner request matching
-    parse_requests_lunch = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX 
+    parse_requests_lunch = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX, 
                                 u.YEAR, u.MAJOR
                                 FROM requests as r, users as u 
                                 WHERE r.LUNCH = TRUE 
@@ -112,7 +112,7 @@ def match_requests():
                                 ORDER BY BEGINTIME ASC
                                 """
 
-    parse_requests_din = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX 
+    parse_requests_din = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX, 
                                 u.YEAR, u.MAJOR
                                 FROM requests as r, users as u 
                                 WHERE r.LUNCH = FALSE 
