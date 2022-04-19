@@ -5,98 +5,63 @@
     <title> MealMatch | View Past Matches! </title>
     {% include 'imports.html' %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
     {% include 'header.html' %}
     <center>
-    <div class="container">
-        {% for match in past_matches %}
-            <button id="{{match['id']}}_Button" type="button" 
-            class="btn btn-primary lrg_button"
-            data-toggle='modal' data-target="#{{match['id']}}_Modal">
+        <div class="container">
+            {% for match in past_matches %}
+            <button type="button" class="btn btn-primary lrg_button" data-bs-toggle="modal" data-bs-target="#Modal_{{match['id']}}">
                 <span>{{match["name"]}}</span><br>
                 <span>{{match["meal"]}}</span><br>
                 <span>{{match["day"].strftime("%a, %B %d")}}</span><br>
             </button>
-            <div id="{{match['id']}}_Modal" class="modal fade" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal fade" id="Modal_{{match['id']}}" tabindex="-1" aria-labelledby="ModalLabel_{{match['id']}}"
+                aria-hidden="true">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{match["name"]}}</h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h5 class="modal-title" id="ModalLabel_{{match['id']}}">{{match["meal"]}} with
+                                {{match["name"]}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <span>{{match["name"]}} - </span><span class='italics'>{{match["netid"]}}</span><br>
-                            <span>{{match["meal"]}}</span><br>
-                            <span>{{match["dhall"]}}</span><br>
-                            <span>{{match["day"].strftime("%A, %B %d")}}</span><br>
+                            <span>Netid: </span><span class='italics'>{{match["netid"]}}</span><br>
+                            <span>{{match["dhall"]}} on {{match["day"].strftime("%A, %B %d")}}</span><br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary sml_button" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary sml_button" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
     </center>
 </body>
+
 </html>
-<script>
-    // function showModal(){
-    //     $("#341213iy812e33_Modal").modal("show");
-    // }
-        // let buttons = document.getElementsByClassName('lrg_button');
-        // for(const button of buttons){
-        //     button.addEventListener('click', function() {
-        //         console.log(button.getAttribute("data-target"));
-        //         let modal = $(button.getAttribute("data-target"));
-        //         console.log(modal);
-        //         modal.show()
-        //         // modal.style.display = "block"; 
-        //     });
-        // }
-        // let modals = document.getElementsByClassName('modal')
-        // buttons = document.getElementsByClassName('close');
-        // for (const button of buttons) {
-        //     button.addEventListener('click', function(){
-        //         for(modal of modals){
-        //             // modal.style.display = "none";
-        //             modal.modal();
-        //             console.log(modal.id)
-        //         }
-        //         // modal = button.parentElement.parentElement.parentElement.parentElement;
-        //         // modal.style.display = "none";
-        //     }); 
-        // }
-        // window.onclick = function(event) {
-        //     for(modal of modals){
-        //         if (event.target == modal) {
-        //             modal.style.display = "none";
-        //         }
-        //     }
-        // }
-    // });
-    // $('document').ready(setup)
-</script>
 <style>
-* {
-	box-sizing: border-box;
-    font-family: "Maven Pro", sans-serif;
-}
-.lrg_button {
-    margin: 20px;
-    background-color: #ff9f46;
-    color: white;
-    border: none;
-    width: 200px;
-    height: 200px;
-}
-.sml_button {
-    background-color: #ff9f46;
-    color: white;
-}
+    * {
+        box-sizing: border-box;
+        font-family: "Maven Pro", sans-serif;
+    }
+
+    .lrg_button {
+        margin: 20px;
+        background-color: #ff9f46;
+        color: white;
+        border: none;
+        width: 200px;
+        height: 200px;
+    }
+
+    .sml_button {
+        background-color: #ff9f46;
+        color: white;
+    }
 </style>

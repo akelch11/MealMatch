@@ -247,7 +247,7 @@ def get_name_from_netid(netid):
 
 def get_past_matches(netid):
     query="""SELECT first_netid, second_netid,
-            end_window, dining_hall, match_id
+            end_window, dining_hall, match_id, lunch
             FROM matches
             WHERE first_netid = %s
             OR second_netid = %s
@@ -264,16 +264,11 @@ def get_past_matches(netid):
         other_netid = match[0] if match[1] == netid else match[1]
         
         match_info['netid'] = other_netid
+        match_info['name'] = get_name_from_netid(other_netid)
+        match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
-        match_info['name'] = get_name_from_netid(other_netid)
-        
-        parsed_day = match[2]
-        match_info['day'] = parsed_day
-        if parsed_day.hour<15:
-            match_info['meal']  = 'Lunch'
-        else:
-            match_info['meal']  = 'Dinner'
+        match_info['meal']  = 'Lunch' if match[5] else 'Dinner'
 
         past_matches.append(match_info)
 
