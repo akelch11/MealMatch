@@ -163,7 +163,6 @@
 		// validate request fields, prevent submission if invalid
 		submitButtonForm.addEventListener('click', function(event){
 			
-			event.preventDefault();
 			
 			let endTime = document.getElementById("endTimeButton").value;
 			console.log(endTime);
@@ -202,12 +201,12 @@
 				// prevents submission
 				event.preventDefault();
 			}
-			// else 
-			// {
-			// 	console.log('submission')
-			// 	updateUrl()
-			// }
-			event.preventDefault();
+			 else 
+			{
+			 	console.log('submission successful')
+				updateUrl()
+			}
+			
 
 		});
 
