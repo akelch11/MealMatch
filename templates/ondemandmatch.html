@@ -121,8 +121,7 @@
 
 		let url = "/submitrequest"
 		let endTime = document.getElementById("endTimeButton").value;
-		if (activeDhall === "" || endTime === "")
-			return;
+		
 
 		let activeMeal = "";
 		if (isDinnerTime())
@@ -272,6 +271,9 @@
 	endTimeButton.addEventListener('click', updateUrl);
 	// update url on changing times
 	endTimeButton.addEventListener('change', updateUrl);
+
+	for(let i = 0; i < dHallButtons.length; i++)
+		dHallButtons[i].addEventListener('click', updateUrl)
 
 </script>
 
