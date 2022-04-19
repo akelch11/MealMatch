@@ -69,7 +69,7 @@
 		let dateTime = new Date();
 		let hour = dateTime.getHours();
 		let minute = dateTime.getMinutes();
-		return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
+		return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 14);
 	}
 	function updateEndTime() {
 		let endTimeEL = document.getElementById('endTimeButton')
@@ -244,7 +244,8 @@
 					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
 							&& (compareTimeStrings(t1, nowTime) >= 0);
 				}
-				else{
+				else
+				{
 					
 					console.log("RET :" + false)
 
