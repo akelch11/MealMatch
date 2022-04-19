@@ -220,7 +220,7 @@ def execute_match_query(parse_requests, lunch):
         now = datetime.now()
 
         sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
-        sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql += "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, lunch)
 
