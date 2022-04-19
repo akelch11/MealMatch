@@ -21,7 +21,7 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
         sql = sql + "{},".format(dhall_list[i])
 
     dhall_strargs = "%s, "*len(dhall_list)
-    sql = sql + "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, " + dhall_strargs + "%s, %s)"
+    sql = sql + ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
 
     requestId = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
     
@@ -175,7 +175,7 @@ def execute_match_query(parse_requests, dhall, isLunch):
             now = datetime.now()
 
             sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
-            sql += "VALUES (" + ", ".join(["%s"]*11) + ")"
+            sql += "VALUES ({})".format( ", ".join(["%s"]*11) )
 
             val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, isLunch)
 
