@@ -101,32 +101,32 @@ def remove_match(netid, matchid, phonenum):
 
 def match_requests():
     
-    for dhall in dhall_list:
+    # Create queries for both lunch and dinner request matching
+    parse_requests_lunch = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX, 
+                                u.YEAR, u.MAJOR
+                                FROM requests as r, users as u 
+                                WHERE r.LUNCH = TRUE 
+                                AND r.MATCHID IS NULL 
+                                AND r.ACTIVE = TRUE
+                                AND r.netid = u.netid
+                                ORDER BY BEGINTIME ASC
+                                """
 
-        # Create queries for both lunch and dinner request matching
-        parse_requests_lunch = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM FROM requests as r, users as u 
-                                    WHERE {} = TRUE 
-                                    AND r.LUNCH = TRUE 
-                                    AND r.MATCHID IS NULL 
-                                    AND r.ACTIVE = TRUE
-                                    AND r.netid = u.netid
-                                    ORDER BY BEGINTIME ASC
-                                    """.format(dhall)
+    parse_requests_din = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, r.CJL, r.FORBES, r.ROMA, r.WHITMAN, r.WUCOX, 
+                                u.YEAR, u.MAJOR
+                                FROM requests as r, users as u 
+                                WHERE r.LUNCH = FALSE 
+                                AND r.MATCHID IS NULL 
+                                AND r.ACTIVE = TRUE
+                                AND r.netid = u.netid
+                                ORDER BY BEGINTIME ASC
+                                """
 
-        parse_requests_din = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM FROM requests as r, users as u 
-                                    WHERE {} = TRUE 
-                                    AND r.LUNCH = FALSE 
-                                    AND r.MATCHID IS NULL 
-                                    AND r.ACTIVE = TRUE
-                                    AND r.netid = u.netid
-                                    ORDER BY BEGINTIME ASC
-                                    """.format(dhall)
+    # Run helper method to find and insert matches into matches table
+    execute_match_query(parse_requests_lunch, True)
+    execute_match_query(parse_requests_din, False)
 
-        execute_match_query(parse_requests_lunch, dhall, isLunch= True)
-        execute_match_query(parse_requests_din, dhall, isLunch= False)
-
-
-def execute_match_query(parse_requests, dhall, isLunch):
+def execute_match_query(parse_requests, lunch):
     # Number of characters in id
     N = 16 
     cur, conn = new_connection()
@@ -136,19 +136,24 @@ def execute_match_query(parse_requests, dhall, isLunch):
     matched = []
     # iterate through requests, comparing pairs to examine match 
     for i in range(len(rows)):
+
+        poss_matches = []
+        first = rows[i] # First request
+
+        # Do not attempt to find match if row is already matched
+        if i in matched:
+            continue
+
         for j in range(i+1,len(rows)):
-
-
             # Do not attempt to find match if row is already matched
-            if i in matched or j in matched:
+            if j in matched:
                 continue
 
-            first = rows[i] # First request
             second = rows[j] # Second request
 
             print("Test!")
-            print(first[1], file = stderr)
-            print(second[1], file = stderr)
+            print(first[1])
+            print(second[1])
 
             overlap = find_overlap(first[2], first[3], second[2], second[3])
             
@@ -157,44 +162,96 @@ def execute_match_query(parse_requests, dhall, isLunch):
             if not overlap:
                 print("Continue")
                 continue
-
+            
+            # Do not match two requests originating from same user
             if first[1] == second[1]:
+                print("Continue")
+                continue
+
+            # Evaluate possible dining halls for each request
+            first_poss_dhalls = find_possible_dhalls(first)
+            second_poss_dhalls = find_possible_dhalls(second)
+
+            combined_dhalls = list(set(first_poss_dhalls) & set(second_poss_dhalls))
+
+            # No common dining halls between a pair of requests
+            if len(combined_dhalls) == 0:
+                print("Continue")
                 continue
             
-            # Establish start and end windows for match
-            start_int = overlap[0]
-            end_int = overlap[1]
+            # Assign score to current possible match and add it
+            # to the current possible matches
+            # index for major: 12
+            # index for class year: 11
+            if first[11] == second[11] and first[12] == second[12]:
+                poss_matches.append((j, 2, combined_dhalls, overlap))
+            
+            elif first[11] == second[11] or first[12] == second[12]:
+                poss_matches.append((j, 1, combined_dhalls, overlap))
 
-            # Obtain matchid
-            match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
-            first_netid = first[1]
-            second_netid = second[1]
+            else:
+                poss_matches.append((j, 0, combined_dhalls, overlap))
+            
+        # Continue loop if there are no possible matches
+        if len(poss_matches) == 0:
+            continue
+
+        # Now execute a match
+
+        # Sort possible matches by match score, i.e., second item in
+        # the list of tuples, in descending order
+        poss_matches.sort(key = lambda x: x[1], reverse = True)
+        chosen_row = poss_matches[0]
+        second = rows[chosen_row[0]] # Grab requests row of chosen request
+        dhall = chosen_row[2][0] # Dhall chosen for match
+        overlap = chosen_row[3]
+            
+        # Establish start and end windows for match
+        start_int = overlap[0]
+        end_int = overlap[1]
+
+        # Obtain matchid
+        match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+        first_netid = first[1]
+        second_netid = second[1]
 
 
-            # Current time for match made
-            now = datetime.now()
+        sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
+        sql += "VALUES ({})".format( ",".join(["%s"]*11) )
+        
+        # Current time for match made
+        now = datetime.now()
 
-            sql = "INSERT INTO matches (MATCH_ID, FIRST_NETID, SECOND_NETID, MATCH_TIME, DINING_HALL, START_WINDOW, END_WINDOW, FIRST_ACCEPTED, SECOND_ACCEPTED, ACTIVE, LUNCH) "
-            sql += "VALUES ({})".format( ", ".join(["%s"]*11) )
+        val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, lunch)
 
-            val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, isLunch)
+        cur.execute(sql, val)
 
-            cur.execute(sql, val)
+        # Modify requests after match is made
+        modify_request(first[0], match_id)
+        modify_request(second[0], match_id)
 
-            # Modify requests after match is made
-            modify_request(first[0], match_id)
-            modify_request(second[0], match_id)
+        message = "You matched with {} on MealMatch! Check the app for more information on your match."
 
-            message = "You matched with {} on MealMatch! Check the app for more information on your match."
+        notifications.send_message(message.format(first[4]), second[5])
+        notifications.send_message(message.format(second[4]), first[5])
 
-            notifications.send_message(message.format(first[4]), second[5])
-            notifications.send_message(message.format(second[4]), first[5])
-
-            # cache the row numbers being matched
-            matched.append(i)
-            matched.append(j)
+        # cache the row numbers being matched
+        matched.append(i)
+        matched.append(j)
 
     close_connection(cur, conn)
+
+# Helper method, returns a list of selected dhalls from request
+def find_possible_dhalls(row):
+    available = []
+    # dhalls indexed starting at 
+    dhalls = row[6:6+len(dhall_list)]
+
+    for i in range(len(dhalls)):
+        if dhalls[i] == True:
+            available.append(dhall_list[i])
+    
+    return available
 
 # Remove request from request table 
 def modify_request(request_id, match_id):

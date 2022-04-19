@@ -38,7 +38,7 @@ def create_matches_table():
             END_WINDOW TIMESTAMP NOT NULL,
             FIRST_ACCEPTED BOOLEAN NOT NULL,
             SECOND_ACCEPTED BOOLEAN NOT NULL,
-            ACTIVE BOOLEAN NOT NULL
+            ACTIVE BOOLEAN NOT NULL,
             LUNCH BOOLEAN NOT NULL);'''
     
     cur, conn = new_connection()
