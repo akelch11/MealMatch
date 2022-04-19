@@ -20,8 +20,8 @@
       <div class= "card">
          <div class = 'row align-content-center'>
             <div class ="card-body col-sm-9">
-               <strong><b>{{matches[11]}}</b></strong><br>
-               <strong>{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " + matches[6].strftime('%-I:%M%p') ) }}</strong>
+               <strong class = "cardText"><b>{{matches[11]}}</b></strong><br>
+               <strong class = "cardText">{{'Meal @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " + matches[6].strftime('%-I:%M%p') ) }}</strong>
                <br>
                <strong class = "cardText">{{matches[12]}}{{", " + matches[13]}}</strong><br>
                <strong class = "cardText">Phone #: {{matches[14]}}</strong>
@@ -33,7 +33,7 @@
                   {% if matches[7] != "Both Accepted!" %} 
                      <strong>Status: Match Pending</strong>
                   {% else %}
-                     <strong>Status: Match Pending</strong>
+                     <strong style = "color: #4b9e4b">Status: Match Status</strong>
                   {%endif%}
                </div>
                {% if matches[7] != '': %}
