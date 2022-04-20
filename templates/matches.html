@@ -12,7 +12,16 @@
 
 	{% for matches in all_matches %}
 	<div class="container-fluid">
-		<div class="card">
+		
+      <center>
+      <div style="margin-top: 10px;">
+			<h2 class = "forceMaven">Your Matches</h2>
+         <hr>
+		</div>
+   </center>
+   
+   
+      <div class="card">
 			<div class='row align-content-center'>
 				<div class="card-body col-sm-9">
 					<strong class="cardText"><b>{{matches[12]}}</b></strong><br>
@@ -90,6 +99,10 @@
 	.cardText {
 		margin-left: 30px;
 	}
+
+   .forceMaven {
+      font-family: "Maven Pro", sans-serif;
+   }
 </style>
 
 </html>
