@@ -44,7 +44,7 @@
 		</div>
 
 		<div class='container row'>
-			<a id="submitButtonForm" href="/submit_request">
+			<a id="submitButtonForm" href="/submitrequest">
 				<button class='btn-lg submitButton'> Find me a match!</button>
 			</a>
 		</div>
@@ -224,6 +224,22 @@
 		}
 		else updateUrl();
 	});
+
+
+
+	lunchButton.addEventListener('click', updateUrl);
+	dinnerButton.addEventListener('click', updateUrl);
+		
+	for(let i = 0; i < dHallButtons.length; i++)
+		dHallButtons[i].addEventListener('click', updateUrl)
+		
+		let startTimeButton = document.getElementById("startTimeButton");
+		let endTimeButton = document.getElementById("endTimeButton");
+		startTimeButton.addEventListener('click', updateUrl);
+		endTimeButton.addEventListener('click', updateUrl);
+		// update url on changing times
+		startTimeButton.addEventListener('change', updateUrl);
+		endTimeButton.addEventListener('change', updateUrl)
 
 </script>
 
