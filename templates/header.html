@@ -1,18 +1,27 @@
 <html>
 	<body>
-		<div class = "jumbotron container-fluid">
+		<div class = "jumbotron container-fluid orange-moon">
 			<nav class="navbar justify-content-between">
 				<a class="navbar-brand" id="HomeButton" href="/index" >MealMatch</a>
 				<div>
-					<a class="navbar-link NB-Button" href="/about">About</a>
+					<a class="navbar-link NB-Button" style = "text-decoration: none;" href="/about">About</a>
 					<!-- TODO update logic so that shows when not logged in -->
 					{% if landing %}
-					<a class="navbar-link NB-Button" href="/next">Log In</a>
+					<a class="navbar-link NB-Button" style = "text-decoration: none;" href="/next">Log In</a>
 					{% else %}
-					<a class="navbar-link NB-Button" href="/logout">Logout</a>
+					<a class="navbar-link NB-Button" style = "text-decoration: none;" href="/logout">Logout</a>
 					{%endif%}
 				</div>
 			</nav>
 		</div>
 	</body>
+	<style>
+		.orange-moon {
+    background: #fc4a1a;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: #fff;
+   
+}
+	</style>
 </html>
