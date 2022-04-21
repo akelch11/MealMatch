@@ -12,28 +12,28 @@
 
 	{% for matches in all_matches %}
 	<div class="container-fluid">
-		
-      <center>
-      <div style="margin-top: 10px;">
-			<h2 class = "forceMaven">Your Matches</h2>
-         <hr>
-		</div>
-   </center>
-   
-   
-      <div class="card">
+
+		<center>
+			<div style="margin-top: 10px;">
+				<h2 class="forceMaven">Your Matches</h2>
+				<hr>
+			</div>
+		</center>
+
+
+		<div class="card">
 			<div class='row align-content-center'>
 				<div class="card-body col-sm-9">
 					<strong class="cardText"><b>{{matches[12]}}</b></strong><br>
 					<strong class="cardText">
 						{% if matches[10] %}
-                  {{'Lunch @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " +
-						matches[6].strftime('%-I:%M%p') ) }}
-                  {% else %}
-                  {{'Dinner @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+ " - " +
-						matches[6].strftime('%-I:%M%p') ) }}
-                  {%endif%}
-               </strong>
+						{% set meal= "Lunch" %}
+						{% else %}
+						{% set meal= "Dinner" %}
+						{%endif%}
+						{{meal + ' @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+
+						" - " + matches[6].strftime('%-I:%M%p') ) }}
+					</strong>
 					<br>
 					<strong class="cardText">{{matches[13]}}{{", " + matches[14]}}</strong><br>
 					<strong class="cardText">Phone #: {{matches[15]}}</strong>
@@ -48,9 +48,9 @@
 							<strong style="color: #4b9e4b">Status: Match Made!</strong>
 							{%endif%}
 						</div>
-						{% if matches[7] != '': %}
+						{% if matches[7] != '' %}
 						<a id="matchStatus">{{matches[7]}}</a>
-						{% else: %}
+						{% else %}
 						<form id="matchButton" method="POST"
 							action="/acceptmatch?matchid={{matches[0]}}&phonenum={{matches[15]}}">
 							<button class='btn-sm' style="background-color: #4b9e4b; color: white; border: 0cm">Accept
@@ -100,9 +100,9 @@
 		margin-left: 30px;
 	}
 
-   .forceMaven {
-      font-family: "Maven Pro", sans-serif;
-   }
+	.forceMaven {
+		font-family: "Maven Pro", sans-serif;
+	}
 </style>
 
 </html>

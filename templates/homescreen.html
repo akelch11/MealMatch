@@ -15,7 +15,7 @@
 				<!-- Should only be active during meals -->
 				<div class="col-sm-4">
 					<form action='/ondemand'>
-						<button class="btn-lg btn-block homeButton btn-orange-moon" id="grabMealButton">
+						<button class="btn-lg btn-block hPageButton" id="grabMealButton">
 							<img class="home_img_class" src="/static/diningchairslogo.png" alt="grab meal"> </img><br>
 							I'M AT A DHALL
 						</button>
@@ -24,7 +24,7 @@
 
 				<div class='col-sm-4'>
 					<form action="/schedule">
-						<button class="btn-lg btn-block homeButton">
+						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/mealtime_icon.png"
 								alt="schedule a meal"></img><br>
 							SCHEDULE A MEAL
@@ -34,7 +34,7 @@
 
                 <div class='col-sm-4'>
 					<form action="/matches">
-						<button class="btn-lg btn-block homeButton">
+						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/matched_icon.png" alt="matches"> </img><br>
 							MATCHES
 						</button>
@@ -44,7 +44,7 @@
 
 				<div class='col-sm-4'>
 					<form action="/requests">
-						<button class="btn-lg btn-block homeButton">
+						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/hourglass.png"
 								alt="scheduled meals"></img><br>
 							REQUESTS
@@ -55,7 +55,7 @@
 
 				<div class='col-sm-4'>
 					<form action="/history">
-						<button class="btn-lg btn-block homeButton">
+						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/match_history.png" alt="history"> </img><br>
 							PAST MATCHES
 						</button>
@@ -64,7 +64,7 @@
 
 				<div class='col-sm-4'>
 					<form action="/edit_account">
-						<button class="btn-lg btn-block homeButton">
+						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/profilepiclogowhite.png"
 								alt="my profile"></img><br>
 							MY PROFILE
@@ -99,21 +99,15 @@
 		padding-bottom: 10px;
 	}
 
-	.homeButton {
+	.hPageButton {
 		margin: 20px;
 		background-color: #ff9f46;
 		color: white;
 		border: none;
 		width: 200px;
 		height: 200px;
-		
-
-		/* ff9f46 */
-    
-
 	}
-
-	.homeButton:hover {
+	.hPageButton:hover {
 		transform: scale(1.05) perspective(1px)
 	}
 

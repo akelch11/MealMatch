@@ -7,6 +7,7 @@
     padding-left: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+    padding-right: 10px;
 }
 
 #HomeButton {
@@ -15,10 +16,41 @@
     color:rgba(255,255,255, 1);
     font-size: 32px;
 }
-.NB-Button {
-    font-weight: 300;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    /* text-align: right; */
-    color: rgba(255,255,255, 1);
+.menuButton {
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
+.submitReqButton {
+    background-color: rgba(255, 159, 70, 1);
+    color: white;
+
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.orange-moon {
+    background: #fc4a1a;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #f7b733, #fc4a1a);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: #fff;
+
+}
+.enter-button {
+    border: 3px solid #eee;
+}
+
