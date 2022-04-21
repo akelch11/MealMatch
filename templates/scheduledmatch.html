@@ -13,7 +13,7 @@
 	<center>
 
 		<div id='mealType' class="container">
-			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+			<div class="btn-group-sm menuButton">
 				I want to eat:
 				<button class='btn-lg' id='lunchButton'> Lunch </button>
 				<button class='btn-lg' id='dinnerButton'> Dinner </button>
@@ -21,7 +21,7 @@
 		</div>
 
 		<div id='hallType' class="container">
-			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+			<div class="btn-group-sm menuButton">
 				I want to eat at:
 				{% for dhall in dhalls%}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
@@ -30,22 +30,22 @@
 		</div>
 
 		<div class=container>
-			<a target="_blank" href="https://campus.dailyprincetonian.com/menus">Check out what the dining halls are
+			<a target="_blank" href="https://tigermenus.herokuapp.com">Check out what the dining halls are
 				serving</a><br>
 		</div>
 
 		<div id='mealTimes' class="container row">
 			<div class="btn-group-sm dropdown" id='time' style="font-size: 18px;">
 				I'm free from:
-				<input required class='btn-sm' type='time' step='60' id='startTimeButton'></button>
+				<input required class='btn-sm' type='time' step='60' id='startTimeButton'>
 				to
-				<input required class='btn-sm' type='time' step='60' id='endTimeButton'></button>
+				<input required class='btn-sm' type='time' step='60' id='endTimeButton'>
 			</div>
 		</div>
 
 		<div class='container row '>
 			<a id="submitButtonForm" href="/submitrequest">
-				<button class='btn-lg submitButton btn-orange-moon'> Find me a match!</button>
+				<button class='btn-lg submitReqButton orange-moon enter-button'> Find me a match!</button>
 			</a>
 		</div>
 
@@ -64,14 +64,18 @@
 	let lunchButton = document.getElementById("lunchButton");
 	let dinnerButton = document.getElementById("dinnerButton");
 	let activeMeal = "";
-	let activeDhalls = { 'CJL': false, "Forbes": false, 'RoMa': false, 'Whitman': false, 'Wucox': false };
+	let activeDhalls = {};
+	let dHallButtons = document.getElementsByClassName('dHallType');
+	for (btn of dHallButtons) {
+		activeDhalls[btn.id] = false;
+	}
 
 
 	lunchButton.addEventListener('click', function onClick() {
 		activeMeal = 'lunch';
 		console.log('lunch Pressed');
 		lunchButton.style.backgroundColor = "#ff9f46";
-		dinnerButton.style.backgroundColor = 'white';
+		dinnerButton.style.backgroundColor = '';
 
 	});
 
@@ -79,12 +83,9 @@
 		activeMeal = 'dinner';
 		console.log('dinner Pressed');
 		dinnerButton.style.backgroundColor = "#ff9f46";
-		lunchButton.style.backgroundColor = 'white';
+		lunchButton.style.backgroundColor = '';
 
 	});
-
-
-	let dHallButtons = document.getElementsByClassName('dHallType');
 
 	for (let i = 0; i < dHallButtons.length; i++) {
 		let btn = dHallButtons[i];
@@ -99,7 +100,7 @@
 					activeDhalls[dhall] = true;
 				}
 				else {
-					btn.style.backgroundColor = "white";
+					btn.style.backgroundColor = "";
 					activeDhalls[dhall] = false;
 				}
 
@@ -156,33 +157,22 @@
 		else {
 
 
-			let now = new Date()
-			let nowHour = String(now.getHours())
-			let nowMin = String(now.getMinutes())
-
-			// zero pad times
-			if(now.getHours() < 10)
-					nowHour = "0" + nowHour;
-			if(now.getMinutes() < 10)
-					nowMin = "0" + nowMin
-	
-			let nowTime = nowHour+":"+nowMin;
+			let now = new Date();
+			let nowTime = now.toTimeString().substring(0, 5);
 
 			// times are within lunch range and not in past
 			let lunch_bool = (meal === 'lunch') &&
 				(compareTimeStrings("11:30", t1) <= 0) &&
+				(compareTimeStrings(nowTime, t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
-				(compareTimeStrings(t2, "14:00") <= 0) &&
-				(compareTimeStrings(t1, nowTime) >= 0) &&
-				(compareTimeStrings(t2, nowTime) >= 0);
+				(compareTimeStrings(t2, "14:00") <= 0);
 
 			// times are within dinner range and not in past
 			let dinner_bool = (meal === "dinner") &&
 				(compareTimeStrings("17:00", t1) <= 0) &&
+				(compareTimeStrings(nowTime, t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
-				(compareTimeStrings(t2, "20:00") <= 0)
-				(compareTimeStrings(t1, nowTime) >= 0) &&
-				(compareTimeStrings(t2, nowTime) >= 0);
+				(compareTimeStrings(t2, "20:00") <= 0);
 
 			return lunch_bool || dinner_bool;
 		}
@@ -208,16 +198,16 @@
 		console.log('valid mealtimes ' + validMealTimes)
 
 		let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
-		console.log('empty: ' + emptyFields)
+		console.log('empty fields?: ' + emptyFields)
 
 		document.getElementById('errorBox').innerHTML = ""
 		// takeout validMealTimes to remove lunch/dinner time validation
-		if (emptyFields /*||  !validMealTimes*/) {
+		if (emptyFields || !validMealTimes) {
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-			// if (!validMealTimes)
-			// 	document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
+			if (!validMealTimes)
+				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
 
 			// prevents submission
 			event.preventDefault();
@@ -229,17 +219,17 @@
 
 	lunchButton.addEventListener('click', updateUrl);
 	dinnerButton.addEventListener('click', updateUrl);
-		
-	for(let i = 0; i < dHallButtons.length; i++)
+
+	for (let i = 0; i < dHallButtons.length; i++)
 		dHallButtons[i].addEventListener('click', updateUrl)
-		
-		let startTimeButton = document.getElementById("startTimeButton");
-		let endTimeButton = document.getElementById("endTimeButton");
-		startTimeButton.addEventListener('click', updateUrl);
-		endTimeButton.addEventListener('click', updateUrl);
-		// update url on changing times
-		startTimeButton.addEventListener('change', updateUrl);
-		endTimeButton.addEventListener('change', updateUrl)
+
+	let startTimeButton = document.getElementById("startTimeButton");
+	let endTimeButton = document.getElementById("endTimeButton");
+	startTimeButton.addEventListener('click', updateUrl);
+	endTimeButton.addEventListener('click', updateUrl);
+	// update url on changing times
+	startTimeButton.addEventListener('change', updateUrl);
+	endTimeButton.addEventListener('change', updateUrl)
 
 </script>
 
@@ -254,67 +244,9 @@
 		font-weight: normal;
 	}
 
-	#header {
-		font-weight: 900;
-	}
-
-	.outlineBox {
-		width: 100%;
-		height: 727px;
-		background: rgba(255, 255, 255, 1);
-		opacity: 1;
-		position: absolute;
-
-		border-top-left-radius: 16px;
-		border-top-right-radius: 16px;
-		border-bottom-left-radius: 16px;
-		border-bottom-right-radius: 16px;
-		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-		overflow: hidden;
-	}
-
 	#mealType {
 		margin: 20px;
 		margin-top: 20px;
 
 	}
-
-	.menuButton {
-		padding-left: 10px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		padding-right: 10px;
-		margin-top: 20px;
-		margin-bottom: 20px;
-		margin-left: 20px;
-		margin-right: 20px;
-	}
-
-	button {
-		background-color: white;
-	}
-
-	.submitButton {
-		background-color: rgba(255, 159, 70, 1);
-		padding-left: 10px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		padding-right: 10px;
-		margin-top: 20px;
-		margin-bottom: 20px;
-		margin-left: 20px;
-		margin-right: 20px;
-		color: white;
-	}
-
-	.btn-orange-moon {
-    background: #fc4a1a;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: #fff;
-    border: 3px solid #eee;
-}
-
-	
-	
 </style>

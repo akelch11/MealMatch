@@ -11,7 +11,7 @@
 	{% include 'header.html' %}
 	<center>
 		<div id='hallType' class="container">
-			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+			<div class="btn-group-sm menuButton">
 				I'm currently at:
 				{% for dhall in dhalls %}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
@@ -20,7 +20,7 @@
 
 		</div>
 		<div class=container>
-			<a target="_blank" href="https://campus.dailyprincetonian.com/menus">Check out what the dining halls are
+			<a target="_blank" href="https://tigermenus.herokuapp.com">Check out what the dining halls are
 				serving</a><br>
 		</div>
 
@@ -34,18 +34,12 @@
 		<div>
 			<div class='container row'>
 				<a id="submitButtonForm" href="/ondemand">
-					<button class='btn-lg submitButton btn-orange-moon'>Find me a match!</button>
+					<button class='btn-lg submitReqButton orange-moon enter-button'>Find me a match!</button>
 				</a>
 			</div>
 		</div>
 
-
-
-
-	<div class="container row" id = "errorBox" style = "color: red">
-		
-		
-	</div>
+		<div class="container row" id="errorBox" style="color: red"></div>
 
 
 
@@ -87,7 +81,7 @@
 	}
 	$('document').ready(updateEndTime);
 
-	
+
 
 
 	let dHallButtons = document.getElementsByClassName('dHallType')
@@ -103,7 +97,7 @@
 
 				for (let j = 0; j < dHallButtons.length; j++)
 					if (dHallButtons[j].id != btn.id) {
-						dHallButtons[j].style.backgroundColor = "white";
+						dHallButtons[j].style.backgroundColor = "";
 
 					}
 			});
@@ -121,7 +115,7 @@
 
 		let url = "/submitrequest"
 		let endTime = document.getElementById("endTimeButton").value;
-		
+
 
 		let activeMeal = "";
 		if (isDinnerTime())
@@ -144,125 +138,119 @@
 
 
 
-		// compare times in string format HH:MM
-		function compareTimeStrings(t1, t2){
-			let hour1 = Number(t1.substring(0,2));
-			let hour2 = Number(t2.substring(0,2));
-			let min1 = Number(t1.substring(3));
-			let min2 = Number(t2.substring(3));
+	// compare times in string format HH:MM
+	function compareTimeStrings(t1, t2) {
+		let hour1 = Number(t1.substring(0, 2));
+		let hour2 = Number(t2.substring(0, 2));
+		let min1 = Number(t1.substring(3));
+		let min2 = Number(t2.substring(3));
 
-			if(hour1 != hour2) return hour1 - hour2;
-			else
-				return min1 - min2;
-		};
-
-
-
-
-		// validate request fields, prevent submission if invalid
-		submitButtonForm.addEventListener('click', function(event){
-			
-			
-			let endTime = document.getElementById("endTimeButton").value;
-			console.log(endTime);
-			
-			// determine if any dhall buttons have been pressed 'ON'
-			let selected = activeDhall != ""
-
-			console.log(activeDhall)
-
-			// check if 
-			let validMealTimes = validateTimes(endTime);
-
-			console.log('valid mealtimes ' + validMealTimes)
-			console.log('lunch time? : ' + isLunchTime())
-			console.log('dinner time? : ' + isDinnerTime())
-			
-
-			
-			document.getElementById('errorBox').innerHTML = ""
-			
-			let emptyFields = (endTime === "" || !selected)
-			
-
-			console.log('empty: ' + emptyFields)
-
-			// takeout validMealTimes to remove lunch/dinner time validation
-			if(emptyFields /* || !validMealTimes */)
-			{
-				console.log('attempt to send invalid meal request')
-				if(emptyFields)
-					document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-				// if(!validMealTimes && (isLunchTime() || isDinnerTime()))
-				// 	document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
-				// if(!isLunchTime() && !isDinnerTime())
-				// document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
-				// prevents submission
-				event.preventDefault();
-			}
-			 else 
-			{
-			 	console.log('submission successful')
-				updateUrl()
-			}
-			
-
-		});
-
-		function validateTimes(t1) {
-			console.log("validation, time: " + t1)
-			if(t1 === "") return false;
-			else 
-			{
-
-				let hour1 = Number(t1.substring(0,2));
-				let min1 = Number(t1.substring(3));
-				let now = new Date()
-
-				let nowHour = String(now.getHours())
-				let nowMin = String(now.getMinutes())
-				
-				// zero pad times
-				if(now.getHours() < 10)
-					nowHour = "0" + nowHour;
-				if(now.getMinutes() < 10)
-					nowMin = "0" + nowMin
-
-				let nowTime = nowHour+":"+nowMin;
-				console.log(nowTime)
+		if (hour1 != hour2) return hour1 - hour2;
+		else
+			return min1 - min2;
+	};
 
 
 
-				if(isDinnerTime())
-				{
-					// if dinner time, ensure endTime is in dinner hour range and is later than present time
-					let b = (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
-							&& (compareTimeStrings(t1, nowTime) >= 0);
-					console.log("RETURN ME, dinner: " + b);
-					return (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
-							&& (compareTimeStrings(t1, nowTime) >= 0);
-				}
-				else if(isLunchTime())
-				{	
-					// if dinner time, ensure endTime is in dinner hour range and is later than present time
-					let b = (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
-							&& (compareTimeStrings(t1, nowTime) >= 0);
-					console.log("RETURN ME, lunch: " + b);
-					return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
-							&& (compareTimeStrings(t1, nowTime) >= 0);
-				}
-				else
-				{
-					
-					console.log("RET :" + false)
 
-					return false;
-				}
-					
-				
-			}
+	// validate request fields, prevent submission if invalid
+	submitButtonForm.addEventListener('click', function (event) {
+
+
+		let endTime = document.getElementById("endTimeButton").value;
+		console.log(endTime);
+
+		// determine if any dhall buttons have been pressed 'ON'
+		let selected = activeDhall != ""
+
+		console.log(activeDhall)
+
+		// check if 
+		let validMealTimes = validateTimes(endTime);
+
+		console.log('valid mealtimes ' + validMealTimes)
+		console.log('lunch time? : ' + isLunchTime())
+		console.log('dinner time? : ' + isDinnerTime())
+
+
+
+		document.getElementById('errorBox').innerHTML = ""
+
+		let emptyFields = (endTime === "" || !selected)
+
+
+		console.log('empty: ' + emptyFields)
+
+		// takeout validMealTimes to remove lunch/dinner time validation
+		if (emptyFields || !validMealTimes ) {
+			console.log('attempt to send invalid meal request')
+			if (emptyFields)
+				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
+			if(!validMealTimes && (isLunchTime() || isDinnerTime()))
+				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
+			if(!isLunchTime() && !isDinnerTime())
+			document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
+			// prevents submission
+			event.preventDefault();
 		}
-		
+		else {
+			console.log('submission successful')
+			updateUrl()
+		}
+
+
+	});
+
+	function validateTimes(t1) {
+		console.log("validation, time: " + t1)
+		if (t1 === "") return false;
+		else {
+
+			let hour1 = Number(t1.substring(0, 2));
+			let min1 = Number(t1.substring(3));
+			let now = new Date()
+
+			let nowHour = String(now.getHours())
+			let nowMin = String(now.getMinutes())
+
+			// zero pad times
+			if (now.getHours() < 10)
+				nowHour = "0" + nowHour;
+			if (now.getMinutes() < 10)
+				nowMin = "0" + nowMin
+
+			let nowTime = nowHour + ":" + nowMin;
+			console.log(nowTime)
+
+
+
+			if (isDinnerTime()) {
+				// if dinner time, ensure endTime is in dinner hour range and is later than present time
+				let b = (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
+					&& (compareTimeStrings(t1, nowTime) >= 0);
+				console.log("RETURN ME, dinner: " + b);
+				return (compareTimeStrings(t1, "17:00") >= 0) && (compareTimeStrings(t1, "20:00") <= 0)
+					&& (compareTimeStrings(t1, nowTime) >= 0);
+			}
+			else if (isLunchTime()) {
+				// if dinner time, ensure endTime is in dinner hour range and is later than present time
+				let b = (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
+					&& (compareTimeStrings(t1, nowTime) >= 0);
+				console.log("RETURN ME, lunch: " + b);
+				return (compareTimeStrings(t1, "11:30") >= 0) && (compareTimeStrings(t1, "14:00") <= 0)
+					&& (compareTimeStrings(t1, nowTime) >= 0);
+			}
+			else {
+
+				console.log("RET :" + false)
+
+				return false;
+			}
+
+
+		}
+	}
+
 
 
 	let endTimeButton = document.getElementById("endTimeButton");
@@ -272,7 +260,7 @@
 	// update url on changing times
 	endTimeButton.addEventListener('change', updateUrl);
 
-	for(let i = 0; i < dHallButtons.length; i++)
+	for (let i = 0; i < dHallButtons.length; i++)
 		dHallButtons[i].addEventListener('click', updateUrl)
 
 </script>
@@ -287,71 +275,4 @@
 		font-family: "Maven Pro", sans-serif;
 		font-weight: normal;
 	}
-
-
-	.jumbotron {
-		font-family: "Maven Pro", sans-serif;
-	}
-
-
-	#header {
-		font-weight: 900;
-	}
-
-	.outlineBox {
-		width: 100%;
-		height: 727px;
-		background: rgba(255, 255, 255, 1);
-		opacity: 1;
-		position: absolute;
-
-		border-top-left-radius: 16px;
-		border-top-right-radius: 16px;
-		border-bottom-left-radius: 16px;
-		border-bottom-right-radius: 16px;
-		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-		overflow: hidden;
-	}
-
-	#mealType {
-		margin: 20px;
-		margin-top: 20px;
-	}
-
-	.menuButton {
-		padding-left: 10px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		padding-right: 10px;
-		margin-top: 20px;
-		margin-bottom: 20px;
-		margin-left: 20px;
-		margin-right: 20px;
-	}
-
-	button {
-		background-color: white;
-	}
-
-	.submitButton {
-		background-color: rgba(255, 159, 70, 1);
-		padding-left: 10px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		padding-right: 10px;
-		margin-top: 20px;
-		margin-bottom: 20px;
-		margin-left: 20px;
-		margin-right: 20px;
-		color: white;
-	}
-
-	.btn-orange-moon {
-    background: #fc4a1a;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: #fff;
-    border: 3px solid #eee;
-}
-
 </style>

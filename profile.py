@@ -15,14 +15,14 @@ def exists(netid):
     
 
 def get_profile(netid):
-    stmt = 'select netid,name,year,major,phonenum,bio from users where netid=%s'
+    keys = ["netid", "name","year","major","phonenum","bio"]
+    stmt = 'select {} from users where netid=%s'.format(','.join(keys))
     
     cur, conn = new_connection()
     cur.execute(stmt, [netid])
     vals = cur.fetchone()
     close_connection(cur, conn)
     
-    keys = ["netid", "name","year","major","phonenum","bio"]
     if not vals:
         vals = [""] * len(keys)
     return dict(zip(keys, vals))

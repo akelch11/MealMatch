@@ -6,34 +6,33 @@
 	{% include 'imports.html' %}
 </head>
 
-<body data-new-gr-c-s-check-loaded="14.1055.0" data-gr-ext-installed="">
+<body>
 	<!-- Section for header -->
 	{% include 'header.html' %}
 
 	<!-- Section for description -->
-	<div class=".jumbotron" id="landingText">
-		<div class="row justify-content-center">
-			<center>
+	<center>
+		<div id="landingText">
+			<div class="row justify-content-center">
 				<div class="col-4">
 					<h3>Match for Meals!</h3>
 				</div>
-			</center>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col-8">
-				<p class="text-center">Meal Match is an online app that enables Princeton
-					University students to meet new people over meals at dining halls. Use our app to enjoy your food and make
-					new friends!</p>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-8">
+					<p class="text-center">Meal Match is an online app that enables Princeton
+						University students to meet new people over meals at dining halls.
+						Use our app to enjoy your food and make new friends!</p>
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-4">
+					<a class="btn btn-primary btn-lg orange-moon enter-button" 
+					href="/next" role="button">Log In</a>
+				</div>
 			</div>
 		</div>
-		<div class="row justify-content-center">
-			<center>
-				<div class="col-4">
-					<a class="btn btn-primary btn-lg btn-orange-moon" href="/next" role="button" id="log_button">Log In</a>
-				</div>
-			</center>
-		</div>
-	</div>
+	</center>
 </body>
 
 </html>
@@ -42,36 +41,9 @@
 	* {
 		box-sizing: border-box;
 		font-family: "Maven Pro", sans-serif;
-
 	}
 
 	#landingText {
 		margin-top: 20px;
 	}
-
-
-
-	.jumbotron {
-		background-color: rgba(255, 159, 70, 1);
-		color: rgba(255, 255, 255, 1);
-		text-align: left;
-		font-size: 16px;
-		height: 70px;
-		padding-left: 10px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-	}
-
-	#log_button {
-		background-color: #ff9f46;
-		color: white;
-	}
-
-	.btn-orange-moon {
-    background: #fc4a1a;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: #fff;
-    border: 3px solid #eee;
-	}		
 </style>

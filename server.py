@@ -25,14 +25,13 @@ def landing_page():
 
 
 @app.route('/', methods=['GET'])
-def home_page():
+def home_page(): 
     if session.get('username'):
-           html = render_template('homescreen.html')
+        html = render_template('homescreen.html')
+        response = make_response(html)
+        return response
     else:
-        html = render_template('landing.html',
-                            landing=True)
-    response = make_response(html)
-    return response
+        return redirect('/landing')
 
 
 @app.route('/next', methods=['GET'])
@@ -44,7 +43,7 @@ def go_to_cas():
 @app.route('/index', methods=['GET'])
 def homescreen():
     if not session.get('username'):
-        return redirect(url_for('landing_page')) # go to landing page
+        return redirect('/landing') # go to landing page
     if not profile.exists(session.get('username')):
         return redirect('/create_account')
     html = render_template('homescreen.html')
@@ -54,9 +53,13 @@ def homescreen():
 #ABOUT PAGE
 @app.route('/about', methods=['GET'])
 def about_method():
-    html = render_template('about.html')
+    logged_out = session.get('username') == None
+    html = render_template('about.html',
+                            logged_out=logged_out,
+                            landing=False)
     response = make_response(html)
     return response
+
 # get what the senior class's year is right now 
 def senior_year():
     td = date.today()
@@ -147,6 +150,10 @@ def submit_request():
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
 
+    # if any args missing when request typed into the url
+    if not validate_req(meal_type, dhall, start_time, end_time, at_dhall):
+        return redirect('/matches')
+
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
 
@@ -165,7 +172,8 @@ def submit_request():
 
     end_time_datetime = parser.parse(end_time)
 
-    success = matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
+    success = matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, 
+                                    end_time_datetime, dhall_arr, at_dhall)
     
     if success:
         return redirect("/matches")
@@ -173,6 +181,10 @@ def submit_request():
         return redirect("/schedule?error=multiplerequests")
     
 
+def validate_req(meal_type, dhall, start_time, end_time, at_dhall):
+    # We have to run the same validation we did in html
+    # for if the user submits via the address link:(
+    return True
 
 
 #HOMESCREEN -> SCHEDULE MATCH PAGE 
@@ -317,6 +329,7 @@ def test404(e):
 
 @app.errorhandler(404)
 def error404(e):
+
     return render_template('page404.html'), 404
 
 @app.errorhandler(500)
@@ -331,5 +344,5 @@ job = scheduler.add_job(clean_requests, 'interval', hours=5)
 scheduler.start()
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
-# app.run(host='localhost', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)
