@@ -13,7 +13,7 @@
 	<center>
 
 		<div id='mealType' class="container">
-			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+			<div class="btn-group-sm menuButton">
 				I want to eat:
 				<button class='btn-lg' id='lunchButton'> Lunch </button>
 				<button class='btn-lg' id='dinnerButton'> Dinner </button>
@@ -21,7 +21,7 @@
 		</div>
 
 		<div id='hallType' class="container">
-			<div class="btn-group-sm menuButton" style="font-size: 18px;">
+			<div class="btn-group-sm menuButton">
 				I want to eat at:
 				{% for dhall in dhalls%}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
