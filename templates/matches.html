@@ -31,8 +31,9 @@
 						{% else %}
 						{% set meal= "Dinner" %}
 						{%endif%}
-						{{meal + ' @ ' + matches[4] + ' from ' + (matches[5].strftime('%-I:%M%p')+
-						" - " + matches[6].strftime('%-I:%M%p') ) }}
+						{{meal + ' @ ' + matches[4] + ' from ' +
+						matches[5].strftime('%-I:%M%p') + " - " +
+						matches[6].strftime('%-I:%M%p') }}
 					</strong>
 					<br>
 					<strong class="cardText">{{matches[13]}}{{", " + matches[14]}}</strong><br>
@@ -84,10 +85,6 @@
    // })
 </script>
 <style>
-	#matchesHeader {
-		font: "Maven Pro", sans-serif;
-	}
-
 	#matchButton {
 		margin: 10px;
 	}
