@@ -14,6 +14,14 @@
 	{% include 'header.html' %}
 	<center>
 		<div class="container">
+
+			<center>
+				<div style="margin-top: 10px;">
+				   <h2 class = "forceMaven">Your Past Matches</h2>
+				   <hr>
+				</div>
+			 </center>
+
 			{% for match in past_matches %}
 			<button type="button" class="btn btn-primary lrg_button" data-bs-toggle="modal"
 				data-bs-target="#Modal_{{match['id']}}">

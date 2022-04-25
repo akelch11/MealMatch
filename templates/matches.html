@@ -5,21 +5,23 @@
 	<title>MealMatch | View Upcoming Matches!</title>
 	{% include 'imports.html' %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
 </head>
 
 <body>
 	{% include 'header.html' %}
 
+
+	<center>
+		<div style="margin-top: 10px;">
+			<h2 class="forceMaven">Your Matches</h2>
+			<hr>
+		</div>
+	</center>
 	{% for matches in all_matches %}
 	<div class="container-fluid">
-
-		<center>
-			<div style="margin-top: 10px;">
-				<h2 class="forceMaven">Your Matches</h2>
-				<hr>
-			</div>
-		</center>
-
 
 		<div class="card">
 			<div class='row align-content-center'>
@@ -37,8 +39,10 @@
 					</strong>
 					<br>
 					<strong class="cardText">{{matches[13]}}{{", " + matches[14]}}</strong><br>
-					<strong class="cardText">Phone #: {{matches[15]}}</strong>
-				</div>
+					<strong class="cardText">Phone #: {{matches[15]}}</strong><br>
+					<button class = "cardText btn-sm btn-secondary" data-bs-toggle="modal"
+					data-bs-target="#Modal_{{matches[0]}}" style = "background-color: #bbb; border: 0px; margin-top: 5px;">View {{matches[12]}}'s Bio</a>
+			</div>
 				<div class="card-body col-sm-3 row">
 
 					<center>
@@ -69,6 +73,25 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="Modal_{{matches[0]}}" tabindex="-1"
+				aria-labelledby="ModalLabel_{{matches[0]}}" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="ModalLabel_{{matches[0]}}">
+								{{matches[12]}}'s Bio</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"> 
+							<span>{{matches[16]}}</span><br>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary sml_button"
+								data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
 	</div>
 	{%endfor%}
 
@@ -100,6 +123,12 @@
 	.forceMaven {
 		font-family: "Maven Pro", sans-serif;
 	}
+
+	.sml_button {
+		background-color: #ff9f46;
+		color: white;
+	}
+
 </style>
 
 </html>
