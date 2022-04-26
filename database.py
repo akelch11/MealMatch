@@ -65,5 +65,16 @@ def create_requests_table():
     close_connection(cur, conn)
 
 if __name__ == "__main__":
+    clear_query = "DROP TABLE %s;"
+    
+    cur, conn = new_connection()
+    for table in ['requests', 'matches', 'users']:
+        cur.execute(clear_query, [table])
+    close_connection(cur, conn)
+    print('database deleted')
+
+
     create_matches_table()
-    print('matches table created')
+    create_requests_table()
+    create_user_table()
+    print('database created')

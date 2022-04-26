@@ -1,3 +1,4 @@
+import profile
 import random
 import string
 from sys import stdout, stderr
@@ -181,14 +182,12 @@ def execute_match_query(parse_requests, lunch):
             # to the current possible matches
             # index for major: 12
             # index for class year: 11
-            if first[11] == second[11] and first[12] == second[12]:
-                poss_matches.append((j, 2, combined_dhalls, overlap))
-
-            elif first[11] == second[11] or first[12] == second[12]:
-                poss_matches.append((j, 1, combined_dhalls, overlap))
-
-            else:
-                poss_matches.append((j, 0, combined_dhalls, overlap))
+            score = 0
+            if first[11] == second[11]:
+                score+=1
+            if first[12] == second[12]:
+                score+=2
+            poss_matches.append((j, score, combined_dhalls, overlap))
 
         # Continue loop if there are no possible matches
         if len(poss_matches) == 0:
@@ -267,8 +266,6 @@ def modify_request(request_id, match_id):
 
 
 def get_all_matches(netid):
-    all_matches = []
-
     query = """SELECT * 
             FROM matches as m, users as u
             WHERE (m.first_netid = u.netid
@@ -283,12 +280,7 @@ def get_all_matches(netid):
     rows = cur.fetchall()
     close_connection(cur, conn)
 
-    for row in rows:
-        row_arr = []
-        for col in row:
-            row_arr.append(col)
-        all_matches.append(row_arr)
-
+    all_matches = [list(row) for row in rows]
     return all_matches
 
 
@@ -318,9 +310,11 @@ def get_past_matches(netid):
     for match in matches:
         match_info = {}
         other_netid = match[0] if match[1] == netid else match[1]
+        other_profile = profile.get_profile(other_netid)
 
         match_info['netid'] = other_netid
-        match_info['name'] = get_name_from_netid(other_netid)
+        match_info['name'] = other_profile['name']
+        match_info['phonenum'] = other_profile['phonenum']
         match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
