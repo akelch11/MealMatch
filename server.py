@@ -336,13 +336,10 @@ def error404(e):
 def error500(e):
     return render_template('page500.html'), 500
 
-def clean_requests():
-    matcher.clean_requests()
-
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(clean_requests, 'interval', hours=5)
+job = scheduler.add_job(matcher.clean_requests, 'interval', hours=5)
 scheduler.start()
 
 port = int(os.environ.get('PORT', 5001))
 app.run(host='0.0.0.0', port=port, debug=False)
-#app.run(host='localhost', port=port, debug=False)
+# app.run(host='localhost', port=port, debug=False)
