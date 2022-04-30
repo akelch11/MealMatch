@@ -2,30 +2,27 @@ from sys import stdout
 from database import new_connection, close_connection
 
 
-""""Check if the logged-in user has created a profile"""
-def exists(netid):
-    stmt = 'select name from users where netid=%s'
-
+def get_from_netid(netid, *args):
+    query = """SELECT {} FROM users WHERE netid = %s""".format(", ".join(args))
     cur, conn = new_connection()
-    cur.execute(stmt, [netid])
-    ret = cur.fetchone()
+    cur.execute(query, [netid])
+    row = cur.fetchone()
     close_connection(cur, conn)
-
-    return ret != None
+    return row
     
 
 def get_profile(netid):
-    keys = ["netid", "name","year","major","phonenum","bio"]
-    stmt = 'select {} from users where netid=%s'.format(','.join(keys))
-    
-    cur, conn = new_connection()
-    cur.execute(stmt, [netid])
-    vals = cur.fetchone()
-    close_connection(cur, conn)
+    keys = ["netid","name","year","major","phonenum","bio"]
+    vals = get_from_netid(netid, *keys)
     
     if not vals:
         vals = [""] * len(keys)
     return dict(zip(keys, vals))
+
+
+""""Check if the logged-in user has created a profile"""
+def exists(netid):
+    return get_from_netid(netid, 'netid') != None
 
 
 # Create profile for user and update MongoDB
@@ -54,6 +51,5 @@ def edit_profile(netid, name, year, major, phonenum, bio):
     
     
 
-
-
-
+if __name__ == '__main__':
+    print(exists('h'))

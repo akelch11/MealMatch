@@ -1,105 +1,24 @@
-import profile
 import random
 import string
-from sys import stdout, stderr
 import notifications
 from datetime import datetime
 from big_lists import dhall_list
+from profile import get_from_netid
 from database import new_connection, close_connection
-
-
-def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
-    cur, conn = new_connection()
-
-    flag = validate_request(netid, meal_type)
-    if not flag:
-        print("Cannot add request: there is already a request in the current meal period")
-        return False
-
-    sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
-
-    for i in range(len(dhall_list)):
-        sql = sql + "{},".format(dhall_list[i])
-
-    dhall_strargs = "%s, " * len(dhall_list)
-    sql = sql + ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
-
-    requestId = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
-
-    val = [requestId, netid, start_time, end_time, meal_type]
-    val += dhall_arr
-    val += [atdhall, True]
-
-    cur.execute(sql, tuple(val))
-    close_connection(cur, conn)
-
-    clean_requests()
-
-    match_requests()
-
-    return True
-
-
-def validate_request(netid, meal_type):
-    # search for active requests made by user with netid
-    sql = """SELECT *
-            FROM requests
-            WHERE netid = %s AND active = TRUE AND LUNCH  = %s"""
-
-    cur, conn = new_connection()
-    cur.execute(sql, (netid, meal_type))
-    rows = cur.fetchall()
-    close_connection(cur, conn)
-
-    return len(rows) == 0
-
-
-def clean_requests():
-    sql = """SELECT *
-            FROM requests"""
-
-    cur, conn = new_connection()
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    now = datetime.now()
-
-    # list of requests that have expired
-    old_requests = [row[0] for row in rows if row[3] < now]
-
-    sql = """ UPDATE requests
-                SET active = %s
-                WHERE requestid = %s"""
-
-    for id in old_requests:
-        cur.execute(sql, (False, id))
-
-    close_connection(cur, conn)
-
-
-def remove_request(requestid):
-    sql = """ UPDATE requests
-                SET active = %s
-                WHERE requestid = %s"""
-
-    cur, conn = new_connection()
-    cur.execute(sql, (False, requestid))
-    close_connection(cur, conn)
 
 
 def remove_match(netid, matchid, phonenum):
     sql = """ UPDATE matches
-                SET active = %s
+                SET active = FALSE
                 WHERE match_id = %s"""
 
     cur, conn = new_connection()
-    cur.execute(sql, (False, matchid))
+    cur.execute(sql, [matchid])
     close_connection(cur, conn)
 
     message = "{} cancelled your match. Check "\
     "the MealMatch app for more information" \
-        .format(get_name_from_netid(netid))
+        .format(get_from_netid(netid, 'name'))
     notifications.send_message(message, phonenum)
 
 
@@ -200,12 +119,11 @@ def execute_match_query(parse_requests, lunch):
         poss_matches.sort(key=lambda x: x[1], reverse=True)
         chosen_row = poss_matches[0]
         second = rows[chosen_row[0]]  # Grab requests row of chosen request
-        dhall = chosen_row[2][0]  # Dhall chosen for match
+        dhall = '/'.join(chosen_row[2])  # Dhall(s) chosen for match
         overlap = chosen_row[3]
 
         # Establish start and end windows for match
-        start_int = overlap[0]
-        end_int = overlap[1]
+        start_int, end_int = overlap
 
         # Obtain matchid
         match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
@@ -224,6 +142,7 @@ def execute_match_query(parse_requests, lunch):
         cur.execute(sql, val)
 
         # Modify requests after match is made
+        from meal_requests import modify_request
         modify_request(first[0], match_id)
         modify_request(second[0], match_id)
 
@@ -252,19 +171,6 @@ def find_possible_dhalls(row):
     return available
 
 
-# Remove request from request table
-def modify_request(request_id, match_id):
-    sql = "UPDATE requests SET MATCHID = %s WHERE REQUESTID = %s"
-    val = (match_id, request_id)
-
-    cur, conn = new_connection()
-    cur.execute(sql, val)
-    close_connection(cur, conn)
-
-    remove_request(request_id)
-    print("Modified request", file=stdout)
-
-
 def get_all_matches(netid):
     query = """SELECT * 
             FROM matches as m, users as u
@@ -282,25 +188,6 @@ def get_all_matches(netid):
 
     all_matches = [list(row) for row in rows]
     return all_matches
-
-
-def get_name_from_netid(netid):
-    cur, conn = new_connection()
-    query = """SELECT name FROM users WHERE netid = %s"""
-    cur.execute(query, [netid])
-    row = cur.fetchone()
-    close_connection(cur, conn)
-    return row[0]
-
-
-def get_name_and_num_from_netid(netid):
-    cur, conn = new_connection()
-    query = """SELECT name, phonenum FROM users WHERE netid = %s"""
-    cur.execute(query, [netid])
-    row = cur.fetchone()
-    close_connection(cur, conn)
-    return row[0], row[1]
-    
 
 
 def get_past_matches(netid):
@@ -322,7 +209,7 @@ def get_past_matches(netid):
         other_netid = match[0] if match[1] == netid else match[1]
 
         match_info['netid'] = other_netid
-        match_info['name'], match_info['phonenum'] = get_name_and_num_from_netid(other_netid)
+        match_info['name'], match_info['phonenum'] = get_from_netid(other_netid, 'name', 'phonenum')
         match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
@@ -345,53 +232,32 @@ def accept_match(netid, matchid, phonenum):
     row = cur.fetchone()
 
     netid_type = ""
+    match_name = get_from_netid(netid, 'name')[0]
 
     if row[1] == netid:
         # We know that the user is the first_netid
         netid_type = 'FIRST_ACCEPTED'
         if not row[4]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(
-                get_name_from_netid(netid))
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name)
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
-            message = "{} also accepted the match! Have fun eating!".format(get_name_from_netid(netid))
+            message = "{} also accepted the match! Have fun eating!".format(match_name)
 
     elif row[2] == netid:
         # We know that the user is the second_netid
         netid_type = 'SECOND_ACCEPTED'
         if not row[3]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(get_name_from_netid(netid))
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name)
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
-            message = "{} also accepted the match! Have fun eating!".format(get_name_from_netid(netid))
+            message = "{} also accepted the match! Have fun eating!".format(match_name)
     notifications.send_message(message, phonenum)
 
     query = """UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
     cur.execute(query, [matchid])
     close_connection(cur, conn)
-
-
-def get_all_requests(netid):
-    all_requests = []
-    dhall_str = ', '.join(dhall_list)
-    query = """SELECT begintime, endtime, lunch, {} ,atdhall, requestid FROM requests as r
-            WHERE r.netid = %s
-            AND r.active = TRUE""".format(dhall_str)
-
-    cur, conn = new_connection()
-    cur.execute(query, [netid])
-    rows = cur.fetchall()
-    close_connection(cur, conn)
-
-    for row in rows:
-        row_arr = []
-        for col in row:
-            row_arr.append(col)
-        all_requests.append(row_arr)
-
-    return all_requests
 
 
 # Find overlap between two datetime intervals, used in finding matches
@@ -412,3 +278,6 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
     # return the start and end of the overlap
     return (start_int, end_int)
+
+if __name__ == '__main__':
+    print(get_from_netid('jdapaah', 'name', 'phonenum'))

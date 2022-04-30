@@ -3,6 +3,8 @@ from sys import stdout, stderr
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
 import profile
+
+import meal_requests
 import matcher
 import auth
 import keys
@@ -150,9 +152,10 @@ def submit_request():
     end_time = request.args.get('end')
     at_dhall = request.args.get('atdhall')
 
-    # if any args missing when request typed into the url
-    if not validate_req(meal_type, dhall, start_time, end_time, at_dhall):
-        return redirect('/matches')
+    # may not need backend validation if route is invisible
+    # # if any args missing when request typed into the url
+    # if not validate_req(meal_type, dhall, start_time, end_time, at_dhall):
+    #     return redirect('/matches')
 
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
@@ -160,8 +163,7 @@ def submit_request():
     # multiple dhalls can be selected via scheduled match
     # Dining halls are listed in between '-' of dhall request parameter
    
-    dhall_arr = [hall_name in dhall.split('-')
-                for hall_name in dhall_list]
+    dhall_arr = [hall_name in dhall for hall_name in dhall_list]
     print('dhall_arr: ', dhall_arr, file=stdout)
 
 
@@ -172,8 +174,8 @@ def submit_request():
 
     end_time_datetime = parser.parse(end_time)
 
-    success = matcher.add_request(auth.authenticate(), meal_type, start_time_datetime, 
-                                    end_time_datetime, dhall_arr, at_dhall)
+    success = meal_requests.add_request(auth.authenticate(), meal_type,
+        start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     
     if success:
         return redirect("/matches")
@@ -181,10 +183,10 @@ def submit_request():
         return redirect("/schedule?error=multiplerequests")
     
 
-def validate_req(meal_type, dhall, start_time, end_time, at_dhall):
-    # We have to run the same validation we did in html
-    # for if the user submits via the address link:(
-    return True
+# def validate_req(meal_type, dhall, start_time, end_time, at_dhall):
+#     # We have to run the same validation we did in html
+#     # for if the user submits via the address link:(
+#     return True
 
 
 #HOMESCREEN -> SCHEDULE MATCH PAGE 
@@ -196,7 +198,8 @@ def schedulematch():
         error = ""
 
     html = render_template('scheduledmatch.html',
-                            dhalls=dhall_list, error=error)
+                            dhalls=dhall_list,
+                            error=error)
     response = make_response(html)
     return response
     
@@ -209,7 +212,8 @@ def ondemand():
         error = ""
 
     html = render_template('ondemandmatch.html',
-                            dhalls=dhall_list, error = error)
+                            dhalls=dhall_list,
+                            error = error)
     response = make_response(html)
     return response
 
@@ -222,7 +226,7 @@ def get_matches():
 
     for i in range(len(all_matches)):
         match = all_matches[i]
-        print('match row: ', match, file = stderr)
+        print('match row:', match, file = stderr)
 
         you_accepted = False
         opponent_accepted = True
@@ -265,7 +269,7 @@ def past_matches():
 def get_requests():
 
     session_netid = auth.authenticate()
-    all_requests = matcher.get_all_requests(session_netid)
+    all_requests = meal_requests.get_all_requests(session_netid)
     
     req_locations = []
     for req in all_requests:
@@ -279,7 +283,7 @@ def get_requests():
         print('REQ: ', req, "\n Loc: ", loc)
         req_locations.append(loc)
 
-    if (len(all_requests) == 0):
+    if len(all_requests) == 0:
         html = render_template('norequests.html')
     else:
         html = render_template('requests.html', 
@@ -295,7 +299,7 @@ def get_requests():
 @app.route('/removerequest', methods = ['POST'])
 def remove_requests():
     requestid = request.args.get("requestid")
-    matcher.remove_request(requestid)
+    meal_requests.remove_request(requestid)
     return redirect(url_for('get_requests'))
 
 #ACCEPT MATCH ON MATCHES PAGE
@@ -337,9 +341,9 @@ def error500(e):
     return render_template('page500.html'), 500
 
 scheduler = BackgroundScheduler()
-job = scheduler.add_job(matcher.clean_requests, 'interval', hours=5)
+job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
 scheduler.start()
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
-# app.run(host='localhost', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)
