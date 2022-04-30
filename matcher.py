@@ -293,6 +293,16 @@ def get_name_from_netid(netid):
     return row[0]
 
 
+def get_name_and_num_from_netid(netid):
+    cur, conn = new_connection()
+    query = """SELECT name, phonenum FROM users WHERE netid = %s"""
+    cur.execute(query, [netid])
+    row = cur.fetchone()
+    close_connection(cur, conn)
+    return row[0], row[1]
+    
+
+
 def get_past_matches(netid):
     query = """SELECT first_netid, second_netid,
             end_window, dining_hall, match_id, lunch
@@ -310,17 +320,16 @@ def get_past_matches(netid):
     for match in matches:
         match_info = {}
         other_netid = match[0] if match[1] == netid else match[1]
-        other_profile = profile.get_profile(other_netid)
 
         match_info['netid'] = other_netid
-        match_info['name'] = other_profile['name']
-        match_info['phonenum'] = other_profile['phonenum']
+        match_info['name'], match_info['phonenum'] = get_name_and_num_from_netid(other_netid)
         match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
         match_info['meal'] = 'Lunch' if match[5] else 'Dinner'
 
         past_matches.append(match_info)
+        
 
     return past_matches
 
