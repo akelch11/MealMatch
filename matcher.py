@@ -313,10 +313,13 @@ def get_name_and_num_from_netid(netid):
 
 def get_past_matches(netid):
     query = """SELECT first_netid, second_netid,
-            end_window, dining_hall, match_id, lunch
+            end_window, dining_hall, match_id, lunch,
+            first_accepted, second_accepted
             FROM matches
-            WHERE first_netid = %s
-            OR second_netid = %s
+            WHERE (first_netid = %s
+            OR second_netid = %s)
+            AND first_accepted = TRUE
+            AND second_accepted = TRUE
             ORDER BY end_window DESC"""
 
     cur, conn = new_connection()
@@ -336,9 +339,10 @@ def get_past_matches(netid):
         match_info['id'] = match[4]
         match_info['meal'] = 'Lunch' if match[5] else 'Dinner'
         match_info['phonenum'] = phonenum
+        match_info['bothaccept'] = match[6] and match[7]
 
         past_matches.append(match_info)
-        
+        print(match_info)
 
     return past_matches
 
