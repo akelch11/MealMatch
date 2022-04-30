@@ -192,10 +192,13 @@ def get_all_matches(netid):
 
 def get_past_matches(netid):
     query = """SELECT first_netid, second_netid,
-            end_window, dining_hall, match_id, lunch
+            end_window, dining_hall, match_id, lunch,
+            first_accepted, second_accepted
             FROM matches
-            WHERE first_netid = %s
-            OR second_netid = %s
+            WHERE (first_netid = %s
+            OR second_netid = %s)
+            AND first_accepted = TRUE
+            AND second_accepted = TRUE
             ORDER BY end_window DESC"""
 
     cur, conn = new_connection()
@@ -214,9 +217,10 @@ def get_past_matches(netid):
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
         match_info['meal'] = 'Lunch' if match[5] else 'Dinner'
+        match_info['bothaccept'] = match[6] and match[7]
 
         past_matches.append(match_info)
-        
+        print(match_info)
 
     return past_matches
 
@@ -278,6 +282,3 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
     # return the start and end of the overlap
     return (start_int, end_int)
-
-if __name__ == '__main__':
-    print(get_from_netid('jdapaah', 'name', 'phonenum'))
