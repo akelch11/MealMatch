@@ -52,7 +52,6 @@ def modify_request(request_id, match_id):
 
 
 def get_all_requests(netid):
-    all_requests = []
     dhall_str = ', '.join(dhall_list)
     query = """SELECT begintime, endtime, lunch, {} ,atdhall, requestid FROM requests as r
             WHERE r.netid = %s
@@ -60,14 +59,8 @@ def get_all_requests(netid):
 
     cur, conn = new_connection()
     cur.execute(query, [netid])
-    rows = cur.fetchall()
+    all_requests = cur.fetchall()
     close_connection(cur, conn)
-
-    for row in rows:
-        row_arr = []
-        for col in row:
-            row_arr.append(col)
-        all_requests.append(row_arr)
 
     return all_requests
     
@@ -102,20 +95,20 @@ def clean_requests():
     old_requests = [row[0] for row in rows if row[3] < now]
 
     sql = """ UPDATE requests
-                SET active = %s
+                SET active = FALSE
                 WHERE requestid = %s"""
 
     for id in old_requests:
-        cur.execute(sql, (False, id))
+        cur.execute(sql, [id])
 
     close_connection(cur, conn)
 
 
 def remove_request(requestid):
     sql = """ UPDATE requests
-                SET active = %s
+                SET active = FALSE
                 WHERE requestid = %s"""
 
     cur, conn = new_connection()
-    cur.execute(sql, (False, requestid))
+    cur.execute(sql, [requestid])
     close_connection(cur, conn)

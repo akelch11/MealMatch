@@ -36,3 +36,7 @@
 .enter-button {
     border: 3px solid #eee;
 }
+
+.forceMaven {
+    font-family: "Maven Pro", sans-serif;
+}

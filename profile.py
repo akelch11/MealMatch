@@ -11,6 +11,11 @@ def get_from_netid(netid, *args):
     return row
     
 
+""""Check if the logged-in user has created a profile"""
+def exists(netid):
+    return get_from_netid(netid, 'netid') != None
+
+
 def get_profile(netid):
     keys = ["netid","name","year","major","phonenum","bio"]
     vals = get_from_netid(netid, *keys)
@@ -18,11 +23,6 @@ def get_profile(netid):
     if not vals:
         vals = [""] * len(keys)
     return dict(zip(keys, vals))
-
-
-""""Check if the logged-in user has created a profile"""
-def exists(netid):
-    return get_from_netid(netid, 'netid') != None
 
 
 # Create profile for user and update MongoDB
@@ -48,8 +48,3 @@ def edit_profile(netid, name, year, major, phonenum, bio):
 
     print("Profile updated for:", netid, file=stdout)
     return netid
-    
-    
-
-if __name__ == '__main__':
-    print(exists('h'))

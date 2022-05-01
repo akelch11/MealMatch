@@ -90,7 +90,7 @@ def execute_match_query(parse_requests, lunch):
             first_poss_dhalls = find_possible_dhalls(first)
             second_poss_dhalls = find_possible_dhalls(second)
 
-            combined_dhalls = list(set(first_poss_dhalls) & set(second_poss_dhalls))
+            combined_dhalls = first_poss_dhalls & second_poss_dhalls
 
             # No common dining halls between a pair of requests
             if len(combined_dhalls) == 0:
@@ -120,10 +120,10 @@ def execute_match_query(parse_requests, lunch):
         chosen_row = poss_matches[0]
         second = rows[chosen_row[0]]  # Grab requests row of chosen request
         dhall = '/'.join(chosen_row[2])  # Dhall(s) chosen for match
-        overlap = chosen_row[3]
+        best_overlap = chosen_row[3]
 
         # Establish start and end windows for match
-        start_int, end_int = overlap
+        start_int, end_int = best_overlap
 
         # Obtain matchid
         match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
@@ -168,7 +168,7 @@ def find_possible_dhalls(row):
         if dhalls[i] == True:
             available.append(dhall_list[i])
 
-    return available
+    return set(available)
 
 
 def get_all_matches(netid):
