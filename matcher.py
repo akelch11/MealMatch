@@ -18,7 +18,7 @@ def remove_match(netid, matchid, phonenum):
 
     message = "{} cancelled your match. Check "\
     "the MealMatch app for more information" \
-        .format(get_from_netid(netid, 'name'))
+        .format(get_from_netid(netid, 'name')[0])
     notifications.send_message(message, phonenum)
 
 
