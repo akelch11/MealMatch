@@ -221,9 +221,6 @@ def ondemand():
 @app.route('/matches', methods = ['GET'])
 def get_matches():
 
-    # clean all matches
-    matcher.clean_matches()
-
     netid = auth.authenticate()
     all_matches = matcher.get_all_matches(netid)
 

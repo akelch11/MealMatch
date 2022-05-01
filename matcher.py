@@ -172,6 +172,10 @@ def find_possible_dhalls(row):
 
 
 def get_all_matches(netid):
+    
+    # remove all expired matches
+    clean_matches()
+    
     query = """SELECT * 
             FROM matches as m, users as u
             WHERE (m.first_netid = u.netid
