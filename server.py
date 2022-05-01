@@ -116,9 +116,9 @@ def form():
         year = y
     if name == "":
         if profile.exists(netid):
-            redirect("/edit_account")
+            return redirect("/edit_account")
         else:
-            redirect("/create_account")
+            return redirect("/create_account")
     if bio == "":
         tup = (name, dept_code[major],  yeardict[year], phonenum)
         print('bio tuple:', tup, file=stdout)

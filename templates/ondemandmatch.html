@@ -20,8 +20,9 @@
 
 		</div>
 		<div class=container>
-			<a target="_blank" href="https://campus.dailyprincetonian.com/menus">Check out what the dining halls are
-				serving</a><br>
+			<a target="_blank" href="https://campus.dailyprincetonian.com/menus">
+				Check out what the dining halls are serving
+			</a><br>
 		</div>
 
 		<div id='mealTimes' class="container row">
@@ -182,14 +183,14 @@
 		console.log('empty: ' + emptyFields)
 
 		// takeout validMealTimes to remove lunch/dinner time validation
-		if (emptyFields || !validMealTimes ) {
+		if (emptyFields || !validMealTimes) {
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-			if(!validMealTimes && (isLunchTime() || isDinnerTime()))
+			if (!validMealTimes && (isLunchTime() || isDinnerTime()))
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
-			if(!isLunchTime() && !isDinnerTime())
-			document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
+			if (!isLunchTime() && !isDinnerTime())
+				document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
 			// prevents submission
 			event.preventDefault();
 		}
