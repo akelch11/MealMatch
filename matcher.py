@@ -282,3 +282,29 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
     # return the start and end of the overlap
     return (start_int, end_int)
+
+# Clean matches table of expired matches
+def clean_matches():
+    cur, conn = new_connection()
+
+    sql = """SELECT *
+            FROM matches"""
+
+    cur, conn = new_connection()
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    now = datetime.now()
+
+    # list of old matches that have expired
+    old_matches = [row[0] for row in rows if row[6] < now]
+
+    sql = """ UPDATE matches
+                SET active = FALSE
+                WHERE match_id = %s"""
+
+    for id in old_matches:
+         cur.execute(sql, [id])
+
+    close_connection(cur, conn)
