@@ -166,9 +166,9 @@
 			// on weekends, brunch/lunch starts at 10AM
 			let lunch_start;
 			if (now.getDay() == 0 || now.getDay() == 6)
-			lunch_start = "10:00";
+				lunch_start = "10:00";
 			else // on weekdays, 11:30
-			lunch_start = "11:30";
+				lunch_start = "11:30";
 			
 			// times are within lunch range and not in past
 			let lunch_bool = (meal === 'lunch') &&
