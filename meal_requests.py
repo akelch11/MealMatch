@@ -20,9 +20,11 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
         sql = sql + "{},".format(dhall)
 
     dhall_strargs = "%s, " * len(dhall_list)
-    sql = sql + ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
+    sql = sql + \
+        ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
 
-    requestId = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
+    requestId = ''.join(random.choice(
+        string.ascii_letters + string.digits) for _ in range(16))
 
     val = [requestId, netid, start_time, end_time, meal_type]
     val += dhall_arr
@@ -37,8 +39,10 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     match_requests()
 
     return True
-    
+
 # Remove request from request table
+
+
 def modify_request(request_id, match_id):
     sql = "UPDATE requests SET MATCHID = %s WHERE REQUESTID = %s"
     val = (match_id, request_id)
@@ -47,11 +51,14 @@ def modify_request(request_id, match_id):
     cur.execute(sql, val)
     close_connection(cur, conn)
 
-    remove_request(request_id)
+    remove_requests([request_id])
     print("Modified request", file=stdout)
 
 
 def get_all_requests(netid):
+    # remove expired requests
+    clean_requests()
+    
     dhall_str = ', '.join(dhall_list)
     query = """SELECT begintime, endtime, lunch, {} ,atdhall, requestid FROM requests as r
             WHERE r.netid = %s
@@ -63,7 +70,6 @@ def get_all_requests(netid):
     close_connection(cur, conn)
 
     return all_requests
-    
 
 
 def validate_request(netid, meal_type):
@@ -81,34 +87,28 @@ def validate_request(netid, meal_type):
 
 
 def clean_requests():
-    sql = """SELECT *
-            FROM requests"""
+    sql = """SELECT * FROM requests
+             WHERE active = TRUE"""
 
     cur, conn = new_connection()
     cur.execute(sql)
-
     rows = cur.fetchall()
+    close_connection(cur, conn)
 
     now = datetime.now()
 
     # list of requests that have expired
     old_requests = [row[0] for row in rows if row[3] < now]
 
-    sql = """ UPDATE requests
-                SET active = FALSE
-                WHERE requestid = %s"""
-
-    for id in old_requests:
-        cur.execute(sql, [id])
-
-    close_connection(cur, conn)
+    remove_requests(old_requests)
 
 
-def remove_request(requestid):
-    sql = """ UPDATE requests
+def remove_requests(requestids: list):
+    sql = """UPDATE requests
                 SET active = FALSE
                 WHERE requestid = %s"""
 
     cur, conn = new_connection()
-    cur.execute(sql, [requestid])
+    for id in requestids:
+        cur.execute(sql, [id])
     close_connection(cur, conn)

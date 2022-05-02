@@ -3,7 +3,7 @@ import string
 import notifications
 from datetime import datetime
 from big_lists import dhall_list
-from profile import get_from_netid
+from user_profile import get_from_netid
 from database import new_connection, close_connection
 
 
@@ -160,15 +160,15 @@ def execute_match_query(parse_requests, lunch):
 
 # Helper method, returns a list of selected dhalls from request
 def find_possible_dhalls(row):
-    available = []
-    # dhalls indexed starting at 
+    available = set()
+    # dhalls indexed starting at 6
     dhalls = row[6:6 + len(dhall_list)]
 
     for i in range(len(dhalls)):
         if dhalls[i] == True:
-            available.append(dhall_list[i])
+            available.add(dhall_list[i])
 
-    return set(available)
+    return available
 
 
 def get_all_matches(netid):
@@ -221,7 +221,6 @@ def get_past_matches(netid):
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
         match_info['meal'] = 'Lunch' if match[5] else 'Dinner'
-        match_info['bothaccept'] = match[6] and match[7]
 
         past_matches.append(match_info)
         print(match_info)
@@ -281,7 +280,7 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
     # Check if overlap is smaller than 30 minutes, not suitable for 
     # adequate meal time
-    if (end_int - start_int).total_seconds() / 60.0 < 30:
+    if (end_int - start_int).total_seconds() / 60.0 < 20:
         return False
 
     # return the start and end of the overlap
