@@ -238,7 +238,7 @@ def get_matches():
            you_accepted = match[8]
            opponent_accepted = match[7]
 
-        if match[12] == "2021":
+        if match[12] == 2021:
             all_matches[i][12] = "Grad College" 
 
         if you_accepted and opponent_accepted:
