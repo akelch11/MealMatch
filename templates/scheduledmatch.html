@@ -162,11 +162,28 @@
 			let nowTime = now.toTimeString().substring(0, 5);
 
 			// times are within lunch range and not in past
-			let lunch_bool = (meal === 'lunch') &&
+			let lunch_bool;
+			
+			// on Saturday or Sunday (weekends)
+			// on weekends, brunch/lunch starts at 10AM
+			if(now.getDay() == 0 || now.getDay() == 6){
+
+				lunch_bool = (meal === 'lunch') &&
+				(compareTimeStrings("10:00", t1) <= 0) &&
+				(compareTimeStrings(nowTime, t1) <= 0) &&
+				(compareTimeStrings(t1, t2) < 0) &&
+				(compareTimeStrings(t2, "14:00") <= 0);
+			}
+			else {
+				// on weekdays
+				lunch_bool = (meal === 'lunch') &&
 				(compareTimeStrings("11:30", t1) <= 0) &&
 				(compareTimeStrings(nowTime, t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
 				(compareTimeStrings(t2, "14:00") <= 0);
+			}
+
+		
 
 			// times are within dinner range and not in past
 			let dinner_bool = (meal === "dinner") &&

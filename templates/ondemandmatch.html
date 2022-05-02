@@ -70,7 +70,11 @@
 		// lunch time is from 11:30am-2pm
 		// do not worry about matches being made exactly at 2pm,
 		// will not be valid for matches due to < 30 min availability
-		return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
+
+		if(isWeekend()) // weekend lunch hours are 10AM - 2PM
+			return (10 <= hour) && (hour <= 13);
+		else // weekday lunch hours, 11:30am -- 2pm
+			return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
 	}
 	function updateEndTime() {
 		let endTimeEL = document.getElementById('endTimeButton')
