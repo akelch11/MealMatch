@@ -2,7 +2,7 @@
 from sys import stdout, stderr
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
-import profile
+import user_profile
 
 import meal_requests
 import matcher
@@ -46,7 +46,7 @@ def go_to_cas():
 def homescreen():
     if not session.get('username'):
         return redirect('/landing') # go to landing page
-    if not profile.exists(session.get('username')):
+    if not user_profile.exists(session.get('username')):
         return redirect('/create_account')
     html = render_template('homescreen.html')
     response = make_response(html)
@@ -75,13 +75,13 @@ def senior_year():
 def update_form():
     username = auth.authenticate()
 
-    profile_dict = profile.get_profile(username)
+    profile_dict = user_profile.get_profile(username)
 
 
     title_value = ""
     button_value = ""
     # netid detected in system
-    if profile.exists(username):
+    if user_profile.exists(username):
         title_value = 'Edit Your Profile!'
         button_value = "Submit Changes"
     else:
@@ -115,7 +115,7 @@ def form():
         yeardict[y] = year
         year = y
     if name == "":
-        if profile.exists(netid):
+        if user_profile.exists(netid):
             return redirect("/edit_account")
         else:
             return redirect("/create_account")
@@ -125,10 +125,10 @@ def form():
         bio = ("Hi! My name is %s. I'm a %s major in the %s. "
         "Super excited to grab a meal with you. You can reach me at %s.")\
         % tup
-    if profile.exists(netid):
-        profile.edit_profile(netid, name, int(year), major, phonenum, bio)
+    if user_profile.exists(netid):
+        user_profile.edit_profile(netid, name, int(year), major, phonenum, bio)
     else:
-        profile.create_profile(netid, name, int(year), major, phonenum, bio)
+        user_profile.create_profile(netid, name, int(year), major, phonenum, bio)
 
     return redirect('/index')
 

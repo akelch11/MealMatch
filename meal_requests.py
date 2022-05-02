@@ -56,6 +56,9 @@ def modify_request(request_id, match_id):
 
 
 def get_all_requests(netid):
+    # remove expired requests
+    clean_requests()
+    
     dhall_str = ', '.join(dhall_list)
     query = """SELECT begintime, endtime, lunch, {} ,atdhall, requestid FROM requests as r
             WHERE r.netid = %s
