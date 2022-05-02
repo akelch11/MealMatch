@@ -9,7 +9,9 @@ from database import new_connection, close_connection
 
 def remove_match(netid, matchid, phonenum):
     sql = """ UPDATE matches
-                SET active = FALSE
+                SET active = FALSE,
+                first_accepted = FALSE,
+                second_accepted = FALSE
                 WHERE match_id = %s"""
 
     cur, conn = new_connection()
