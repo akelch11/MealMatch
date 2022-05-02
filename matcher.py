@@ -280,7 +280,7 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
     # Check if overlap is smaller than 30 minutes, not suitable for 
     # adequate meal time
-    if (end_int - start_int).total_seconds() / 60.0 < 30:
+    if (end_int - start_int).total_seconds() / 60.0 < 20:
         return False
 
     # return the start and end of the overlap
