@@ -249,7 +249,8 @@ def get_matches():
     if len(all_matches) == 0:
         html = render_template('nomatches.html')
     else:
-        html = render_template('matches.html', all_matches = all_matches)
+        html = render_template('matches.html',
+                                all_matches=all_matches)
     response = make_response(html)
     return response
 
@@ -297,9 +298,9 @@ def get_requests():
 
 #REMOVE REQUEST ON REQUESTS PAGE
 @app.route('/removerequest', methods = ['POST'])
-def remove_requests():
-    requestid = request.args.get("requestid")
-    meal_requests.remove_request(requestid)
+def remove_request():
+    requestid = [request.args.get("requestid")]
+    meal_requests.remove_requests(requestid)
     return redirect(url_for('get_requests'))
 
 #ACCEPT MATCH ON MATCHES PAGE
@@ -318,7 +319,7 @@ def remove_matches():
     phonenum = request.args.get("phonenum")
 
     matcher.remove_match(auth.authenticate(), matchid, phonenum)
-    return redirect(url_for('get_matches'))
+    return redirect('/matches')
 
 #CAS LOGOUT
 @app.route('/logout', methods=['GET'])
