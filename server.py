@@ -259,7 +259,11 @@ def get_matches():
 def past_matches():
     netid = auth.authenticate()
     past_matches = matcher.get_past_matches(netid)
-    html = render_template('history.html', 
+
+    if len(past_matches) == 0:
+        html = render_template('nopastmatches.html')
+    else:
+        html = render_template('history.html', 
                              past_matches=past_matches)
     response = make_response(html)
     return response
