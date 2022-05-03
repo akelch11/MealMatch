@@ -233,7 +233,7 @@
 
 		document.getElementById('errorBox').innerHTML = ""
 		// takeout validMealTimes to remove lunch/dinner time validation
-		if (emptyFields || /*!validMealTimes ||*/ !longEnoughInterval) {
+		if (emptyFields || !validMealTimes || !longEnoughInterval) {
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
