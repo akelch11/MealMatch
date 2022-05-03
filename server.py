@@ -343,10 +343,9 @@ def error500(e):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(
-        allow_abbrev=False, description="Web Server"
-    )
-    parser.add_argument(
+    arg_parser = ArgumentParser(allow_abbrev=False,
+                            description="Web Server")
+    arg_parser.add_argument(
         "host",
         type=str,
         nargs='?',
