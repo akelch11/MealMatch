@@ -288,8 +288,6 @@ def find_overlap(start_A, end_A, start_B, end_B):
 
 # Clean matches table of expired matches
 def clean_matches():
-    cur, conn = new_connection()
-
     sql = """SELECT *
             FROM matches"""
 

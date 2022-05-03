@@ -105,7 +105,7 @@ def form():
     year = request.args.get('year')
     major = request.args.get('major')
     bio = request.args.get('bio').strip()
-    phonenum = request.args.get('phonenum').strip()
+    phonenum = request.args.get('phonenum')
     yeardict = {}
     for i in range(4):
         y = str(senior_year()+i)
@@ -114,11 +114,6 @@ def form():
         y=str(senior_year()-1)
         yeardict[y] = year
         year = y
-    if name == "":
-        if user_profile.exists(netid):
-            return redirect("/edit_account")
-        else:
-            return redirect("/create_account")
     if bio == "":
         tup = (name, dept_code[major],  yeardict[year], phonenum)
         print('bio tuple:', tup, file=stdout)
@@ -238,7 +233,7 @@ def get_matches():
            you_accepted = match[8]
            opponent_accepted = match[7]
 
-        if match[13] == 2021:
+        if match[13] == senior_year()-1:
             all_matches[i][13] = "Grad College" 
 
         if you_accepted and opponent_accepted:
@@ -349,5 +344,5 @@ job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
 scheduler.start()
 
 port = int(os.environ.get('PORT', 5001))
-app.run(host='0.0.0.0', port=port, debug=False)
-# app.run(host='localhost', port=port, debug=False)
+# app.run(host='0.0.0.0', port=port, debug=False)
+app.run(host='localhost', port=port, debug=False)

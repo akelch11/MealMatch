@@ -5,49 +5,50 @@
 	<title>Welcome to MealMatch!</title>
 	{% include 'imports.html' %}
 	<style type="text/css">
-        html, body {
-            height: 100%;
+		html,
+		body {
+			height: 100%;
 			width: 100%;
-            
-        }
 
-        #wrapper {
-            min-height: 100%; 
-			background: rgba(0,0,0, 0.65);
-        }
-    </style>
+		}
+
+		#wrapper {
+			min-height: 100%;
+			background: rgba(0, 0, 0, 0.65);
+		}
+	</style>
 </head>
 
 
 <body>
 	<!-- Section for header -->
 	{% include 'header.html' %}
-<div id = "wrapper">
-	<!-- Section for description -->
-	<div id = "mainWindow">
-	<center>
-		<div>
-			<div class="row justify-content-center">
-				<div class="col-4" id="landingText">
-					<h3>Match for Meals!</h3>
+	<div id="wrapper">
+		<!-- Section for description -->
+		<div id="mainWindow">
+			<center>
+				<div>
+					<div class="row justify-content-center">
+						<div class="col-4" id="landingText">
+							<h3>Match for Meals!</h3>
+						</div>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col-8">
+							<p class="text-center">Meal Match is an online app that enables Princeton
+								University students to meet new people over meals at dining halls.
+								Use our app to enjoy your food and make new friends!</p>
+						</div>
+					</div>
+					<div class="row justify-content-center">
+						<div class="col-4">
+							<a class="btn btn-primary btn-lg orange-moon enter-button" href="/next" role="button">
+								Log In</a>
+						</div>
+					</div>
 				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col-8">
-					<p class="text-center">Meal Match is an online app that enables Princeton
-						University students to meet new people over meals at dining halls.
-						Use our app to enjoy your food and make new friends!</p>
-				</div>
-			</div>
-			<div class="row justify-content-center">
-				<div class="col-4">
-					<a class="btn btn-primary btn-lg orange-moon enter-button" 
-					href="/next" role="button">Log In</a>
-				</div>
-			</div>
+			</center>
 		</div>
-	</center>
-</div>
 </body>
 
 </html>
@@ -59,15 +60,15 @@
 	}
 
 	body {
-		background-image: url('../static/roma.jpeg');;
+		background-image: url('../static/roma.jpeg');
+		;
 		color: white;
 		background-size: cover;
 		background-repeat: no-repeat;
-		
+
 	}
 
 	#landingText {
 		margin-top: 20px;
 	}
-
 </style>
