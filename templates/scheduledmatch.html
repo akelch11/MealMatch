@@ -152,6 +152,23 @@
 			return min1 - min2;
 	};
 
+	// return the length of time between t1 and t2 in minutes
+	function length(t1, t2) {
+		let hour1 = Number(t1.substring(0, 2));
+		let hour2 = Number(t2.substring(0, 2));
+		let min1 = Number(t1.substring(3));
+		let min2 = Number(t2.substring(3));
+
+		let time1 = new Date();
+		let time2 = new Date();
+		time1.setHours(hour1);
+		time1.setMinutes(min1);
+		time2.setHours(hour2);
+		time2.setMinutes(min2);
+
+		let millis = time2.getTime() - time1.getTime();
+		return millis / (1000 * 60);
+	}
 	function validateTimes(t1, t2, meal) {
 
 		if (t1 === "" || t2 === "" || meal === "") return false;
@@ -161,7 +178,7 @@
 			let now = new Date();
 			let nowTime = now.toTimeString().substring(0, 5);
 
-			
+
 			// on Saturday or Sunday (weekends)
 			// on weekends, brunch/lunch starts at 10AM
 			let lunch_start;
@@ -169,7 +186,7 @@
 				lunch_start = "10:00";
 			else // on weekdays, 11:30
 				lunch_start = "11:30";
-			
+
 			// times are within lunch range and not in past
 			let lunch_bool = (meal === 'lunch') &&
 				(compareTimeStrings(lunch_start, t1) <= 0) &&
@@ -209,15 +226,22 @@
 
 		let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
 		console.log('empty fields?: ' + emptyFields)
+		
+		let interval_len = 20;
+		let longEnoughInterval = length(startTime, endTime) >= interval_len;
+		console.log('long enough interval?: ' + longEnoughInterval)
 
 		document.getElementById('errorBox').innerHTML = ""
 		// takeout validMealTimes to remove lunch/dinner time validation
-		if (emptyFields /*||  !validMealTimes */) {
+		if (emptyFields || !validMealTimes || !longEnoughInterval) {
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
 			if (!validMealTimes)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
+			if (!longEnoughInterval)
+				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes</p><br>"
+
 
 			// prevents submission
 			event.preventDefault();
