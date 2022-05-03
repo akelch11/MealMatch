@@ -14,13 +14,12 @@
 			<h2>{{title_value}}</h2>
 		</div>
 		<hr>
-		<div id='bad_name' style="color: red;"></div>
 		<form action="/submit_profile_form" method="get">
 			<table>
 				<tr>
 					<td align="right">Name:</td>
 					<td>
-						<input class="form-control profileInput" name="name" id='name' required
+						<input class="form-control profileInput" name="name" id='name' required pattern="\s*\w+\s+\w+\s*"
 							value="{{existing_profile_info['name']}}" placeholder="First and Last Name">
 					</td>
 				</tr>
@@ -90,27 +89,6 @@
 </body>
 
 </html>
-<script>
-	'use strict';
-
-
-	let bad_name = document.getElementById('bad_name');
-	let submit_button = document.getElementById('submit')
-	let name_input = document.getElementById('name');
-	
-	submit_button.addEventListener('click', function prevent_and_warn(event) {
-		let name_field = name_input.value.trim();
-		console.log(name_field);
-		if (name_field === "") {
-			console.log("you gave love a bad name.");
-			bad_name.innerHTML = "<p>Please give a valid name</p>";
-			event.preventDefault();
-		}
-	});
-	name_input.addEventListener('blur', function () {
-		bad_name.innerHTML = "";
-	});
-</script>
 <style>
 	.profileInput {
 		padding-left: 10px;
