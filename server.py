@@ -353,7 +353,7 @@ if __name__ == "__main__":
         default="localhost",
         help="the ip address the server is running on",
     )
-    args = parser.parse_args()
+    args = arg_parser.parse_args()
     host = args.host
 
     try:
