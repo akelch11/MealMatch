@@ -1,18 +1,20 @@
 ##
 from sys import stdout, stderr
+from datetime import date, datetime
+from argparse import ArgumentParser
+import os
+
+from dateutil import parser
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
-import user_profile
 
+import user_profile
 import meal_requests
 import matcher
 import auth
 import keys
 from big_lists import majors, dept_code, dhall_list
-from dateutil import parser
-from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import date, datetime
-import os
 
 app = Flask(__name__)
 app.secret_key = keys.APP_SECRET_KEY
@@ -339,10 +341,30 @@ def error404(e):
 def error500(e):
     return render_template('page500.html'), 500
 
-scheduler = BackgroundScheduler()
-job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
-scheduler.start()
 
-port = int(os.environ.get('PORT', 5001))
-# app.run(host='0.0.0.0', port=port, debug=False)
-app.run(host='localhost', port=port, debug=False)
+if __name__ == "__main__":
+    parser = ArgumentParser(
+        allow_abbrev=False, description="Web Server"
+    )
+    parser.add_argument(
+        "host",
+        type=str,
+        nargs='?',
+        metavar="host",
+        default="localhost",
+        help="the ip address the server is running on",
+    )
+    args = parser.parse_args()
+    host = args.host
+
+    try:
+        scheduler = BackgroundScheduler()
+        job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
+        scheduler.start()
+
+        port = int(os.environ.get('PORT', 5001))
+        app.run(host=host, port=port, debug=False)
+    except Exception as ex:
+        print(ex, file=stderr)
+        exit(1)
+
