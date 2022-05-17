@@ -3,6 +3,7 @@ from sys import stdout, stderr
 from datetime import date, datetime
 from argparse import ArgumentParser
 import os
+from urllib import response
 
 from dateutil import parser
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -324,6 +325,12 @@ def remove_matches():
 
     matcher.remove_match(auth.authenticate(), matchid, phonenum)
     return redirect('/matches')
+
+@app.route('/tutorial', methods = ['GET'])
+def tutorial_method():
+    html = render_template('tutorial.html')
+    response = make_response(html)
+    return response
 
 #CAS LOGOUT
 @app.route('/logout', methods=['GET'])
