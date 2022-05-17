@@ -76,11 +76,17 @@
 					</td>
 				</tr>
 				<tr>
-					<td></td>
+					<td>
+					</td>
 					<td>
 						<input id='submit' class="form-control profileInput orange-moon mainButton enter-button"
 							type="submit" value="{{button_value}}">
 					</td>
+					<div>
+						{% if valid_phonenum == False %}
+						<div class="container row" id="errorBox" style="color: red">Please enter a valid US phone number.</div>
+						{% endif %}
+					</div>
 				</tr>
 			</table>
 		</form>

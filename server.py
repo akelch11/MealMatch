@@ -9,6 +9,8 @@ from dateutil import parser
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 
 import user_profile
 import meal_requests
@@ -50,7 +52,9 @@ def homescreen():
     if not session.get('username'):
         return redirect('/landing') # go to landing page
     if not user_profile.exists(session.get('username')):
-        return redirect('/create_account')
+        # return redirect('/create_account')
+        # go to create account page, pass flag for having valid phone number
+        return redirect(url_for('.update_account_form', valid_phonenum = '1'))
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
@@ -75,10 +79,20 @@ def senior_year():
 #establish the route for creating/editing your account
 @app.route('/edit_account', methods=['GET'])
 @app.route('/create_account', methods=['GET'])
-def update_form():
+def update_account_form():
+   
     username = auth.authenticate()
 
     profile_dict = user_profile.get_profile(username)
+
+    valid_phonenum = request.args.get('valid_phonenum')
+    
+    if valid_phonenum == '1':
+        valid_phonenum = True
+    elif valid_phonenum == '0':
+        valid_phonenum = False
+    else: # protect against malicious manually entering parameter to different than 0 or 1
+        return make_response(render_template('page404.html'), 404)
 
 
     title_value = ""
@@ -96,7 +110,8 @@ def update_form():
                     majors=majors,
                     existing_profile_info=profile_dict,
                     title_value = title_value,
-                    button_value = button_value)
+                    button_value = button_value,
+                    valid_phonenum = valid_phonenum)
     response = make_response(html)
     return response
 
@@ -124,9 +139,16 @@ def form():
         "Super excited to grab a meal with you. You can reach me at %s.")\
         % tup
     if user_profile.exists(netid):
-        user_profile.edit_profile(netid, name, int(year), major, phonenum, bio)
+        if(user_profile.validate_phonenum(phonenum)):
+            print('Phone number validated')
+            user_profile.edit_profile(netid, name, int(year), major, phonenum, bio)
+        else:
+            return redirect(url_for('update_account_form', valid_phonenum = '0'))
     else:
-        user_profile.create_profile(netid, name, int(year), major, phonenum, bio)
+        if(user_profile.validate_phonenum(phonenum)):
+            user_profile.create_profile(netid, name, int(year), major, phonenum, bio)
+        else:
+            return redirect(url_for('update_account_form', valid_phonenum = '0'))
 
     return redirect('/index')
 
