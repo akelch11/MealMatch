@@ -23,10 +23,17 @@
 			 </center>
 
 			{% for match in past_matches %}
+
+			 {% if match['meal'] == "Lunch" and match['day'].isoweekday() >= 6%}
+			 	{% set meal_type = "Brunch" %}
+			 {% else %}
+			 	{% set meal_type = match['meal']%}
+			 {%endif%}
+
 			<button type="button" class="btn btn-primary lrg_button" data-bs-toggle="modal"
 				data-bs-target="#Modal_{{match['id']}}">
 				<span>{{match["name"]}}</span><br>
-				<span>{{match["meal"]}}</span><br>
+				<span>{{meal_type}}</span><br>
 				<span>{{match["day"].strftime("%a, %B %d")}}</span><br>
 			</button>
 			<div class="modal fade" id="Modal_{{match['id']}}" tabindex="-1"
@@ -35,7 +42,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="ModalLabel_{{match['id']}}">
-								{{match["meal"]}} with {{match["name"]}}</h5>
+								{{meal_type}} with {{match["name"]}}</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">

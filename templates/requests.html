@@ -30,7 +30,11 @@
 		<tr>
 			<td><b>{{locations[i]}}</b></td>
 			<td><b>{% if all_requests[i][2]%}
-					Lunch
+						{% if all_requests[i][1].isoweekday() == 6 or all_requests[i][1].isoweekday() == 7  %}
+								Brunch
+						{% else %}
+								Lunch
+						{%endif%}
 					{% else %}
 					Dinner
 					{%endif%}
