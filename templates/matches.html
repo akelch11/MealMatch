@@ -29,7 +29,11 @@
 					<strong class="cardText"><b>{{matches[12]}}</b></strong><br>
 					<strong class="cardText">
 						{% if matches[10] %}
-						{% set meal= "Lunch" %}
+							{% if matches[6].isoweekday() == 6 or matches[6].isoweekday() == 7%}
+								{% set meal= "Brunch" %}
+							{%else%}
+								{% set meal= "Lunch" %}
+							{%endif%}
 						{% else %}
 						{% set meal= "Dinner" %}
 						{%endif%}

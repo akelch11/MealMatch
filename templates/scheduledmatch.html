@@ -15,7 +15,11 @@
 		<div id='mealType' class="container">
 			<div class="btn-group-sm menuButton">
 				I want to eat:
+				{% if date.isoweekday() == 6 or date.isoweekday() == 7%}
+				<button class='btn-lg' id='lunchButton'> Brunch </button>
+				{%else%}
 				<button class='btn-lg' id='lunchButton'> Lunch </button>
+				{%endif%}
 				<button class='btn-lg' id='dinnerButton'> Dinner </button>
 			</div>
 		</div>
@@ -87,6 +91,17 @@
 		lunchButton.style.backgroundColor = '';
 
 	});
+
+	function detectBrunch() {
+		
+		console.log("brunch function run")
+		now = new Date()
+		// render "Brunch" on weekends
+		if (now.getDay() == 0 || now.getDay() == 6)
+			lunchButton.value = "Brunch"
+	}
+
+	$("document").ready(detectBrunch())
 
 	for (let i = 0; i < dHallButtons.length; i++) {
 		let btn = dHallButtons[i];

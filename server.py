@@ -217,9 +217,11 @@ def schedulematch():
     if error is None:
         error = ""
 
+    now = datetime.now()
     html = render_template('scheduledmatch.html',
                             dhalls=dhall_list,
-                            error=error)
+                            error=error,
+                            date = now)
     response = make_response(html)
     return response
     
