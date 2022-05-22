@@ -3,6 +3,7 @@
 
 dhall_list = sorted(["CJL", "Forbes", "RoMa", "Whitman", "Wucox"])
 
+
 mjr  = ['African American Studies', 'Anthropology', 'Architecture',
   'Art and Archaeology', 'Astrophysical Sciences',
    'Chemical and Biological Engineering', 'Chemistry',
@@ -26,7 +27,7 @@ mjr  = ['African American Studies', 'Anthropology', 'Architecture',
                    'Musicology', 'Music Composition',
                    'Population Studies', 'Plasma Physics',
                    'Quantitative and Computational Biology',
-                   'History of Science']
+                   'History of Science', 'Independent Study', 'Other']
 dc = [
 'AAS','ANT','ARC','ART','AST','CBE',
 'CHM','CEE','CLA','COM','COS',
