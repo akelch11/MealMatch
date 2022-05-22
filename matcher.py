@@ -3,9 +3,11 @@ import string
 import notifications
 from datetime import datetime
 from big_lists import dhall_list
+
 from user_profile import get_from_netid
 from database import new_connection, close_connection
 
+SITE_URL = "https://mealmatch-app.herokuapp.com/"
 
 def remove_match(netid, matchid, phonenum):
     sql = """ UPDATE matches
@@ -148,7 +150,7 @@ def execute_match_query(parse_requests, lunch):
         modify_request(first[0], match_id)
         modify_request(second[0], match_id)
 
-        message = "You matched with {} on MealMatch! Check the app for more information on your match."
+        message = "You matched with {} on MealMatch! Check the app for more information on your match. \n" + SITE_URL+"matches"
 
         notifications.send_message(message.format(first[4]), second[5])
         notifications.send_message(message.format(second[4]), first[5])
@@ -248,7 +250,7 @@ def accept_match(netid, matchid, phonenum):
         netid_type = 'FIRST_ACCEPTED'
         if not row[4]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name)
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name) + "\n" + SITE_URL+"matches"
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(match_name)
@@ -258,7 +260,7 @@ def accept_match(netid, matchid, phonenum):
         netid_type = 'SECOND_ACCEPTED'
         if not row[3]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name)
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name) + "\n" + SITE_URL+"matches"
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(match_name)
