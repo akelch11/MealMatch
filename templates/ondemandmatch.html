@@ -40,7 +40,15 @@
 			</div>
 		</div>
 
-		<div class="container row" id="errorBox" style="color: red"></div>
+		<div class="container row" id="errorBox" style="color: red">
+			<!-- catching invalid requests on back-end -->
+			{% if error == "invalid_request": %}
+			<p>*An attempt was made to submit a request with invalid parameters. Please refer to request guidelines to submit a valid request.</p><br>
+			<!-- multiple requests in same meal period -->
+			{% elif error != '': %}
+			<p>*Please ensure that you do not submit multiple requests for the same meal period.</p><br>
+			{% endif %}
+		</div>
 
 
 

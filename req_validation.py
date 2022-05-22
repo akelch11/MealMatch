@@ -1,14 +1,15 @@
 from datetime import date, datetime, tzinfo, timedelta
-from sys import stdout
+from sys import stdout, stderr
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
+import logging
 
 
 def validate_scheduled_req(args):
      # We have to run the same validation we did in html
     # for if the user submits via the address link:(
     
-    print('match has been made', file=stdout)
+    
     
     try:
         meal_type = args.get('meal')
@@ -22,10 +23,17 @@ def validate_scheduled_req(args):
         return make_response(render_template('page404.html'), 404)
 
     
-    empty = end_time is None or start_time is None or dhall is None or at_dhall is None
-    valid_times = validate_scheduled_times(start_time, end_time)
+    empty = meal_type is None or end_time is None or  \
+            start_time is None or dhall is None or at_dhall is None
 
+    if empty:
+        return False
 
+    valid_times = validate_scheduled_times(start_time, end_time, meal_type)
+
+    print("Are times valid? ", valid_times, file= stdout)
+
+    print('Returning: ', not (empty) and (valid_times), file=stdout )
     return (not empty) and (valid_times)
 
 
@@ -33,7 +41,6 @@ def validate_ondemand_req(args):
      # We have to run the same validation we did in html
     # for if the user submits via the address link:(
     
-    print('match has been made', file=stdout)
     
     try:
         meal_type = args.get('meal')
@@ -48,8 +55,13 @@ def validate_ondemand_req(args):
 
     
     empty = end_time is None or start_time is None or dhall is None or at_dhall is None
-    valid_times = validate_scheduled_times(start_time, end_time)
 
+    if empty:
+        return False
+
+    valid_times = validate_ondemand_times(end_time)
+
+    print("Are times valid? ", valid_times)
 
     return (not empty) and (valid_times)
 
@@ -96,8 +108,6 @@ def validate_ondemand_times(t1):
         # # print((meal == "dinner"))
         # print(time_lunch)
         # print( now <= time_start)
-        print(now <= time_end \
-                    and time_interval_len_minutes(time_lunch_end, time_end) >= 20 )
         return lunch_bool or dinner_bool
 
 
@@ -153,5 +163,5 @@ def time_interval_len_minutes(t1,t2):
        
 
 
-if __name__ == "__main__":
-    print(validate_ondemand_times("15:59"), file = stdout)
+# if __name__ == "__main__":
+#     print(validate_ondemand_times("15:59"), file = stdout)

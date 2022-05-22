@@ -182,10 +182,14 @@ def submit_request():
 
     # validate back end submission of requests to ensure 
     # direct URL submission of invalid request cannot occurr
-    if not validate_req(args):
-        return redirect('/matches')
+    if not validate_req(request.args):
+        print('request deemed invalid')
 
-    
+        if at_dhall == "True":
+            return redirect('/ondemand?error=invalid_request')
+        else:
+            return redirect('/schedule?error=invalid_request')
+
 
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
@@ -208,6 +212,7 @@ def submit_request():
         start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     
     if success:
+        print('request submitted', file=stdout)
         return redirect("/matches")
     else:
         return redirect("/schedule?error=multiplerequests")
@@ -216,7 +221,8 @@ def submit_request():
 def validate_req(args):
      # We have to run the same validation we did in html
     # for if the user submits via the address link:(
-    
+    print('request validation running', file=stdout)
+    print('args in validate_req',args, file=stdout)
     try:
         meal_type = args.get('meal')
         print('Meal type', meal_type, file=stdout)
@@ -225,13 +231,22 @@ def validate_req(args):
         start_time = args.get('start')
         end_time = args.get('end')
         at_dhall = args.get('atdhall')
+        print('req type: ', at_dhall, file=stdout)
+        if at_dhall == "False":
+            at_dhall = False
+        if at_dhall == "True":
+            at_dhall = True
     except Exception as ex:
+        print('exception in validate_req', file=stdout)
         return make_response(render_template('page404.html'), 404)
 
+    
     if not at_dhall:
-        req_validation.validate_scheduled_req(args)
+        print('req to validate is scheduled')
+        return req_validation.validate_scheduled_req(args)
     else:
-        req_validation.validate_ondemand_req(args)
+        print('req to validate is on demand')
+        return req_validation.validate_ondemand_req(args)
 
 
     
