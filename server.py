@@ -1,6 +1,6 @@
 ##
 from sys import stdout, stderr
-from datetime import date, datetime
+from datetime import date, datetime, tzinfo
 from argparse import ArgumentParser
 import os
 from urllib import response
@@ -17,6 +17,7 @@ import meal_requests
 import matcher
 import auth
 import keys
+import req_validation
 from big_lists import majors, dept_code, dhall_list
 
 app = Flask(__name__)
@@ -164,18 +165,31 @@ def force_matches():
 @app.route('/submitrequest', methods = ['GET'])
 def submit_request():
     print('match has been made', file=stdout)
-    meal_type = request.args.get('meal')
-    print('Meal type', meal_type, file=stdout)
-    dhall = request.args.get('location')
-    print('DHALL STRING:', dhall, file=stdout)
-    start_time = request.args.get('start')
-    end_time = request.args.get('end')
-    at_dhall = request.args.get('atdhall')
+    
+    # parse request arguments, throw exception if not parseable
+    try:
+        meal_type = request.args.get('meal')
+        print('Meal type', meal_type, file=stdout)
+        dhall = request.args.get('location')
+        print('DHALL STRING:', dhall, file=stdout)
+        start_time = request.args.get('start')
+        end_time = request.args.get('end')
+        at_dhall = request.args.get('atdhall')
+    except Exception as ex:
+        return make_response(render_template('page404.html'), 404)
 
-    # may not need backend validation if route is invisible
-    # # if any args missing when request typed into the url
-    # if not validate_req(meal_type, dhall, start_time, end_time, at_dhall):
-    #     return redirect('/matches')
+    print(request.args, file = stdout)
+
+    # validate back end submission of requests to ensure 
+    # direct URL submission of invalid request cannot occurr
+    if not validate_req(request.args):
+        print('request deemed invalid')
+
+        if at_dhall == "True":
+            return redirect('/ondemand?error=invalid_request')
+        else:
+            return redirect('/schedule?error=invalid_request')
+
 
     meal_type = (meal_type == "lunch")
     at_dhall = (at_dhall == "True")
@@ -198,15 +212,44 @@ def submit_request():
         start_time_datetime, end_time_datetime, dhall_arr, at_dhall)
     
     if success:
+        print('request submitted', file=stdout)
         return redirect("/matches")
     else:
         return redirect("/schedule?error=multiplerequests")
     
 
-# def validate_req(meal_type, dhall, start_time, end_time, at_dhall):
-#     # We have to run the same validation we did in html
-#     # for if the user submits via the address link:(
-#     return True
+def validate_req(args):
+     # We have to run the same validation we did in html
+    # for if the user submits via the address link:(
+    print('request validation running', file=stdout)
+    print('args in validate_req',args, file=stdout)
+    try:
+        meal_type = args.get('meal')
+        print('Meal type', meal_type, file=stdout)
+        dhall = args.get('location')
+        print('DHALL STRING:', dhall, file=stdout)
+        start_time = args.get('start')
+        end_time = args.get('end')
+        at_dhall = args.get('atdhall')
+        print('req type: ', at_dhall, file=stdout)
+        if at_dhall == "False":
+            at_dhall = False
+        if at_dhall == "True":
+            at_dhall = True
+    except Exception as ex:
+        print('exception in validate_req', file=stdout)
+        return make_response(render_template('page404.html'), 404)
+
+    
+    if not at_dhall:
+        print('req to validate is scheduled')
+        return req_validation.validate_scheduled_req(args)
+    else:
+        print('req to validate is on demand')
+        return req_validation.validate_ondemand_req(args)
+
+
+    
 
 
 #HOMESCREEN -> SCHEDULE MATCH PAGE 
