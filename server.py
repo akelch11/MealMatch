@@ -11,6 +11,8 @@ from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
+from flask_talisman import Talisman
+
 
 import user_profile
 import meal_requests
@@ -21,7 +23,17 @@ import req_validation
 from big_lists import majors, dept_code, dhall_list
 
 app = Flask(__name__)
+
+# redirect to HTTPS by default
+csp = {
+    'default-src': 'https://mealmatch-app.herokuapp.com'
+}
+
+talisman = Talisman(app, content_security_policy=csp)
+
+
 app.secret_key = keys.APP_SECRET_KEY
+
 
 
 @app.route('/landing', methods=['GET'])
