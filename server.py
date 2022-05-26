@@ -27,13 +27,15 @@ app = Flask(__name__)
 # redirect to HTTPS by default, allow content from following sources
 csp = {
     'default-src': [
-                    'https://mealmatch-app.herokuapp.com',
-                     '\'unsafe-inline\'',
-                     'cdn.jsdelivr.net',
-                     'fonts.googleapis.com', 
-                     'fonts.gstatic.com',
-                     'ajax.googleapis.com'
-                   ]
+                    'https://mealmatch-app.herokuapp.com'
+                #     ,
+                #      '\'unsafe-inline\'',
+                #      'cdn.jsdelivr.net',
+                #      'fonts.googleapis.com', 
+                #      'fonts.gstatic.com',
+                #      'ajax.googleapis.com'
+                # 
+                ]
 }
 
 talisman = Talisman(app, content_security_policy=csp)
