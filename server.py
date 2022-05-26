@@ -23,9 +23,6 @@ import req_validation
 from big_lists import majors, dept_code, dhall_list
 
 app = Flask(__name__)
-
-# # redirect to HTTPS by default
-# talisman = Talisman(app)
 app.secret_key = keys.APP_SECRET_KEY
 
 
@@ -440,15 +437,27 @@ if __name__ == "__main__":
     )
     args = arg_parser.parse_args()
     host = args.host
+    print('host: ',args.host, file=stdout)
 
     try:
         scheduler = BackgroundScheduler()
         job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
         scheduler.start()
 
+        # redirect to HTTPS by default
+        if host != 'localhost':
+            talisman = Talisman(app, content_security_policy = None)
+            print('talisman security', file=stdout)
+        else:
+            print('running local host, no talisman security', file = stdout)
+
         port = int(os.environ.get('PORT', 5001))
         app.run(host=host, port=port, debug=False)
     except Exception as ex:
         print(ex, file=stderr)
         exit(1)
+
+
+
+
 
