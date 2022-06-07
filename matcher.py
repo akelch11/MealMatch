@@ -194,19 +194,15 @@ def get_all_matches(netid):
     rows = cur.fetchall()
     close_connection(cur, conn)
 
-    keys = ["match_id", "first_netid", "second_netid", "match_time", "dhall", \
-            "start", "end", "first_accepted", "second_accepted", "active", "lunch"]
+    # keys = ["match_id", "first_netid", "second_netid", "match_time", "dhall", \
+    #         "start", "end", "first_accepted", "second_accepted", "active", "lunch"]
 
     
 
-    all_matches_dict = [dict(zip(keys, row)) for row in rows]
-    print(all_matches_dict)
+    # all_matches_dict = [dict(zip(keys, row)) for row in rows]
+    # print(all_matches_dict)
 
     all_matches = [list(row) for row in rows]
-
-
-
-
     return all_matches
 
 
