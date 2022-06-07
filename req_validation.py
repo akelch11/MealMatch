@@ -98,16 +98,19 @@ def validate_ondemand_times(t1):
         lunch_bool = is_lunchtime and \
                     now <= time_end \
                     and time_end <= time_lunch_end \
-                    and time_interval_len_minutes(time_end, time_lunch_end) >= 20               
+                    and time_interval_len_minutes(now, time_lunch_end) >= 20               
 
         dinner_bool = is_dinnertime and \
                     now <= time_end \
                     and time_end <= time_dinner_end \
-                    and time_interval_len_minutes(time_end, time_dinner_end) >= 20 
+                    and time_interval_len_minutes(now, time_dinner_end) >= 20 
         
-        # # print((meal == "dinner"))
-        # print(time_lunch)
-        # print( now <= time_start)
+        print('Test flag conditions')
+        print(is_lunchtime)
+        print(now <= time_end)
+        print(time_end <= time_lunch_end)
+        print(time_interval_len_minutes(time_end, time_lunch_end) >= 20)
+
         return lunch_bool or dinner_bool
 
 
@@ -159,6 +162,8 @@ def validate_scheduled_times(t1, t2, meal):
 
 def time_interval_len_minutes(t1,t2):
     timedelta = t2 - t1
+    print("TD: ",timedelta)
+    print("min: ", timedelta.total_seconds() // 60)
     return timedelta.total_seconds() // 60
        
 
