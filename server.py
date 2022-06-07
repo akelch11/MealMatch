@@ -444,7 +444,7 @@ if __name__ == "__main__":
         job = scheduler.add_job(meal_requests.clean_requests, 'interval', hours=5)
         scheduler.start()
 
-        # redirect to HTTPS when on heroku, don't use security protocol on
+        # redirect to HTTPS when on heroku, don't use security protocol on localhost
         if host != 'localhost':
             talisman = Talisman(app, content_security_policy = None)
             print('talisman security', file=stdout)
