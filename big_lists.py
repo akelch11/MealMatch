@@ -1,7 +1,7 @@
 
 """List of large size that we've moved to an external file."""
 
-dhall_list = sorted(["CJL", "Forbes", "NCW" ,"RoMa", "Whitman", "Wucox", "Yeh"])
+dhall_list = sorted(["CJL", "Forbes","RoMa", "Whitman", "Wucox"])
 
 
 mjr  = ['African American Studies', 'Anthropology', 'Architecture',
