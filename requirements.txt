@@ -13,3 +13,4 @@ python-dateutil
 twilio
 vobject
 apscheduler
+flask_talisman

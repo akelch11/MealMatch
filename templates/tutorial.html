@@ -11,41 +11,56 @@
 	<div class="container-fluid">
 		<br>
             <div style="margin-top: 10px;">
-               <h2 class = "forceMaven">Tutorial</h2>
+               <h2>Welcome to the MealMatch Tutorial!<p>(*page under development*)</p></h2>
                <hr>
+			   <p>Before you start meeting and eating with people on MealMatch, here's a brief guide on how to use the platform.</p>
             </div>
 	</div>
 	<div class="container-fluid" id="developers">
-		<hr>
-		<h3>Who built this? </h3>
-		<div class="row">
-			<div class = "col-sm-3 text-center align-middle">
-				<img src = "/static/rajiv.png"  class="rounded-circle about_img">
-				<p>Rajiv Swamy<br>rswamy@princeton.edu</p>				
-			</div>
-			<div class = "col-sm-3 text-center align-middle">
-				<img src = "/static/adam.png"   class="rounded-circle about_img">
-				<p>Adam Kelch<br>akelch@princeton.edu</p>
-			</div>
-			<div class = "col-sm-3 text-center align-middle">
-				<img src = "/static/ameya.png"  class="rounded-circle about_img">
-				<p>Ameya Vaidya<br>avaidya@princeton.edu</p>
-			</div>
-			<div class = "col-sm-3 text-center align-middle">
-				<img src = "/static/jeremy.png" class="rounded-circle about_img">
-				<p>Jeremy Dapaah<br>jdapaah@princeton.edu</p>
+		<div class="row"><h2>Matching</h2></div>
+		<div>
+			<div class = "row">
+				<p>With MealMatch, you can match to eat with new people in two main ways: <b>On-Demand</b> and <b>Scheduled</b>.</p><br>
 			</div>
 		</div>
-	</div>
-	<div class="container-fluid">
+		<div class = "row">
+			<p><b>On-Demand</b> matching allows a user to match with people when they are currently at a dining hall.<br>
+				Matches can be made with this feature during Lunch hours of <b>11:30AM - 2:00PM</b> on weekdays and <b>10:00AM - 2:00PM</b> on weekends, and during Dinner hours of <b>5:00PM - 8:00PM</b> (all in EDT).
+				Click on the <b>I'M AT A DHALL</b> button to get started.
+			<br>
+			</p>
+			<p>
+			<b>Scheduled</b> matching allows a user to match with people later in the day (near-future). Matches can be made with this feature during dining hall hours Lunch and Dinner for times <b>later in the day</b> (after present time).
+			 Click on the <b>SCHEDULE A MEAL</b> button to get started.
+			</p>
+		</div>
+
+			<center>
+				<div class = "row container-fluid">
+					<img style = "width: 85%; height: 85%; margin-top: 0px; object-fit: contain;" src="/static/matchingHStutorial.png"/>
+				</div>
+			</center>
+
+		<div class="row"><h2>Meal Requests</h2></div>
+		<div class = "row">
+			<p>To create meal request, simply specify what type of meal you want to eat (for scheduled meals), where you want to eat, and when you want to eat.</p><br>
+			<p>After selecting your desired meal type, preferred dining hall locations, and time availability, we will find you a match who also wants to eat at the same time and place.</p>
+			<p>
+				The image below is an example of how to use the menu to create requests. <br>
+				This user has created a request for <b>Lunch @ RoMa</b> from <b>1:05PM - 1:50PM</b>.<br>
+			</p>
+			<p>When submitting requests, be sure to specify times that are <b>not in the past</b>, <b>within dining hall hours</b> (for your specified meal), and are <b>at least 20 minutes apart</b>.</p>
+		</div>
+
+		<center>
+			<div class = "row container-fluid">
+				<img style = "width: 85%; height: 85%; margin-top: 0px; object-fit: contain;" src="/static/scheduledrequest_tutorial.png"/>
+			</div>
+		</center>
+
 		<hr>
-		<h3>Acknowledgements</h3>
-		<a style="color:black;" href="https://dorazhao99.github.io/">Dora Zhao, Graduate TA</a><br>
-		<a style="color:black;" href="https://www.cs.princeton.edu/~rdondero/">Dr. Robert Dondero, Course Professor</a><br>
 	</div>
-
-
-
+	
 </body>
 
 </html>
@@ -55,4 +70,8 @@
 		border: 1px;
 		border-radius: 10px;
 	}
+
+	 p {
+		font-size: 18px;
+	} 
 </style>
