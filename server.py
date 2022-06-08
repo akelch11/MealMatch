@@ -299,22 +299,22 @@ def get_matches():
         you_accepted = False
         opponent_accepted = True
         
-        if netid == match[1]:
-           you_accepted = match[7]
-           opponent_accepted = match[8] 
-        elif netid == match[2]:
-           you_accepted = match[8]
-           opponent_accepted = match[7]
+        if netid == match['first_netid']:
+           you_accepted = match['first_accepted']
+           opponent_accepted = match['second_accepted'] 
+        elif netid == match['second_netid']:
+           you_accepted = match['second_accepted']
+           opponent_accepted = match['first_accepted']
 
-        if match[13] == senior_year()-1:
-            all_matches[i][13] = "Grad College" 
+        if match['other_year'] == senior_year()-1:
+            all_matches[i]['other_year'] = "Grad College" 
 
         if you_accepted and opponent_accepted:
-            all_matches[i][7] = "Both Accepted!"
+            all_matches[i]['first_accepted'] = "Both Accepted!"
         elif you_accepted and not opponent_accepted:
-            all_matches[i][7] = "You Accepted"
+            all_matches[i]['first_accepted'] = "You Accepted"
         else:
-            all_matches[i][7] = ""
+            all_matches[i]['first_accepted'] = ""
 
 
     if len(all_matches) == 0:
