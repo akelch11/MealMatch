@@ -110,5 +110,6 @@ def remove_requests(requestids: list):
 
     cur, conn = new_connection()
     for id in requestids:
+        # print('request id to remove: ', id)
         cur.execute(sql, [id])
     close_connection(cur, conn)

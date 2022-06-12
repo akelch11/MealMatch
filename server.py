@@ -375,6 +375,7 @@ def get_requests():
 @app.route('/removerequest', methods = ['POST'])
 def remove_request():
     requestid = [request.args.get("requestid")]
+    print('request id to remove: ', requestid)
     meal_requests.remove_requests(requestid)
     return redirect(url_for('get_requests'))
 
