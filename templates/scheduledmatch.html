@@ -64,6 +64,63 @@
 			<p>*Please ensure that you do not submit multiple requests for the same meal period.</p><br>
 			{% endif %}
 		</div>
+
+		<div class = "container" id = "hoursBox" style = "font-size: 18px;">
+			Today's Dining Hall Hours: <br>
+			{% if date.isoweekday() == 6 or date.isoweekday() == 7%}
+				Brunch: 10AM - 2PM
+			{%else%}
+				Lunch: 11:30AM - 2PM
+			{%endif%}
+			<br>
+			Dinner: 5PM - 8PM
+		</div>
+		<div class = "container" id = "currentMealtimeBox" style = "font-size: 18px;">
+			<script type = "text/javascript">
+				
+				function isWeekend() {
+					let dayOfWeek = (new Date()).getDay();
+					return (dayOfWeek == 6) || (dayOfWeek == 0);
+				}
+				function isDinnerTime() {
+					let hour = (new Date()).getHours();
+					// dinner time is from 5pm-8pm
+					// do not worry about matches being made exactly at 8pm,
+					// will not be valid for matches due to < 30 min availability
+					return (17 <= hour) && (hour <= 19);
+				}
+				function isLunchTime() {
+					let dateTime = new Date();
+					let hour = dateTime.getHours();
+					let minute = dateTime.getMinutes();
+					// lunch time is from 11:30am-2pm
+					// do not worry about matches being made exactly at 2pm,
+					// will not be valid for matches due to < 30 min availability
+
+					if (isWeekend()) // weekend lunch hours are 10AM - 2PM
+						return (10 <= hour) && (hour <= 13);
+					else // weekday lunch hours, 11:30am -- 2pm
+						return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
+				}
+
+						var hoursBox = document.getElementById('currentMealtimeBox');
+						if(isLunchTime())
+						{
+							if (isWeekend())
+								hoursBox.innerHTML = "Current Mealtime: Brunch";
+							else
+							hoursBox.innerHTML = "Current Mealtime: Lunch";
+
+						}
+						else if (isDinnerTime())
+							hoursBox.innerHTML = "Current Mealtime: Dinner";
+						else
+						hoursBox.innerHTML = "";
+		
+			</script>
+		</div>
+	
+
 	</center>
 
 </body>
@@ -171,6 +228,31 @@
 		else
 			return min1 - min2;
 	};
+
+	function isWeekend() {
+		let dayOfWeek = (new Date()).getDay();
+		return (dayOfWeek == 6) || (dayOfWeek == 0);
+	}
+	function isDinnerTime() {
+		let hour = (new Date()).getHours();
+		// dinner time is from 5pm-8pm
+		// do not worry about matches being made exactly at 8pm,
+		// will not be valid for matches due to < 30 min availability
+		return (17 <= hour) && (hour <= 19);
+	}
+	function isLunchTime() {
+		let dateTime = new Date();
+		let hour = dateTime.getHours();
+		let minute = dateTime.getMinutes();
+		// lunch time is from 11:30am-2pm
+		// do not worry about matches being made exactly at 2pm,
+		// will not be valid for matches due to < 30 min availability
+
+		if (isWeekend()) // weekend lunch hours are 10AM - 2PM
+			return (10 <= hour) && (hour <= 13);
+		else // weekday lunch hours, 11:30am -- 2pm
+			return (12 <= hour || (11 == hour && minute >= 30)) && (hour <= 13);
+	}
 
 	// return the length of time between t1 and t2 in minutes
 	function length(t1, t2) {
@@ -284,6 +366,26 @@
 	// update url on changing times
 	startTimeButton.addEventListener('change', updateUrl);
 	endTimeButton.addEventListener('change', updateUrl)
+
+
+	function updateCurrentMealtimeDisplay(){
+		
+		var hoursBox = $('#hoursBox')
+		if(isLunchTime())
+		{
+			if (isWeekend())
+				hoursBox.innerHTML = "Current Mealtime: Brunch";
+			else
+			hoursBox.innerHTML = "Current Mealtime: Lunch";
+
+		}
+		else if (isDinnerTime())
+			hoursBox.innerHTML = "Current Mealtime: Dinner";
+		else
+		hoursBox.innerHTML = "";
+	}
+
+	
 
 </script>
 
