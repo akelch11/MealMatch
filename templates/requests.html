@@ -43,7 +43,7 @@
 			<td><b>{{all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')}}</b>
 			</td>
 			<td>
-				<form method="POST" action="/removerequest?requestid={{all_requests[i][9]}}">
+				<form method="POST" action="/removerequest?requestid={{all_requests[i][all_requests[i]|length - 1]}}">
 					<button class='btn-sm' style="background-color: #c55353; color: white;">Cancel Request</button>
 				</form>
 			</td>
