@@ -30,6 +30,11 @@
 				{% for dhall in dhalls%}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
 				{% endfor %}
+				<br>
+				<button class='btn-lg' id='anyDhall'
+				 style = "margin: 10px; margin-top: 10px;">
+					Any DHall
+				</button>
 			</div>
 		</div>
 
@@ -133,6 +138,10 @@
 	let activeMeal = "";
 	let activeDhalls = {};
 	let dHallButtons = document.getElementsByClassName('dHallType');
+	let anyDhallButton = document.getElementById('anyDhall');
+	// is anyDhall active
+	let isAnyActive = false;
+
 	for (btn of dHallButtons) {
 		activeDhalls[btn.id] = false;
 	}
@@ -182,10 +191,47 @@
 					activeDhalls[dhall] = false;
 				}
 
+				// deactivate anyDHall button
+				if(isAnyActive)
+				{
+					anyDhallButton.style.backgroundColor = "";
+					isAnyActive = false;
+				
+				}
+				
+
 				console.log(activeDhalls)
 
 			});
 	}
+
+	anyDhallButton.addEventListener('click',
+		function(){
+
+			if(!isAnyActive)
+				anyDhallButton.style.backgroundColor = "#ff9f46";
+			else
+				anyDhallButton.style.backgroundColor = "";
+				
+			for(let i = 0; i < dHallButtons.length; i++)
+			{
+				let btn = dHallButtons[i];
+				
+				// activate all buttons
+				if(!isAnyActive)
+					{
+						activeDhalls[btn.id] = true;
+						btn.style.backgroundColor = "#ff9f46";
+					}
+				else // deactivate all buttons
+					{
+						activeDhalls[btn.id] = false;
+						btn.style.backgroundColor = "";
+					}
+			}
+			// flip active flag
+			isAnyActive = !isAnyActive;
+		});
 
 	let submitButtonForm = document.getElementById("submitButtonForm");
 
