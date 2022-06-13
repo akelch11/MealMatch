@@ -191,6 +191,7 @@
 					activeDhalls[dhall] = false;
 				}
 
+				// deactivate anyDHall button
 				if(isAnyActive)
 				{
 					anyDhallButton.style.backgroundColor = "";
@@ -215,13 +216,14 @@
 			for(let i = 0; i < dHallButtons.length; i++)
 			{
 				let btn = dHallButtons[i];
-					
+				
+				// activate all buttons
 				if(!isAnyActive)
 					{
 						activeDhalls[btn.id] = true;
 						btn.style.backgroundColor = "#ff9f46";
 					}
-				else
+				else // deactivate all buttons
 					{
 						activeDhalls[btn.id] = false;
 						btn.style.backgroundColor = "";
