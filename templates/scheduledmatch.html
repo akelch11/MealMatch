@@ -430,7 +430,7 @@
 		if (compareTimeStrings(nowTime, "20:00") < 0)
 		{
 			// add anyTime button
-			document.getElementById('time').innerHTML += '<button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Add the full time window for the selected meal period." onclick = "updateAnyTimes()">Any Time</button>';
+			document.getElementById('time').innerHTML += '<button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px; " data-toggle="tooltip" data-placement="bottom" title="Add the full time window for the selected meal period." onclick = "updateAnyTimes()">Rest of Meal</button>';
 			console.log("any time button added " + (compareTimeStrings(nowTime, "20:00") < 0));
 		}
 	}
@@ -481,6 +481,9 @@
 
 		}
 
+	anyTimeButton.addEventListener('mouseover', function(){anyTimeButton.style.backgroundColor = "#ff9f46";});
+	anyTimeButton.addEventListener('mouseout', function(){anyTimeButton.style.backgroundColor = "";} );
+
 
 
 	function updateCurrentMealtimeDisplay(){
@@ -525,4 +528,5 @@
 		margin-top: 20px;
 
 	}
+
 </style>
