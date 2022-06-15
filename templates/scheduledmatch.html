@@ -5,6 +5,9 @@
 	<title>MealMatch | Schedule a Meal!</title>
 	{% include 'imports.html' %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -50,6 +53,11 @@
 				<input required class='btn-sm' type='time' step='60' id='startTimeButton'>
 				to
 				<input required class='btn-sm' type='time' step='60' id='endTimeButton'>
+				
+				<!-- <button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;"
+				     data-toggle="tooltip" data-placement="bottom" title="Select the full remaining meal period.">
+					Any Time
+				  </button> -->
 			</div>
 		</div>
 
@@ -414,6 +422,67 @@
 	endTimeButton.addEventListener('change', updateUrl)
 
 
+	
+	function addAnyTimeButton() {
+		
+		var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
+		
+		if (compareTimeStrings(nowTime, "20:00") < 0)
+		{
+			// add anyTime button
+			document.getElementById('time').innerHTML += '<button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Add the full time window for the selected meal period." onclick = "updateAnyTimes()">Any Time</button>';
+			console.log("any time button added " + (compareTimeStrings(nowTime, "20:00") < 0));
+		}
+	}
+
+	addAnyTimeButton();
+	
+	
+	let anyTimeButton = document.getElementById('anyTime');
+		function updateAnyTimes()
+		{
+			
+			var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
+			console.log(nowTime);
+
+			if(activeMeal === "lunch")
+			{
+				if (isLunchTime())
+					document.getElementById('startButton').setAttribute('value', nowTime);
+				else 
+				{
+					if (isWeekend())
+					document.getElementById('startTimeButton').setAttribute('value', "10:00")
+					else
+					document.getElementById('startTimeButton').setAttribute('value', "11:30")
+				}
+					
+				document.getElementById('endTimeButton').setAttribute('value', "14:00");
+
+
+				console.log('times changed to lunch')
+			}
+			else if (activeMeal === "dinner")
+			{
+				if (isDinnerTime())
+					document.getElementById('startTimeButton').setAttribute('value', nowTime);
+				else 
+				{
+					document.getElementById('startTimeButton').setAttribute('value', "17:00")
+				}
+				
+				document.getElementById('endTimeButton').setAttribute('value', "20:00");
+
+				console.log('times changed to dinner')
+			}
+
+			startTimeButton.innerHTML = startTimeButton.innerHTML;
+			endTimeButton.innerHTML = endTimeButton.innerHTML;
+
+		}
+
+
+
 	function updateCurrentMealtimeDisplay(){
 		
 		var hoursBox = $('#hoursBox')
@@ -430,6 +499,11 @@
 		else
 		hoursBox.innerHTML = "";
 	}
+
+	// activate tooltips
+	$('#anyTime').ready(function () {
+  	$('[data-toggle="tooltip"]').tooltip()
+	})
 
 	
 
