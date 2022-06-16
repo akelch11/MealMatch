@@ -31,7 +31,7 @@
 							{%for i in range(-1, 4)%}
 							{%set output = senior_class+i %}
 							{% if i == -1 %}
-							{%set output = "Grad College" %}
+							{%set output = "Grad Student" %}
 							{% endif %}
 							{% if senior_class+i==existing_profile_info['year'] %}
 							<option selected>{{output}}</option>

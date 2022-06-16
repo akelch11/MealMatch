@@ -157,6 +157,10 @@
 	let dHallButtons = document.getElementsByClassName('dHallType')
 	let activeDhall = "";
 
+	let anyDhallButton = document.getElementById('anyDhall');
+	// is anyDhall active
+	let isAnyActive = false;
+
 	for (let i = 0; i < dHallButtons.length; i++) {
 		let btn = dHallButtons[i];
 		btn.addEventListener('click',
@@ -331,6 +335,45 @@
 	for (let i = 0; i < dHallButtons.length; i++)
 		dHallButtons[i].addEventListener('click', updateUrl)
 
+
+	function addAnyTimeButton() {
+		
+		var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
+		
+		if (isLunchTime() || isDinnerTime())
+		{
+			// add anyTime button
+			var buttonString = '<button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;" data-toggle="tooltip" data-placement="bottom" title="Add the full time window for the selected meal period." onclick = "updateAnyTimes()">Rest of ';
+			if (isLunchTime())
+				buttonString += "Lunch </button>";
+			else if (isDinnerTime())
+			buttonString += "Dinner </button>";
+			document.getElementById('time').innerHTML += buttonString;
+			console.log("any time button added ");
+		}
+	}
+
+	addAnyTimeButton()
+
+	function updateAnyTimes()
+		{
+			
+			var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
+			console.log(nowTime);
+
+			
+			if (isLunchTime())
+				document.getElementById('endTimeButton').setAttribute('value', '14:00');
+			else if (isDinnerTime())
+				document.getElementById('endTimeButton').setAttribute('value', '20:00');
+			
+		}
+
+
+	document.getElementById('anyTime').addEventListener('mouseover', function(){anyTimeButton.style.backgroundColor = "#ff9f46";});
+	document.getElementById('anyTime').addEventListener('mouseout', function(){anyTimeButton.style.backgroundColor = "";} );
+
+
 </script>
 
 
@@ -342,5 +385,9 @@
 	body {
 		font-family: "Maven Pro", sans-serif;
 		font-weight: normal;
+	}
+
+	#anyTime:hover {
+		background-color: "#ff9f46";
 	}
 </style>
