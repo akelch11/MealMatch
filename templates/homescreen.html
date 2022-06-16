@@ -4,6 +4,10 @@
 <head>
 	<title>MealMatch</title>
 	{% include 'imports.html' %}
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -16,7 +20,8 @@
 				<div class="col-sm-4">
 					<form action='/ondemand'>
 						<button class="btn-lg btn-block hPageButton" id="grabMealButton">
-							<img class="home_img_class" src="/static/diningchairslogo.png" alt="grab meal"> </img><br>
+							<img class="home_img_class" src="/static/diningchairslogo.png" alt="grab meal"
+							data-toggle="tooltip" data-placement="top" title="Find a meal at the dining hall ASAP."> </img><br>
 							I'M AT A DHALL
 						</button>
 					</form>
@@ -26,7 +31,8 @@
 					<form action="/schedule">
 						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/mealtime_icon.png"
-								alt="schedule a meal"></img><br>
+								alt="schedule a meal"
+								data-toggle="tooltip" data-placement="top" title="Schedule a meal for the near future."></img><br>
 							SCHEDULE A MEAL
 						</button>
 					</form>
@@ -35,7 +41,8 @@
                 <div class='col-sm-4'>
 					<form action="/matches">
 						<button class="btn-lg btn-block hPageButton">
-							<img class="home_img_class" src="/static/matched_icon.png" alt="matches"> </img><br>
+							<img class="home_img_class" src="/static/matched_icon.png" alt="matches"
+							data-toggle="tooltip" data-placement="top" title="Check and accept potential matches."> </img><br>
 							MATCHES
 						</button>
 					</form>
@@ -46,7 +53,8 @@
 					<form action="/requests">
 						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/hourglass.png"
-								alt="scheduled meals"></img><br>
+								alt="scheduled meals"
+								data-toggle="tooltip" data-placement="top" title="Check pending meal requests."></img><br>
 							REQUESTS
 						</button>
 					</form>
@@ -56,7 +64,8 @@
 				<div class='col-sm-4'>
 					<form action="/history">
 						<button class="btn-lg btn-block hPageButton">
-							<img class="home_img_class" src="/static/match_history.png" alt="history"> </img><br>
+							<img class="home_img_class" src="/static/match_history.png" alt="history"
+							data-toggle="tooltip" data-placement="top" title="Check a history of past matches."> </img><br>
 							PAST MATCHES
 						</button>
 					</form>
@@ -66,7 +75,8 @@
 					<a href="/edit_account?valid_phonenum=1">
 						<button class="btn-lg btn-block hPageButton">
 							<img class="home_img_class" src="/static/profilepiclogowhite.png"
-								alt="my profile"></img><br>
+								alt="my profile"
+								data-toggle="tooltip" data-placement="top" title="Check and edit profile info."></img><br>
 							MY PROFILE
 						</button>
 					</a>
@@ -77,7 +87,11 @@
 	</center>
 
 </body>
-
+<script>
+	$('#mainContainer').ready(function () {
+  	$('[data-toggle="tooltip"]').tooltip()
+	})
+</script>
 
 
 
@@ -94,8 +108,8 @@
 	}
 
 	#mainContainer {
-		margin-top: 20px;
-		margin-bottom: 20px;
+		margin-top: 25px;
+		margin-bottom: 25px;
 		padding-bottom: 10px;
 	}
 
