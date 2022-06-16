@@ -76,7 +76,7 @@ def about_method():
 # get what the senior class's year is right now 
 def senior_year():
     td = date.today()
-    return td.year if td.month<8 else td.year+1
+    return td.year if td.month<6 else td.year+1
     
 ##########
 
@@ -132,7 +132,7 @@ def form():
     for i in range(4):
         y = str(senior_year()+i)
         yeardict[y] = 'class of '+str(y)
-    if year == "Grad College":
+    if year == "Grad Student":
         y=str(senior_year()-1)
         yeardict[y] = year
         year = y
@@ -308,7 +308,7 @@ def get_matches():
            opponent_accepted = match['first_accepted']
 
         if match['other_year'] == senior_year()-1:
-            all_matches[i]['other_year'] = "Grad College" 
+            all_matches[i]['other_year'] = "Grad Student" 
 
         if you_accepted and opponent_accepted:
             all_matches[i]['first_accepted'] = "Both Accepted!"
