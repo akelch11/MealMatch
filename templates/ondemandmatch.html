@@ -296,9 +296,9 @@
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
 			else if (!validMealTimes && (isLunchTime() || isDinnerTime()))
-			document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the current mealtime at these hours. Please refer to the dining hall hours enter valid times for a match request.</p><br>"
+			document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the current mealtime at these hours. <br> Please refer to the dining hall hours enter valid times for a match request.</p><br>"
 			if (!isLunchTime() && !isDinnerTime() && !emptyFields)
-				document.getElementById('errorBox').innerHTML += "<p>*On demand meal requests cannot be made outside of dining hall hours. <br> Please try scheduling a meal for later or try again later</p><br>"
+				document.getElementById('errorBox').innerHTML += '<p>*On demand meal requests cannot be made outside of dining hall hours. <br> Please try <a href = "/schedule" >scheduling a meal</a> or try again later.</p><br>'
 			if (!longEnoughInterval && !emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes</p><br>"
 			// prevents submission
