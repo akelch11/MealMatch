@@ -400,10 +400,13 @@
 		// takeout validMealTimes to remove lunch/dinner time validation
 		if (emptyFields || !validMealTimes || !longEnoughInterval) {
 			console.log('attempt to send invalid meal request')
+			// if there is an incomplete field, only show this error
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter all information to make a match request</p><br>"
+			// otherwise, if times are not appropriate, prompt user to enter valid hours
 			else if (!validMealTimes)
-				document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the selected meal at these hours. Please enter valid times for a match request.</p><br>"
+				document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the selected meal at these hours.<br> Please refer to the dining hall hours enter valid times for a match request.</p><br>"
+			// if time entered isn't long enough and all fields complete
 			if (!longEnoughInterval && !emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes to make a request</p><br>"
 
