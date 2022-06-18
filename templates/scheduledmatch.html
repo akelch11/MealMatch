@@ -401,11 +401,11 @@
 		if (emptyFields || !validMealTimes || !longEnoughInterval) {
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
-				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-			if (!validMealTimes)
-				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
-			if (!longEnoughInterval)
-				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes</p><br>"
+				document.getElementById('errorBox').innerHTML += "<p>*Please enter all information to make a match request</p><br>"
+			else if (!validMealTimes)
+				document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the selected meal at these hours. Please enter valid times for a match request.</p><br>"
+			if (!longEnoughInterval && !emptyFields)
+				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes to make a request</p><br>"
 
 
 			// prevents submission

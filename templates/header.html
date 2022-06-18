@@ -1,22 +1,80 @@
 <html>
 
 <body>
+	<head>
+		{% include 'imports.html' %}
+	</head>
 	<div class="jumbotron container-fluid orange-moon">
-		<nav class="navbar justify-content-between">
+		<nav class="navbar justify-content-between navbar-expand-lg">
 			<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
-			<div class = "forceMaven">
-				<a class="navbar-link NB-Button" href="/about">About</a>
-				|
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class = "forceMaven collapse navbar-collapse me-auto mb-2 mb-lg-0 d-flex align-items-end" id = "navbarSupportedContent">
+			{% if logged_out or landing %}
+			<ul class="navbar-nav mr-auto">
+				<li> <a class="navbar-link NB-Button nav-item" href="/about">About</a> </li>
+				
 				<!-- TODO update logic so that shows when not logged in -->
-				<a class = "navbar-link NB-Button" href = "/tutorial">Tutorial</a>
-				|
+			    <li><a class = "navbar-link NB-Button nav-item" href = "/tutorial">Tutorial</a></li>
+				
 				{% if logged_out or landing%}
-				<a class="navbar-link NB-Button" href="/next">Log In</a>
+				<li><a class="navbar-link NB-Button nav-item" href="/next">Log In</a></li>
 				{% else %}
-				<a class="navbar-link NB-Button" href="/logout">Logout</a>
+				<li><a class="navbar-link NB-Button nav-item" href="/logout">Logout</a></li>
 				{%endif%}
+			</ul>
+			{%else%}
+			<ul class="navbar-nav mr-auto">
+				<li><a class="navbar-link NB-Button nav-item" href="/homescreen">Homescreen</a></li>
+
+				<li><a class="navbar-link NB-Button nav-item" href="/matches">Matches</a></li>
+				<li> <a class="navbar-link NB-Button nav-item" href="/about">About</a> </li>
+				
+				<!-- TODO update logic so that shows when not logged in -->
+			    <li><a class = "navbar-link NB-Button nav-item" href = "/tutorial">Tutorial</a></li>
+				
+				<li><a class="navbar-link NB-Button nav-item" href="/logout">Logout</a></li>
+				
+			</ul>
+			{% endif %}
 			</div>
 		</nav>
+		<!-- <nav class="navbar navbar-expand-lg">
+			<a class="navbar-brand" href="#">Navbar</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+		  
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			  <ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+				  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link" href="#">Link</a>
+				</li>
+				<li class="nav-item dropdown">
+				  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Dropdown
+				  </a>
+				  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#">Action</a>
+					<a class="dropdown-item" href="#">Another action</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				  </div>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link disabled" href="#">Disabled</a>
+				</li>
+			  </ul>
+			  <form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			  </form>
+			</div>
+		  </nav> -->
 	</div>
 </body>
 <style>
@@ -26,6 +84,8 @@
 		padding-bottom: 5px;
 		color: white;
 		text-decoration: none;
+		padding-left: 5px;
+		padding-right: 5px;
 	}
 
 	#HomeButton {
@@ -45,6 +105,8 @@
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
+
+
 </style>
 
 </html>
