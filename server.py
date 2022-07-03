@@ -137,11 +137,7 @@ def form():
         yeardict[y] = year
         year = y
     if bio == "":
-        tup = (name, dept_code[major],  yeardict[year], phonenum)
-        print('bio tuple:', tup, file=stdout)
-        bio = ("Hi! My name is %s. I'm a %s major in the %s. "
-        "Super excited to grab a meal with you. You can reach me at %s.")\
-        % tup
+        bio = "Hey, my name is %s. Let's grab a meal sometime!" % name
     if user_profile.exists(netid):
         if(user_profile.validate_phonenum(phonenum)):
             print('Phone number validated')
