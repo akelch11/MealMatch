@@ -63,10 +63,10 @@ def validate_phonenum(phonenum):
         .format(phonenum[:3], phonenum[3:6], phonenum[6:])
         print(phonenum_str)
 
-        client.lookups.v1 \
-        .phone_numbers(phonenum_str) \
-        .fetch(country_code='US')
+        client.lookups.v1\
+        .phone_numbers(phonenum_str).fetch(country_code='US')
     except Exception as ex: # phone number is not valid
+        print(ex)
         print("invalid phone number")
         return False
     
