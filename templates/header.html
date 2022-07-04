@@ -3,13 +3,13 @@
 	<nav class="navbar justify-content-between navbar-expand-lg">
 		<div class="container-fluid">
 			<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
-			<button class="navbar-toggler" color="black" type="button" data-bs-toggle="collapse"
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 				data-bs-target="#content">
-				<span class="navbar-toggler-icon"></span>
+				<span class="navbar-toggler-icon">=</span>
 			</button>
 			<div class="collapse navbar-collapse" id="content">
 				<div class="forceMaven navbar-nav">
-					{% if logged_out or landing%}
+					{% if logged_out or landing %}
 					<a class="nav-link NB-Button" href="/about">About</a>
 					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
 					<a class="nav-link NB-Button" href="/next">Log In</a>
@@ -19,7 +19,7 @@
 					<a class="nav-link NB-Button" href="/about">About</a>
 					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
 					<a class="nav-link NB-Button" href="/logout">Sign Out</a>
-					{%endif%}
+					{% endif %}
 				</div>
 			</div>
 		</div>

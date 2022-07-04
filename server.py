@@ -396,7 +396,9 @@ def remove_matches():
 
 @app.route('/tutorial', methods = ['GET'])
 def tutorial_method():
-    html = render_template('tutorial.html')
+    logged_out = session.get('username') == None
+    html = render_template('tutorial.html', 
+                            logged_out=logged_out)
     response = make_response(html)
     return response
 
@@ -413,7 +415,6 @@ def test404(e):
 
 @app.errorhandler(404)
 def error404(e):
-
     return render_template('page404.html'), 404
 
 @app.errorhandler(500)
