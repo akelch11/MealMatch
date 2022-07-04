@@ -1,30 +1,29 @@
 <html>
-<div class="jumbotron orange-moon">
-	<nav class="navbar justify-content-between navbar-expand-lg">
+<!-- <div class=""> -->
+	<nav class="navbar navbar-expand-lg navbar-light jumbotron orange-moon">
 		<div class="container-fluid">
 			<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-				data-bs-target="#content">
-				<span class="navbar-toggler-icon">=</span>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#content">
+				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="content">
-				<div class="forceMaven navbar-nav">
+			<div class="collapse navbar-collapse justify-content-end" id="content">
+				<ul class="forceMaven navbar-nav">
 					{% if logged_out or landing %}
-					<a class="nav-link NB-Button" href="/about">About</a>
-					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
-					<a class="nav-link NB-Button" href="/next">Log In</a>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/next">Log In</a></li>
 					{% else %}
-					<a class="nav-link NB-Button" href="/">Home</a>
-					<a class="nav-link NB-Button" href="/matches">Matches</a>
-					<a class="nav-link NB-Button" href="/about">About</a>
-					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
-					<a class="nav-link NB-Button" href="/logout">Sign Out</a>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/">Home</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/matches">Matches</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/logout">Sign Out</a></li>
 					{% endif %}
-				</div>
+				</ul>
 			</div>
 		</div>
 	</nav>
-</div>
+<!-- </div> -->
 <style>
 	.NB-Button {
 		font-weight: 300;
@@ -48,7 +47,7 @@
 		color: white;
 		text-align: left;
 		font-size: 16px;
-		height: 70px;
+		/* height: 70px; */
 		padding-left: 10px;
 		padding-top: 10px;
 		padding-bottom: 10px;
