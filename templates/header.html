@@ -40,18 +40,18 @@
     	color:  #0082e6!important;
 	} */
 
-		ul li.nav-item {
+		ul li.nav-item a {
 		list-style: none;
 		position: relative;
 		display: inline;
 		}
 
-		ul li.nav-item {
+		ul li.nav-item a {
 		color: #333;
 		text-decoration: none;
 		}
 
-		ul li.nav-item:after {
+		ul li.nav-item a:after {
 		content: '';
 		position: absolute;
 		left: 50%;
@@ -62,13 +62,17 @@
 		transition: all 0.45s;
 		}
 
-		ul li.nav-item:hover:after {
+		ul li.nav-item a:hover:after {
 		width: 100%;
 		left: 0;
 		}
 
-		ul li.nav-item:hover {
-		text-decoration: none;
+		ul li.nav-item a:hover {
+			text-decoration: none;
+		}
+
+		ul li.nav-item {
+			margin-top: 10px;
 		}
 
 	#HomeButton {
