@@ -1,6 +1,5 @@
-
+from psycopg2 import connect
 def new_connection():
-    from psycopg2 import connect
     conn = connect(database="d4p66i6pnk5690",
                 user="uvqmavpcfqtovz",
                 password="e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2",
