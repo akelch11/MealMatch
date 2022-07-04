@@ -1,28 +1,28 @@
 <html>
 <!-- <div class=""> -->
-	<nav class="navbar navbar-expand-lg navbar-light jumbotron orange-moon">
-		<div class="container-fluid">
-			<a class="navbar-brand forceMaven" id="HomeButton" href="/index">MealMatch</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#content">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse justify-content-end" id="content">
-				<ul class="forceMaven navbar-nav">
-					{% if logged_out or landing %}
-					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/next">Log In</a></li>
-					{% else %}
-					<li class="nav-item"><a class="nav-link NB-Button" href="/">Home</a></li>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/matches">Matches</a></li>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a></li>
-					<li class="nav-item"><a class="nav-link NB-Button" href="/logout">Sign Out</a></li>
-					{% endif %}
-				</ul>
-			</div>
+<nav class="navbar navbar-expand-lg navbar-light jumbotron orange-moon">
+	<div class="container-fluid">
+		<a class="navbar-brand forceMaven" id="HomeButton" href="/index">MealMatch</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#content">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse justify-content-end" id="content">
+			<ul class="forceMaven navbar-nav">
+				{% if logged_out or landing %}
+				<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/next">Log In</a></li>
+				{% else %}
+				<li class="nav-item"><a class="nav-link NB-Button" href="/">Home</a></li>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/matches">Matches</a></li>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a></li>
+				<li class="nav-item"><a class="nav-link NB-Button" href="/logout">Sign Out</a></li>
+				{% endif %}
+			</ul>
 		</div>
-	</nav>
+	</div>
+</nav>
 <!-- </div> -->
 <style>
 	.NB-Button {
@@ -35,23 +35,18 @@
 		padding-right: 5px;
 	}
 
-	/* .NB-Button:hover
-	{
-    	color:  #0082e6!important;
-	} */
-
-		ul li.nav-item a {
+	ul li.nav-item a {
 		list-style: none;
 		position: relative;
 		display: inline;
-		}
+	}
 
-		ul li.nav-item a {
+	ul li.nav-item a {
 		color: #333;
 		text-decoration: none;
-		}
+	}
 
-		ul li.nav-item a:after {
+	ul li.nav-item a:after {
 		content: '';
 		position: absolute;
 		left: 50%;
@@ -60,20 +55,20 @@
 		height: 2px;
 		background: white;
 		transition: all 0.45s;
-		}
+	}
 
-		ul li.nav-item a:hover:after {
+	ul li.nav-item a:hover:after {
 		width: 100%;
 		left: 0;
-		}
+	}
 
-		ul li.nav-item a:hover {
-			text-decoration: none;
-		}
+	ul li.nav-item a:hover {
+		text-decoration: none;
+	}
 
-		ul li.nav-item {
-			margin-top: 10px;
-		}
+	ul li.nav-item {
+		margin-top: 10px;
+	}
 
 	#HomeButton {
 		font-weight: 900;
@@ -91,7 +86,6 @@
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
-
 </style>
 
 </html>
