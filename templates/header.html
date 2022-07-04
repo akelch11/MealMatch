@@ -1,28 +1,30 @@
 <html>
-
-<body>
-	<div class="jumbotron orange-moon">
-		<nav class="navbar navbar-expand-lg">
-			<div class="container-fluid justify-content-between">
-				<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
-				<button class="navbar-toggler" color="black" type="button" data-bs-toggle="collapse" data-bs-target="#content">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="content">
-					<div class="forceMaven navbar-nav">
-						<a class="nav-link NB-Button" href="/about">About</a>
-						<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
-						{% if logged_out or landing%}
-						<a class="nav-link NB-Button" href="/next">Log In</a>
-						{% else %}
-						<a class="nav-link NB-Button" href="/logout">Logout</a>
-						{%endif%}
-					</div>
+<div class="jumbotron orange-moon">
+	<nav class="navbar justify-content-between navbar-expand-lg">
+		<div class="container-fluid">
+			<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
+			<button class="navbar-toggler" color="black" type="button" data-bs-toggle="collapse"
+				data-bs-target="#content">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="content">
+				<div class="forceMaven navbar-nav">
+					{% if logged_out or landing%}
+					<a class="nav-link NB-Button" href="/about">About</a>
+					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
+					<a class="nav-link NB-Button" href="/next">Log In</a>
+					{% else %}
+					<a class="nav-link NB-Button" href="/">Home</a>
+					<a class="nav-link NB-Button" href="/matches">Matches</a>
+					<a class="nav-link NB-Button" href="/about">About</a>
+					<a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
+					<a class="nav-link NB-Button" href="/logout">Sign Out</a>
+					{%endif%}
 				</div>
 			</div>
-		</nav>
-	</div>
-</body>
+		</div>
+	</nav>
+</div>
 <style>
 	.NB-Button {
 		font-weight: 300;
@@ -30,6 +32,8 @@
 		padding-bottom: 5px;
 		color: white;
 		text-decoration: none;
+		padding-left: 5px;
+		padding-right: 5px;
 	}
 
 	#HomeButton {
