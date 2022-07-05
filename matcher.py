@@ -1,3 +1,4 @@
+from operator import le
 import random
 import string
 import notifications
@@ -139,7 +140,7 @@ def execute_match_query(parse_requests, lunch):
         sql += "VALUES ({})".format(",".join(["%s"] * 11))
 
         # Current time for match made
-        now = datetime.now()
+        now = datetime.now().replace(second=0, microsecond=0)
 
         val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, lunch)
 
@@ -151,7 +152,6 @@ def execute_match_query(parse_requests, lunch):
         modify_request(second[0], match_id)
 
         message = "You matched with {} on MealMatch! Check the app for more information on your match. \n" + SITE_URL+"matches"
-
         notifications.send_message(message.format(first[4]), second[5])
         notifications.send_message(message.format(second[4]), first[5])
 
@@ -164,16 +164,9 @@ def execute_match_query(parse_requests, lunch):
 
 # Helper method, returns a list of selected dhalls from request
 def find_possible_dhalls(row):
-    available = set()
     # dhalls indexed starting at 6
     dhalls = row[6:6 + len(dhall_list)]
-
-    for i in range(len(dhalls)):
-        if dhalls[i] == True:
-            available.add(dhall_list[i])
-
-    return available
-
+    return {dhall_list[i] for i in range(len(dhalls)) if dhalls[i]}
 
 def get_all_matches(netid):
     

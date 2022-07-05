@@ -4,11 +4,6 @@
 <head>
 	<title>MealMatch | Match Now!</title>
 	{% include 'imports.html' %}
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<!-- Tooltip Script -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-		crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -295,11 +290,11 @@
 			console.log('attempt to send invalid meal request')
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
-			if (!validMealTimes && (isLunchTime() || isDinnerTime()))
-				document.getElementById('errorBox').innerHTML += "<p>*Please enter valid times for a match request</p><br>"
-			if (!isLunchTime() && !isDinnerTime())
-				document.getElementById('errorBox').innerHTML += "<p>* Requests cannot be made outside of dining hall hours</p><br>"
-			if (!longEnoughInterval)
+			else if (!validMealTimes && (isLunchTime() || isDinnerTime()))
+			document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the current mealtime at these hours. <br> Please refer to the dining hall hours enter valid times for a match request.</p><br>"
+			if (!isLunchTime() && !isDinnerTime() && !emptyFields)
+				document.getElementById('errorBox').innerHTML += '<p>*On demand meal requests cannot be made outside of dining hall hours. <br> Please try <a href = "/schedule" >scheduling a meal</a> or try again later.</p><br>'
+			if (!longEnoughInterval && !emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter a time interval of at least " + interval_len + " minutes</p><br>"
 			// prevents submission
 			event.preventDefault();

@@ -1,7 +1,17 @@
+# Python
 __pycache__
 .venv
+
+# JetBrains config
 .idea
+
+#VS Code config
+workspace.code-workspace
+
+# MacOS config
 .DS_Store
 */.DS_Store
+
+#
 archives
-workspace.code-workspace
+htmlcov

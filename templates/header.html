@@ -1,32 +1,79 @@
 <html>
-
-<body>
-	<div class="jumbotron container-fluid orange-moon">
-		<nav class="navbar justify-content-between">
+<!-- <div class=""> -->
+	<nav class="navbar navbar-expand-lg navbar-light jumbotron orange-moon">
+		<div class="container-fluid">
 			<a class="navbar-brand" id="HomeButton" href="/index">MealMatch</a>
-			<div class = "forceMaven">
-				<a class="navbar-link NB-Button" href="/about">About</a>
-				|
-				<!-- TODO update logic so that shows when not logged in -->
-				<a class = "navbar-link NB-Button" href = "/tutorial">Tutorial</a>
-				|
-				{% if logged_out or landing%}
-				<a class="navbar-link NB-Button" href="/next">Log In</a>
-				{% else %}
-				<a class="navbar-link NB-Button" href="/logout">Logout</a>
-				{%endif%}
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#content">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-end" id="content">
+				<ul class="forceMaven navbar-nav">
+					{% if logged_out or landing %}
+					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/next">Log In</a></li>
+					{% else %}
+					<li class="nav-item"><a class="nav-link NB-Button" href="/">Home</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/matches">Matches</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a></li>
+					<li class="nav-item"><a class="nav-link NB-Button" href="/logout">Sign Out</a></li>
+					{% endif %}
+				</ul>
 			</div>
-		</nav>
-	</div>
-</body>
+		</div>
+	</nav>
+<!-- </div> -->
 <style>
 	.NB-Button {
 		font-weight: 300;
 		padding-top: 5px;
 		padding-bottom: 5px;
-		color: white;
+		color: white !important;
 		text-decoration: none;
+		padding-left: 5px;
+		padding-right: 5px;
 	}
+
+	/* .NB-Button:hover
+	{
+    	color:  #0082e6!important;
+	} */
+
+		ul li.nav-item a {
+		list-style: none;
+		position: relative;
+		display: inline;
+		}
+
+		ul li.nav-item a {
+		color: #333;
+		text-decoration: none;
+		}
+
+		ul li.nav-item a:after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: -2px;
+		width: 0px;
+		height: 2px;
+		background: white;
+		transition: all 0.45s;
+		}
+
+		ul li.nav-item a:hover:after {
+		width: 100%;
+		left: 0;
+		}
+
+		ul li.nav-item a:hover {
+			text-decoration: none;
+		}
+
+		ul li.nav-item {
+			margin-top: 10px;
+		}
 
 	#HomeButton {
 		font-family: "Maven Pro", sans-serif;
@@ -40,11 +87,12 @@
 		color: white;
 		text-align: left;
 		font-size: 16px;
-		height: 70px;
+		/* height: 70px; */
 		padding-left: 10px;
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
+
 </style>
 
 </html>
