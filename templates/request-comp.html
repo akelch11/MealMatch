@@ -1,0 +1,30 @@
+<center>
+	<div style="margin-top: 10px;">
+		<h2 class="forceMaven">Your Requests</h2>
+		<hr>
+	</div>
+</center>
+{% for i in range(all_requests|length) %}
+<div class="card">
+	<div class='row align-content-center'>
+		<div class="card-body col-sm-9">
+			{% if all_requests[i][2]%} //lunch
+			{% if all_requests[i][2]['end'].isoweekday() == 6 or all_requests[i][2]['end'].isoweekday() == 7%}
+			{% set meal= "Brunch" %}
+			{%else%}
+			{% set meal= "Lunch" %}
+			{%endif%}
+			{% else %}
+			{% set meal= "Dinner" %}
+			{%endif%}
+			{{meal + ' @ ' + locations[i] + ' from ' +
+			all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')
+		</div>
+		<div class="card-body col-sm-3">
+			<form method="POST" action="/removerequest?requestid={{all_requests[i][all_requests[i]|length - 1]}}">
+				<button class='btn-sm' style="background-color: #c55353; color: white;">Cancel Request</button>
+			</form>
+			{% endfor %}
+		</div>
+	</div>
+</div>

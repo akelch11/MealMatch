@@ -1,4 +1,5 @@
 from database import new_connection, close_connection
+from matcher import match_requests
 from big_lists import dhall_list
 from datetime import datetime
 from sys import stdout
@@ -9,19 +10,18 @@ import string
 def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     cur, conn = new_connection()
 
-    flag = validate_request(netid, meal_type)
-    if not flag:
+    # confirm the user does not have an existing request for the current meal period
+    if not validate_request(netid, meal_type):
         print("Cannot add request: there is already a request in the current meal period")
         return False
 
     sql = "INSERT INTO requests (REQUESTID, NETID,BEGINTIME,ENDTIME, LUNCH,"
 
     for dhall in dhall_list:
-        sql = sql + "{},".format(dhall)
+        sql += "{},".format(dhall)
 
     dhall_strargs = "%s, " * len(dhall_list)
-    sql = sql + \
-        ("ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {} %s, %s)".format(dhall_strargs))
+    sql += "ATDHALL, ACTIVE) VALUES (%s, %s, %s, %s, %s, {}%s, %s)".format(dhall_strargs)
 
     requestId = ''.join(random.choice(
         string.ascii_letters + string.digits) for _ in range(16))
@@ -35,7 +35,6 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
 
     clean_requests()
 
-    from matcher import match_requests
     match_requests()
 
     return True
@@ -97,7 +96,7 @@ def clean_requests():
 
     now = datetime.now()
 
-    # list of requests that have expired
+    # list of requestids for requests that have expired
     old_requests = [row[0] for row in rows if row[3] < now]
 
     remove_requests(old_requests)

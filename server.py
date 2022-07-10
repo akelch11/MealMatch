@@ -294,6 +294,7 @@ def get_matches():
 
     netid = auth.authenticate()
     all_matches = matcher.get_all_matches(netid)
+    all_requests = meal_requests.get_all_requests(netid)
 
     for i in range(len(all_matches)):
         match = all_matches[i]
@@ -319,11 +320,22 @@ def get_matches():
         else:
             all_matches[i]['first_accepted'] = ""
 
-    if len(all_matches) == 0:
-        html = render_template('nomatches.html')
-    else:
-        html = render_template('matches.html',
-                               all_matches=all_matches)
+    req_locations = []
+    for req in all_requests:
+        # get lists of booleans from database
+        dhalls_bools_in_req = req[3:3+len(dhall_list)]
+        # get which dining halls have true values
+        dhalls_in_req = [dhall_list[i]
+                         for i in range(len(dhall_list)) if dhalls_bools_in_req[i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
+        print('REQ: ', req, "\n Loc: ", loc)
+        req_locations.append(loc)
+    
+    html = render_template('matches.html',
+                            all_matches=all_matches,
+                            all_requests=all_requests,
+                            locations=req_locations)
     response = make_response(html)
     return response
 
@@ -343,40 +355,7 @@ def past_matches():
     response = make_response(html)
     return response
 
-
-# HOMESCREEN -> REQUESTS PAGE
-@app.route('/requests', methods=['GET'])
-def get_requests():
-
-    session_netid = auth.authenticate()
-    all_requests = meal_requests.get_all_requests(session_netid)
-
-    req_locations = []
-    for req in all_requests:
-        # get lists of booleans from database
-        dhalls_bools_in_req = req[3:3+len(dhall_list)]
-        # get which dining halls have true values
-        dhalls_in_req = [dhall_list[i]
-                         for i in range(len(dhall_list)) if dhalls_bools_in_req[i]]
-        # append dining halls into a string split by /
-        loc = '/'.join(dhalls_in_req)
-        print('REQ: ', req, "\n Loc: ", loc)
-        req_locations.append(loc)
-
-    if len(all_requests) == 0:
-        html = render_template('norequests.html')
-    else:
-        html = render_template('requests.html',
-                               all_requests=all_requests,
-                               locations=req_locations)
-    print("allreqs:", all_requests, file=stderr)
-    print("req_locations:", req_locations, file=stderr)
-
-    response = make_response(html)
-    return response
-
 # REMOVE REQUEST ON REQUESTS PAGE
-
 
 @app.route('/removerequest', methods=['POST'])
 def remove_request():
