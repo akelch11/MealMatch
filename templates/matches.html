@@ -25,7 +25,16 @@
 			<div class="container-fluid">
 				<h2 id="bigMatch" class="matchesText"> Your queue is empty! </h2>
 				<p id="description" class="matchesText"> This means that we don't have any pending or confirmed matches
-					for you. Feel free to make a new request and find a meal buddy! </p>
+					for you. Feel free to make a new meal request and find a meal buddy! </p>
+				<div class="container-fluid matchesText">
+						<a href="/ondemand">
+							<button class="btn-lg submitReqButton orange-moon enter-button">Make an on-demand meal request</button>
+						</a>
+						<a href="/schedule">
+							<button class="btn-lg submitReqButton orange-moon enter-button">Make a scheduled meal request</button>
+						</a>
+				</div>
+
 			</div>
 		{% endif %}
 	{% else %}

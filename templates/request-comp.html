@@ -8,8 +8,8 @@
 <div class="card">
 	<div class='row align-content-center'>
 		<div class="card-body col-sm-9">
-			{% if all_requests[i][2]%} //lunch
-			{% if all_requests[i][2]['end'].isoweekday() == 6 or all_requests[i][2]['end'].isoweekday() == 7%}
+			{% if all_requests[i][2]%} 
+			{% if all_requests[i][1].isoweekday() == 6 or all_requests[i][1].isoweekday() == 7%}
 			{% set meal= "Brunch" %}
 			{%else%}
 			{% set meal= "Lunch" %}
@@ -17,8 +17,10 @@
 			{% else %}
 			{% set meal= "Dinner" %}
 			{%endif%}
-			{{meal + ' @ ' + locations[i] + ' from ' +
+			{{
+				meal + ' @ ' + locations[i] + ' from ' +
 			all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')
+			}}
 		</div>
 		<div class="card-body col-sm-3">
 			<form method="POST" action="/removerequest?requestid={{all_requests[i][all_requests[i]|length - 1]}}">
