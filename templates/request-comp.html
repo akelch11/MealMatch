@@ -9,7 +9,10 @@
 	<div class="card">
 		<div class='row align-content-center'>
 			<div class="card-body col-sm-9">
-				<strong class = "cardText">
+				
+				<strong class = "cardText d-flex justify-content-center justify-content-sm-start">
+				
+			
 				{% if all_requests[i][2]%} 
 				{% if all_requests[i][1].isoweekday() == 6 or all_requests[i][1].isoweekday() == 7%}
 				{% set meal= "Brunch" %}
@@ -20,17 +23,21 @@
 				{% set meal= "Dinner" %}
 				{%endif%}
 				{{
-					meal + ' @ ' + locations[i] + ' from ' +
+					meal + ' @ ' + locations[i] 
+				}}
+				
+				{{ ' from ' +
 				all_requests[i][0].strftime('%-I:%M%p') + " - " + all_requests[i][1].strftime('%-I:%M%p')
 				}}
+			
 				</strong>
 			</div>
-			<div class="card-body col-sm-3">
+			<div class="card-body col-sm-3 row">
 				<form method="POST" action="/removerequest?requestid={{all_requests[i][all_requests[i]|length - 1]}}">
+					<center>
 					<button class='btn-sm' style="background-color: #c55353; color: white;">Cancel Request</button>
+					</center>
 				</form>
-	
-			
 			</div>
 	</div>
 </div>

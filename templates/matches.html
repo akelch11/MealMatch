@@ -42,6 +42,19 @@
 	{% endif %}
 	{% if all_requests|length != 0 %}
 		{% include 'request-comp.html' %}
+		{% if all_matches|length == 0 %}
+		<br/>
+		<div class="container-fluid">
+			<br/>
+			<h2 id="bigMatch" class="matchesText"> You don't have any current matches! </h2>
+			<p id="description" class="matchesText"> This means that you have a pending meal request but have not yet matched with anyone. <br/>
+				We will let you know via text when a match has been found. Come check back later! </p>
+			<div class="container-fluid matchesText">
+					 
+			</div>
+
+		</div>
+		{% endif %}
 	{% endif %}
 </body>
 

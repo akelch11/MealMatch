@@ -331,11 +331,11 @@ def get_matches():
         loc = '/'.join(dhalls_in_req)
         print('REQ: ', req, "\n Loc: ", loc)
         req_locations.append(loc)
-    
+
     html = render_template('matches.html',
-                            all_matches=all_matches,
-                            all_requests=all_requests,
-                            locations=req_locations)
+                           all_matches=all_matches,
+                           all_requests=all_requests,
+                           locations=req_locations)
     response = make_response(html)
     return response
 
@@ -357,12 +357,13 @@ def past_matches():
 
 # REMOVE REQUEST ON REQUESTS PAGE
 
+
 @app.route('/removerequest', methods=['POST'])
 def remove_request():
     requestid = [request.args.get("requestid")]
     print('request id to remove: ', requestid)
     meal_requests.remove_requests(requestid)
-    return redirect(url_for('get_requests'))
+    return redirect(url_for('get_matches'))
 
 # ACCEPT MATCH ON MATCHES PAGE
 
