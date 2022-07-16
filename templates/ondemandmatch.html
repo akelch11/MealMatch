@@ -11,9 +11,12 @@
 	<center>
 		<div id='hallType' class="container">
 			<div class="btn-group-sm menuButton">
-				I'm currently at:
+				I'm currently at: <br class = "mobile"/>
 				{% for dhall in dhalls %}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
+					{% if (loop.index % 3) == 0 %}
+					<br class = "break"/>
+					{%endif%}
 				{%endfor%}
 			</div>
 
@@ -405,4 +408,29 @@
 	#anyTime:hover {
 		background-color: "#ff9f46";
 	}
+
+
+	.mobile {
+ 		 display: none;
+	}
+
+	.break {
+		display: none;
+	}
+
+	@media (max-width: 488px) {
+	.mobile {
+		display: block;
+		/* Add other properties here */
+	}
+	}
+
+
+	@media (max-width: 991px)
+	{
+		.break {
+		display: block;
+		}
+	}
+
 </style>
