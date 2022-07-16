@@ -9,6 +9,40 @@
 <body class="forceMaven">
 	{% include 'header.html' %}
 
+
+	{% if new_user %}
+	<div class="modal fade" id="newUserModal" tabindex="-1"
+				aria-labelledby="ModalLabel_newUser" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="ModalLabel_Disclaimer">
+								Disclaimer</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p>
+								By using MealMatch, you are agreeing to allow some personal information 
+								(e.g, name, major, class year, phone number) to be shared with other users/Princeton students. <br/>
+								MealMatch is not responsible for any communication or interaction that occurs outside of the app.
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary sml_button"
+							 style = "background-color: #ff9f46; color: white;"
+							 data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+	</div>
+	<script type="text/javascript">
+		$(window).on('load', function() {
+			$('#newUserModal').modal('show');
+		});
+	</script>
+	{% endif %}
+
+
 	<div class="container-fluid">
 		<div style="margin-top: 10px;">
 			<h2>{{title_value}}</h2>

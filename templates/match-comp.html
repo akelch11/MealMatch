@@ -27,7 +27,9 @@
 				</strong>
 				<br>
 				<strong class="cardText">{{matches['other_year']}}{{", " + matches['other_major']}}</strong><br>
+				{% if matches['first_accepted'] == "Both Accepted!" %}
 				<strong class="cardText">Phone #: {{matches['other_phonenum']}}</strong><br>
+				{%endif%}
 				<button class="cardText btn-sm btn-secondary" data-bs-toggle="modal"
 					data-bs-target="#Modal_{{matches['match_id']}}"
 					style="background-color: #bbb; border: 0px; margin-top: 5px;">View {{matches['other_name']}}'s
