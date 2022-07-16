@@ -1,5 +1,4 @@
 'use strict';
-console.log('Hi this is the on demand script');
 // Jeremy's work to error-prove the UI
 function isWeekend() {
     let dayOfWeek = (new Date()).getDay();
