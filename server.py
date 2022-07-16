@@ -320,6 +320,8 @@ def get_matches():
         else:
             all_matches[i]['first_accepted'] = ""
 
+        print('dhall', all_matches[i]['dhall'])
+
     req_locations = []
     for req in all_requests:
         # get lists of booleans from database
