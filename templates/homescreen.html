@@ -15,10 +15,9 @@
 				<!-- Should only be active during meals -->
 				<div class="col-sm-4">
 					<form action='/ondemand'>
-						<button class="btn-lg btn-block hPageButton" id="grabMealButton"
-						data-toggle="tooltip" data-placement="top" title="Find a meal at the dining hall ASAP.">
-							<img class="home_img_class" src="/static/diningchairslogo.png" alt="grab meal"
-							> </img><br>
+						<button class="btn-lg btn-block hPageButton" id="grabMealButton" data-toggle="tooltip"
+							data-placement="top" title="Find a meal at the dining hall ASAP.">
+							<img class="home_img_class" src="/static/diningchairslogo.png" alt="grab meal"> </img><br>
 							I'M AT A DHALL
 						</button>
 					</form>
@@ -26,47 +25,31 @@
 
 				<div class='col-sm-4'>
 					<form action="/schedule">
-						<button class="btn-lg btn-block hPageButton"
-						data-toggle="tooltip" data-placement="top" title="Schedule a meal for the near future.">
-							<img class="home_img_class" src="/static/mealtime_icon.png"
-								alt="schedule a meal"
-								></img><br>
+						<button class="btn-lg btn-block hPageButton" data-toggle="tooltip" data-placement="top"
+							title="Schedule a meal later today.">
+							<img class="home_img_class" src="/static/mealtime_icon.png" alt="schedule a meal"></img><br>
 							SCHEDULE A MEAL
 						</button>
 					</form>
 				</div>
 
-                <div class='col-sm-4'>
-					<form action="/matches">
-						<button class="btn-lg btn-block hPageButton"
-						data-toggle="tooltip" data-placement="top" title="Check and accept potential matches.">
-							<img class="home_img_class" src="/static/matched_icon.png" alt="matches"
-							> </img><br>
-							MATCHES
-						</button>
-					</form>
-				</div>
-
-
 				<div class='col-sm-4'>
-					<form action="/requests">
-						<button class="btn-lg btn-block hPageButton"
-						data-toggle="tooltip" data-placement="top" title="Check pending meal requests.">
-							<img class="home_img_class" src="/static/hourglass.png"
-								alt="scheduled meals"
-								></img><br>
+					<form action="/matches">
+						<button class="btn-lg btn-block hPageButton" data-toggle="tooltip" data-placement="top"
+							title="Check and accept potential matches.">
+							<img class="home_img_class" src="/static/matched_icon.png" alt="matches"> </img><br>
+							MATCHES AND
 							REQUESTS
 						</button>
 					</form>
 				</div>
 
-
+				<div class="col-sm-2"></div>
 				<div class='col-sm-4'>
 					<form action="/history">
-						<button class="btn-lg btn-block hPageButton"
-						data-toggle="tooltip" data-placement="top" title="Check a history of past matches.">
-							<img class="home_img_class" src="/static/match_history.png" alt="history"
-							> </img><br>
+						<button class="btn-lg btn-block hPageButton" data-toggle="tooltip" data-placement="top"
+							title="Check a history of past matches.">
+							<img class="home_img_class" src="/static/match_history.png" alt="history"> </img><br>
 							PAST MATCHES
 						</button>
 					</form>
@@ -74,15 +57,15 @@
 
 				<div class='col-sm-4'>
 					<a href="/edit_account?valid_phonenum=1">
-						<button class="btn-lg btn-block hPageButton"
-						data-toggle="tooltip" data-placement="top" title="Check and edit profile info.">
+						<button class="btn-lg btn-block hPageButton" data-toggle="tooltip" data-placement="top"
+							title="Check and edit profile info.">
 							<img class="home_img_class" src="/static/profilepiclogowhite.png"
-								alt="my profile"
-								></img><br>
+								alt="my profile"></img><br>
 							MY PROFILE
 						</button>
 					</a>
 				</div>
+				<div class="col-sm-2"></div>
 
 			</div>
 		</div>
@@ -91,7 +74,7 @@
 </body>
 <script>
 	$('#mainContainer').ready(function () {
-  	$('[data-toggle="tooltip"]').tooltip()
+		$('[data-toggle="tooltip"]').tooltip()
 	})
 </script>
 
@@ -124,9 +107,8 @@
 		height: 200px;
 		box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 	}
+
 	.hPageButton:hover {
 		transform: scale(1.05) perspective(1px)
 	}
-
-	
 </style>
