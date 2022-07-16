@@ -105,8 +105,10 @@ def update_account_form():
 
     title_value = ""
     button_value = ""
+    new_user = not user_profile.exists(username)
+
     # netid detected in system
-    if user_profile.exists(username):
+    if not new_user:
         title_value = 'Edit Your Profile!'
         button_value = "Submit Changes"
     else:
@@ -119,7 +121,8 @@ def update_account_form():
                            existing_profile_info=profile_dict,
                            title_value=title_value,
                            button_value=button_value,
-                           valid_phonenum=valid_phonenum)
+                           valid_phonenum=valid_phonenum,
+                           new_user=new_user)
     response = make_response(html)
     return response
 
@@ -420,6 +423,12 @@ def error404(e):
 @app.errorhandler(500)
 def error500(e):
     return render_template('page500.html'), 500
+
+
+@app.context_processor
+def add_imports():
+    # Note: we only define the top-level module names!
+    return dict(user_profile=user_profile, datetime=datetime, os=os, auth=auth)
 
 
 if __name__ == "__main__":

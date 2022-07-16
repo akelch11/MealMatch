@@ -8,7 +8,7 @@
 		</button>
 		<div class="collapse navbar-collapse justify-content-end" id="content">
 			<ul class="forceMaven navbar-nav">
-				{% if logged_out or landing %}
+				{% if session.get('username') == None or not user_profile.exists(auth.authenticate()) %}
 				<li class="nav-item"><a class="nav-link NB-Button" href="/about">About</a></li>
 				<li class="nav-item"><a class="nav-link NB-Button" href="/tutorial">Tutorial</a>
 				<li class="nav-item"><a class="nav-link NB-Button" href="/next">Log In</a></li>
