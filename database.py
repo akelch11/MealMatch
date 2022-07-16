@@ -1,4 +1,3 @@
-from cgitb import enable
 from psycopg2 import connect
 from os import environ
 
@@ -9,7 +8,7 @@ def new_connection():
     #             password="e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2",
     #             host="ec2-44-194-167-63.compute-1.amazonaws.com",
     #             port="5432")
-    conn = connect(database="d4p66i6pnk5690",
+    conn = connect(database=environ["DATABASE"],
                    user=environ['DB_USERNAME'],
                    password=environ['DB_PASSWORD'],
                    host=environ['DB_HOST'],

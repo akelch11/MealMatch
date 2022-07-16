@@ -10,6 +10,7 @@ from database import new_connection, close_connection
 
 SITE_URL = "https://mealmatch-app.herokuapp.com/"
 
+
 def remove_match(netid, matchid, phonenum):
     sql = """ UPDATE matches
                 SET active = FALSE,
@@ -22,7 +23,7 @@ def remove_match(netid, matchid, phonenum):
     close_connection(cur, conn)
 
     message = "{} cancelled your match. Check "\
-    "the MealMatch app for more information" \
+        "the MealMatch app for more information" \
         .format(get_from_netid(netid, 'name')[0])
     notifications.send_message(message, phonenum)
 
@@ -57,7 +58,7 @@ def execute_match_query(parse_requests, lunch):
     rows = cur.fetchall()
 
     matched = []
-    # iterate through requests, comparing pairs to examine match 
+    # iterate through requests, comparing pairs to examine match
     for i in range(len(rows)):
 
         poss_matches = []
@@ -80,7 +81,7 @@ def execute_match_query(parse_requests, lunch):
 
             overlap = find_overlap(first[2], first[3], second[2], second[3])
 
-            # if there is no valid overlap between current requests 
+            # if there is no valid overlap between current requests
             # then skip current pairing
             if not overlap:
                 print("Continue")
@@ -96,6 +97,7 @@ def execute_match_query(parse_requests, lunch):
             second_poss_dhalls = find_possible_dhalls(second)
 
             combined_dhalls = first_poss_dhalls & second_poss_dhalls
+            print('combined halls: ', combined_dhalls)
 
             # No common dining halls between a pair of requests
             if len(combined_dhalls) == 0:
@@ -108,9 +110,9 @@ def execute_match_query(parse_requests, lunch):
             # index for class year: 11
             score = 0
             if first[11] == second[11]:
-                score+=1
+                score += 1
             if first[12] == second[12]:
-                score+=2
+                score += 2
             poss_matches.append((j, score, combined_dhalls, overlap))
 
         # Continue loop if there are no possible matches
@@ -124,14 +126,20 @@ def execute_match_query(parse_requests, lunch):
         poss_matches.sort(key=lambda x: x[1], reverse=True)
         chosen_row = poss_matches[0]
         second = rows[chosen_row[0]]  # Grab requests row of chosen request
-        dhall = '/'.join(chosen_row[2])  # Dhall(s) chosen for match
+
+        # joining dhalls with slash
+        #  dhall = '/'.join(chosen_row[2])  # Dhall(s) chosen for match
+        # choose random element from list of combined dining halls
+        dhall = random.choice(list(combined_dhalls))
+        print('chosen loc: ', dhall)
         best_overlap = chosen_row[3]
 
         # Establish start and end windows for match
         start_int, end_int = best_overlap
 
         # Obtain matchid
-        match_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=N))
+        match_id = ''.join(random.choices(
+            string.ascii_uppercase + string.digits, k=N))
         first_netid = first[1]
         second_netid = second[1]
 
@@ -142,7 +150,8 @@ def execute_match_query(parse_requests, lunch):
         # Current time for match made
         now = datetime.now().replace(second=0, microsecond=0)
 
-        val = (match_id, first_netid, second_netid, now, dhall, start_int, end_int, False, False, True, lunch)
+        val = (match_id, first_netid, second_netid, now, dhall,
+               start_int, end_int, False, False, True, lunch)
 
         cur.execute(sql, val)
 
@@ -168,11 +177,12 @@ def find_possible_dhalls(row):
     dhalls = row[6:6 + len(dhall_list)]
     return {dhall_list[i] for i in range(len(dhalls)) if dhalls[i]}
 
+
 def get_all_matches(netid):
-    
+
     # remove all expired matches
     clean_matches()
-    
+
     query = """SELECT * 
             FROM matches as m, users as u
             WHERE (m.first_netid = u.netid
@@ -186,15 +196,14 @@ def get_all_matches(netid):
     cur.execute(query, (netid, netid, netid))
     rows = cur.fetchall()
     close_connection(cur, conn)
+    print(rows)
 
-    keys = ["match_id", "first_netid", "second_netid", "match_time", "dhall", \
-            "start", "end", "first_accepted", "second_accepted", "active", "lunch",  
-            'other_netid', 'other_name', 'other_year','other_major', 'other_phonenum', 'other_bio']
-
-    
+    keys = ["match_id", "first_netid", "second_netid", "match_time", "dhall",
+            "start", "end", "first_accepted", "second_accepted", "active", "lunch",
+            'other_netid', 'other_name', 'other_year', 'other_major', 'other_phonenum', 'other_bio']
 
     all_matches_dict = [dict(zip(keys, row)) for row in rows]
-    # print('matches_dict: \n',all_matches_dict)
+    print('matches_dict: \n', all_matches_dict)
 
     # all_matches = [list(row) for row in rows]
     return all_matches_dict
@@ -222,7 +231,8 @@ def get_past_matches(netid):
         other_netid = match[0] if match[1] == netid else match[1]
 
         match_info['netid'] = other_netid
-        match_info['name'], match_info['phonenum'] = get_from_netid(other_netid, 'name', 'phonenum')
+        match_info['name'], match_info['phonenum'] = get_from_netid(
+            other_netid, 'name', 'phonenum')
         match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
@@ -252,23 +262,28 @@ def accept_match(netid, matchid, phonenum):
         netid_type = 'FIRST_ACCEPTED'
         if not row[4]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name) + "\n" + SITE_URL+"matches"
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(
+                match_name) + "\n" + SITE_URL+"matches"
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
-            message = "{} also accepted the match! Have fun eating!".format(match_name)
+            message = "{} also accepted the match! Have fun eating!".format(
+                match_name)
 
     elif row[2] == netid:
         # We know that the user is the second_netid
         netid_type = 'SECOND_ACCEPTED'
         if not row[3]:
             # If the other person has accepted, notify the other person that theres a match
-            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(match_name) + "\n" + SITE_URL+"matches"
+            message = "{} accepted the match! Confirm that you'll be there on the MealMatch App!".format(
+                match_name) + "\n" + SITE_URL+"matches"
         else:
             # If the other person has not accepted, notify the other person that match is confirmed
-            message = "{} also accepted the match! Have fun eating!".format(match_name)
+            message = "{} also accepted the match! Have fun eating!".format(
+                match_name)
     notifications.send_message(message, phonenum)
 
-    query = """UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(netid_type)
+    query = """UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(
+        netid_type)
     cur.execute(query, [matchid])
     close_connection(cur, conn)
 
@@ -284,7 +299,7 @@ def find_overlap(start_A, end_A, start_B, end_B):
     if start_int >= end_int:
         return False
 
-    # Check if overlap is smaller than 30 minutes, not suitable for 
+    # Check if overlap is smaller than 30 minutes, not suitable for
     # adequate meal time
     # CHANGE LATER TEMPORARY
     if (end_int - start_int).total_seconds() / 60.0 < 20:
@@ -294,6 +309,8 @@ def find_overlap(start_A, end_A, start_B, end_B):
     return (start_int, end_int)
 
 # Clean matches table of expired matches
+
+
 def clean_matches():
     sql = """SELECT *
             FROM matches"""
@@ -313,6 +330,6 @@ def clean_matches():
                 WHERE match_id = %s"""
 
     for id in old_matches:
-         cur.execute(sql, [id])
+        cur.execute(sql, [id])
 
     close_connection(cur, conn)
