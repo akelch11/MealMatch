@@ -14,6 +14,7 @@
 		<div id='mealType' class="container">
 			<div class="btn-group-sm menuButton">
 				I want to eat:
+				<br class = "mealTypeBreak"/>
 				{% if date.isoweekday() == 6 or date.isoweekday() == 7%}
 				<button class='btn-lg' id='lunchButton'> Brunch </button>
 				{%else%}
@@ -25,9 +26,12 @@
 
 		<div id='hallType' class="container">
 			<div class="btn-group-sm menuButton">
-				I want to eat at:
+				I want to eat at: <br class = "mobile"/>
 				{% for dhall in dhalls%}
 				<button class='btn-lg dHallType' id='{{dhall}}'>{{dhall}}</button>
+					{% if (loop.index % 3) == 0 %}
+					<br class = "break"/>
+					{%endif%}
 				{% endfor %}
 				<br>
 				<button class='btn-lg' id='anyDhall'
@@ -541,6 +545,40 @@
 		margin: 20px;
 		margin-top: 20px;
 
+	}
+
+	.mobile {
+ 		 display: none;
+	}
+
+	.break {
+		display: none;
+	}
+
+	.mealTypeBreak {
+		display: none
+	}
+
+	@media (max-width: 488px) {
+	.mobile {
+		display: block;
+		/* Add other properties here */
+	}
+	}
+
+
+	@media (max-width: 991px)
+	{
+		.break {
+		display: block;
+		}
+	}
+
+	@media (max-width: 411px)
+	{
+		.mealTypeBreak{
+		display: block;
+		}
 	}
 
 </style>
