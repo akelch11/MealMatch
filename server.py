@@ -137,6 +137,7 @@ def form():
     major = request.args.get('major')
     bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum')
+    match_pref = request.args.get('match-pref')
     yeardict = {}
     for i in range(4):
         y = str(senior_year()+i)
@@ -151,13 +152,13 @@ def form():
         if(user_profile.validate_phonenum(phonenum)):
             print('Phone number validated')
             user_profile.edit_profile(
-                netid, name, int(year), major, phonenum, bio)
+                netid, name, int(year), major, phonenum, bio, match_pref)
         else:
             return redirect(url_for('update_account_form', valid_phonenum='0'))
     else:
         if(user_profile.validate_phonenum(phonenum)):
             user_profile.create_profile(
-                netid, name, int(year), major, phonenum, bio)
+                netid, name, int(year), major, phonenum, bio, match_pref)
         else:
             return redirect(url_for('update_account_form', valid_phonenum='0'))
 
@@ -282,10 +283,12 @@ def ondemand():
     if error is None:
         error = ""
     now = datetime.now()
+    match_pref = user_profile.get_from_netid(auth.authenticate(), 'matchpref')[0]
     html = render_template('ondemandmatch.html',
                            dhalls=dhall_list,
                            error=error,
-                           date=now)
+                           date=now,
+                           match_pref=match_pref)
     response = make_response(html)
     return response
 

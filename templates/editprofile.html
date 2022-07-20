@@ -110,6 +110,21 @@
 					</td>
 				</tr>
 				<tr>
+					<td align="right">Match Preference:</td>
+					<td>
+						<div class="btn-group" role="group" aria-label="radio toggle button group for algorithm preference">
+							{%for option in ['Year', 'Major', 'None'] %}
+							{% if option == existing_profile_info['matchpref'] %}
+							<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}" checked>
+							{%else%}
+							<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
+							{%endif%}
+							<label class="btn btn-primary orange-moon" for="btn-check-{{option}}">{{option}}</label>
+							{%endfor%}
+						</div>
+					</td>
+				</tr>
+				<tr>
 					<td>
 					</td>
 					<td>
