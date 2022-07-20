@@ -425,9 +425,9 @@ def error500(e):
     return render_template('page500.html'), 500
 
 
+# import modules to all Jinja templates
 @app.context_processor
 def add_imports():
-    # Note: we only define the top-level module names!
     return dict(user_profile=user_profile, datetime=datetime, os=os, auth=auth)
 
 
