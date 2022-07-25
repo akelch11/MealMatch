@@ -1,4 +1,5 @@
 ##
+from nis import match
 from sys import stdout, stderr
 from datetime import date, datetime, tzinfo
 from argparse import ArgumentParser
@@ -283,7 +284,8 @@ def ondemand():
     if error is None:
         error = ""
     now = datetime.now()
-    match_pref = user_profile.get_from_netid(auth.authenticate(), 'matchpref')[0]
+    match_pref = user_profile.get_from_netid(
+        auth.authenticate(), 'matchpref')[0]
     html = render_template('ondemandmatch.html',
                            dhalls=dhall_list,
                            error=error,
