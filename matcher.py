@@ -61,7 +61,6 @@ def score_match(first, second):
 
     # add two points if the match preference is same, regardless of type
     if same_match_pref:
-        score += 2
 
         # # Major and Year matching preferences
         if first[14] == "Major/Year":
@@ -76,6 +75,9 @@ def score_match(first, second):
             ) and second[12] < senior_year()
             score += 1 if (first[12] == second[12]
                            or both_grad_students) else 0
+        # Both random matching preferences
+        else:
+            score += 2
 
     print('match score for ', first[1], second[1], 'is : ', score)
     return score
