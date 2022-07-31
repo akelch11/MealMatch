@@ -110,6 +110,43 @@
 					</td>
 				</tr>
 				<tr>
+					<td align="right">Match Preference:</td>
+					<td>
+						<div class = 'row'>
+							<div class="btn-group btn-group-toggle col-sm-8" role="group" data-toggle = "buttons">
+
+								<!-- Old Config -->
+								<!-- <div class="btn-group" role="group" aria-label="radio toggle button group for algorithm preference"> -->
+
+								{%for option in ['Major/Year', 'Random'] %}
+								{% if option == existing_profile_info['matchpref'] %}
+								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}" checked>
+								<label class="btn btn-secondary active-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
+								{%else%}
+								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
+								<label class="btn btn-secondary inactive-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
+								{%endif%}
+								{%endfor%}
+								
+							</div>
+							<div class = 'col-sm-4'>
+										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+										data-toggle="tooltip" data-bs-placement="right" title="Indicate whether you prefer to eat with random people or people of your major and class year!">
+											<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+											<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+										</svg>  
+										<script>
+											// activate tooltips
+											$('.bi-info-circle').ready(function () {
+											$('[data-toggle="tooltip"]').tooltip()
+											})
+										</script>
+
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
 					<td>
 					</td>
 					<td>
@@ -128,7 +165,14 @@
 	<hr>
 </body>
 
+<script type = "text/javascript" src = "../static/js/prefmatchbuttons.js">
+</script>
+
+
 </html>
+
+
+
 <style>
 	.profileInput {
 		padding-left: 10px;
@@ -140,4 +184,26 @@
 	.mainButton:hover {
 		transform: scale(1.05) perspective(1px);
 	}
+
+	
+
+	.active-button {
+		background-color: #ff9f46 !important;
+	}
+
+	.inactive-button {
+		background-color: #bbb !important;
+	}
+	
+	.special-container{
+		display: table;
+		height: 100%;
+	}
+
+	.vertical-center{
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	}
+
 </style>

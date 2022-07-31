@@ -1,4 +1,3 @@
-from re import T
 from os import environ
 from twilio.rest import Client
 from sys import stdout, stderr
@@ -22,7 +21,7 @@ def exists(netid):
 
 
 def get_profile(netid):
-    keys = ["netid", "name", "year", "major", "phonenum", "bio"]
+    keys = ["netid", "name", "year", "major", "phonenum", "bio", "matchpref"]
     vals = get_from_netid(netid, *keys)
 
     if not vals:
@@ -31,9 +30,9 @@ def get_profile(netid):
 
 
 # Create profile for user and update MongoDB
-def create_profile(netid, name, year, major, phonenum, bio):
-    sql = "INSERT INTO users (NETID,NAME,YEAR,MAJOR,PHONENUM,BIO) VALUES (%s, %s, %s, %s, %s, %s)"
-    val = (netid, name, year, major, phonenum, bio)
+def create_profile(netid, name, year, major, phonenum, bio, match_pref):
+    sql = "INSERT INTO users (NETID,NAME,YEAR,MAJOR,PHONENUM,BIO,MATCHPREF) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (netid, name, year, major, phonenum, bio, match_pref)
 
     cur, conn = new_connection()
     cur.execute(sql, val)
@@ -43,14 +42,14 @@ def create_profile(netid, name, year, major, phonenum, bio):
     return netid
 
 
-def edit_profile(netid, name, year, major, phonenum, bio):
-    sql = "UPDATE users SET NAME=%s,YEAR=%s,MAJOR=%s,PHONENUM=%s,BIO=%s WHERE NETID=%s"
-    val = (name, year, major, phonenum, bio, netid)
+def edit_profile(netid, name, year, major, phonenum, bio, match_pref):
+    sql = "UPDATE users SET NAME=%s,YEAR=%s,MAJOR=%s,PHONENUM=%s,BIO=%s,MATCHPREF=%s WHERE NETID=%s"
+    val = (name, year, major, phonenum, bio, match_pref, netid)
 
     cur, conn = new_connection()
     cur.execute(sql, val)
     close_connection(cur, conn)
-
+    print(match_pref)
     print("Profile updated for:", netid, file=stdout)
     return netid
 
