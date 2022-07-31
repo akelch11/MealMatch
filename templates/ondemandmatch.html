@@ -19,7 +19,6 @@
 					{%endif%}
 				{%endfor%}
 			</div>
-
 		</div>
 		<div class=container>
 			<a target="_blank" href="https://campus.dailyprincetonian.com/menus">
@@ -44,7 +43,18 @@
 				<input required class='btn-sm' type='time' step='60' id='endTimeButton'>
 			</div>
 		</div>
-
+		<!-- <div class="container">
+			<div class="btn-group" role="group" aria-label="radio toggle button group for algorithm preference">
+				{%for option in ['Year', 'Major', 'None'] %}
+				{% if option == match_pref %}
+				<input type="radio" class="btn-check form-control" id="btn-check-{{option}}" name="match-pref" value="{{option}}" checked>
+				{%else%}
+				<input type="radio" class="btn-check form-control" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
+				{%endif%}
+				<label class="btn btn-primary orange-moon" for="btn-check-{{option}}">{{option}}</label>
+				{%endfor%}
+			</div>
+		</div> -->
 		<div>
 			<div class='container'>
 				<a id="submitButtonForm" href="/ondemand">

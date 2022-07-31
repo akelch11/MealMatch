@@ -72,8 +72,7 @@ function updateUrl() {
 
     let url = "/submitrequest"
     let endTime = document.getElementById("endTimeButton").value;
-
-
+    // let matchPref = document.querySelector('input[name= "match-pref"]:checked').value;
     let activeMeal = "";
     if (isDinnerTime())
         activeMeal = 'dinner';
@@ -86,6 +85,7 @@ function updateUrl() {
     url += "&start=now";
     url += "&end=" + endTime;
     url += "&atdhall=True";
+    // url += "&matchpref="+matchPref;
 
     submitButtonForm.setAttribute('href', url);
 

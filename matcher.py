@@ -7,6 +7,7 @@ from big_lists import dhall_list
 
 from user_profile import get_from_netid
 from database import new_connection, close_connection
+from server import senior_year
 
 SITE_URL = "https://mealmatch-app.herokuapp.com/"
 
@@ -33,7 +34,7 @@ def match_requests():
 
     dhall_str = ', '.join(["r."+dh.upper() for dh in dhall_list])
     parse_requests = """SELECT REQUESTID, r.NETID, BEGINTIME, ENDTIME, u.NAME, PHONENUM, {}, 
-                                u.YEAR, u.MAJOR
+                                u.YEAR, u.MAJOR, u.MATCHPREF
                                 FROM requests as r, users as u 
                                 WHERE r.LUNCH = {} 
                                 AND r.MATCHID IS NULL 
@@ -48,6 +49,38 @@ def match_requests():
     # Run helper method to find and insert matches into matches table
     execute_match_query(parse_requests_lunch, True)
     execute_match_query(parse_requests_din, False)
+
+
+def score_match(first, second):
+
+    # by default, a possible match has a score of 1
+    score = 1
+    # match pref type index is 14 (last element)
+
+    same_match_pref = (first[14] == second[14])
+
+    # add two points if the match preference is same, regardless of type
+    if same_match_pref:
+
+        # # Major and Year matching preferences
+        if first[14] == "Major/Year":
+
+            # add point if majors are the same
+            score += 1 if first[13] == second[13] else 0
+
+            # add point if class years are the same
+            # if both class years are beyond current senior year, they are both grad students,
+            # treat as matching year for matching algo, add a point
+            both_grad_students = first[12] < senior_year(
+            ) and second[12] < senior_year()
+            score += 1 if (first[12] == second[12]
+                           or both_grad_students) else 0
+        # Both random matching preferences
+        else:
+            score += 2
+
+    print('match score for ', first[1], second[1], 'is : ', score)
+    return score
 
 
 def execute_match_query(parse_requests, lunch):
@@ -108,11 +141,23 @@ def execute_match_query(parse_requests, lunch):
             # to the current possible matches
             # index for major: 12
             # index for class year: 11
-            score = 0
-            if first[11] == second[11]:
-                score += 1
-            if first[12] == second[12]:
-                score += 2
+
+            # default score for match with time overlap is 1
+            score = 1
+
+            print('first pref', first)
+            print('second pref', second)
+
+            # match preference type is last element
+            # determines if users want same type of match
+
+            # score match based on user profiles
+            score = score_match(first, second)
+
+            # if first[11] == second[11]:
+            #     score += 1
+            # if first[12] == second[12]:
+            #     score += 2
             poss_matches.append((j, score, combined_dhalls, overlap))
 
         # Continue loop if there are no possible matches
