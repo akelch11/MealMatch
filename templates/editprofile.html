@@ -121,17 +121,10 @@
 								{%for option in ['Major/Year', 'Random'] %}
 								{% if option == existing_profile_info['matchpref'] %}
 								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}" checked>
-								<label class="btn btn-secondary active-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
-								{%else%}
-								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
-								<label class="btn btn-secondary inactive-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
-								{%endif%}
-								{%endfor%}
-								
-							</div>
-							<div class = 'col-sm-4'>
-										<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
-										data-toggle="tooltip" data-bs-placement="right" title="Indicate whether you prefer to eat with random people or people of your major and class year!">
+								<label class="btn btn-secondary active-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}
+										{% if option == 'Major/Year' %}
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+										data-toggle="tooltip" data-bs-placement="right" title="Indicate a preference to eat with people of your major and class year!">
 											<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
 											<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
 										</svg>  
@@ -141,8 +134,102 @@
 											$('[data-toggle="tooltip"]').tooltip()
 											})
 										</script>
-
+										{%else%}
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+										data-toggle="tooltip" data-bs-placement="right" title="Indicate a preference to match with random people!">
+											<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+											<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+										</svg>  
+										<script>
+											// activate tooltips
+											$('.bi-info-circle').ready(function () {
+											$('[data-toggle="tooltip"]').tooltip()
+											})
+										</script>
+										{%endif%}
+								</label>
+								{%else%}
+								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
+								<label class="btn btn-secondary inactive-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}
+									{% if option == 'Major/Year' %}
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+										data-toggle="tooltip" data-bs-placement="right" title="Indicate a preference to eat with people of your major and class year!">
+											<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+											<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+										</svg>  
+										<script>
+											// activate tooltips
+											$('.bi-info-circle').ready(function () {
+											$('[data-toggle="tooltip"]').tooltip()
+											})
+										</script>
+										{%else%}
+										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+										data-toggle="tooltip" data-bs-placement="right" title="Indicate a preference to match with random people!">
+											<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+											<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+										</svg>  
+										<script>
+											// activate tooltips
+											$('.bi-info-circle').ready(function () {
+											$('[data-toggle="tooltip"]').tooltip()
+											})
+										</script>
+										{%endif%}
+								</label>
+								{%endif%}
+								{%endfor%}
+								
 							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td align="right">Recurring Requests:</td>
+					<td>
+						<div class = 'row'>
+							<div class="btn-group btn-group-toggle col-sm-8" role="group" data-toggle = "buttons">
+
+								<!-- Old Config -->
+								<!-- <div class="btn-group" role="group" aria-label="radio toggle button group for algorithm preference"> -->
+
+								<!-- {%for option in ['Enable', 'Disable'] %}
+								{% if option == existing_profile_info['matchpref'] %}
+								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}" checked>
+								<label class="btn btn-secondary active-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
+								{%else%}
+								<input type="radio" class="btn-check form-control profileInput mainButton" id="btn-check-{{option}}" name="match-pref" value="{{option}}">
+								<label class="btn btn-secondary inactive-button" id = "toggle-button-{{option}}" for="btn-check-{{option}}">{{option}}</label>
+								{%endif%}
+								{%endfor%} -->
+
+								<label class="toggle">
+									<span class="toggle-label">Disabled</span>
+									<!-- TODO: CHANGE NAME DEFAULT TO EXISTING -->
+									<input class="toggle-checkbox" type="checkbox" id = 'recur' name = "FALSE">
+									<div class="toggle-switch"></div>
+									<span class="toggle-label">Enabled</span>
+								  </label>
+							</div>
+							<div class = 'col-sm-4'>
+								<button type ='button' class="btn btn-secondary inactive-recur-config" id = "config-toggle" style = 'font-size: smaller; background-color: #ff9f46;'>Configure
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+									data-toggle="tooltip" data-bs-placement="right" title="Set up a request to recurringly go out for a specific mealtime on specified days. Reccomended for use by familiar users.">
+										<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+										<path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+									</svg>  
+									<script>
+												// activate tooltips
+												$('.bi-info-circle').ready(function () {
+												$('[data-toggle="tooltip"]').tooltip()
+												})
+									</script>	
+								</button>			  
+								  {% include 'recurmodal.html' %}							
+							
+								
+							</div>
+							
 						</div>
 					</td>
 				</tr>
@@ -167,6 +254,123 @@
 
 <script type = "text/javascript" src = "../static/js/prefmatchbuttons.js">
 </script>
+<script>
+	let recurToggle = document.getElementById('recur');
+	let recurConfigButton = document.getElementById('config-toggle');
+	let recurDialog = document.getElementById('recur-config-dialog');
+	let modalClose = document.getElementById('modal-close');
+
+	// modalClose.addEventListener('click', () => {$('#exampleModal').modal('hide')});
+
+	function openCheck(dialog) {
+        if(dialog.open) {
+          console.log('Dialog open');
+        } else {
+          console.log('Dialog closed');
+        }
+      }
+
+	recurToggle.addEventListener('change' , (event) => {
+	
+
+		
+		if (recurToggle.getAttribute('name') === 'TRUE')
+		{
+			recurToggle.setAttribute('name', 'FALSE');
+			recurConfigButton.classList.add("inactive-recur-config");
+			recurConfigButton.classList.remove("active-recur-config");
+			openCheck(recurDialog);
+		}
+		else if (recurToggle.getAttribute('name') === 'FALSE')
+			{
+				recurToggle.setAttribute('name', 'TRUE')
+				recurConfigButton.classList.add("active-recur-config");
+				recurConfigButton.classList.remove("inactive-recur-config");
+				// $('#exampleModal').modal('show')
+				// openCheck(recurDialog);
+			}
+	
+	
+	// console.log('recur is ' + recurToggle.getAttribute('name'));
+	});
+
+
+	recurConfigButton.addEventListener('click', () => $('#exampleModal').modal('show'));
+</script>
+
+
+<style>
+	*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.toggle-switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 58px;
+  height: 32px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+.toggle-switch:before, .toggle-switch:after {
+  content: "";
+}
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+.toggle-checkbox:checked + .toggle-switch {
+  /* background: #56c080; */
+  	background: #ff9f46; 
+}
+.toggle-checkbox:checked + .toggle-switch:before {
+  left: 30px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 5px;
+  position: relative;
+  top: 2px;
+}
+
+body {
+		font-weight: normal;
+	}
+
+	#mealType {
+		margin: 20px;
+		margin-top: 20px;
+
+	}
+
+</style>
 
 
 </html>
@@ -204,6 +408,14 @@
 	display: table-cell;
 	text-align: center;
 	vertical-align: middle;
+	}
+
+	.active-recur-config {
+		display: block !important;
+	}
+
+	.inactive-recur-config {
+		display: none !important;
 	}
 
 </style>

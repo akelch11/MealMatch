@@ -123,7 +123,8 @@ def update_account_form():
                            title_value=title_value,
                            button_value=button_value,
                            valid_phonenum=valid_phonenum,
-                           new_user=new_user)
+                           new_user=new_user,
+                           dhalls=dhall_list)
     response = make_response(html)
     return response
 
