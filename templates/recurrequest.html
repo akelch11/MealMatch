@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>MealMatch | Schedule a Meal!</title>
+	{% include 'imports.html' %}
+</head>
+
+<body class="forceMaven">
+	{% include 'header.html' %}
+
+	<center>
+        <center>
+            <div id='mealType' class="container">
+                <div class="btn-group-sm menuButton">
+                    I want to eat:
+                    <br class = "mealTypeBreak"/>
+                    {% if date.isoweekday() == 6 or date.isoweekday() == 7%}
+                    <button class='btn-lg' id='lunchButton'> Brunch </button>
+                    {%else%}
+                    <button class='btn-lg' id='lunchButton'> Lunch </button>
+                    {%endif%}
+                    <button class='btn-lg' id='dinnerButton'> Dinner </button>
+                </div>
+            </div>
+        </center>
+
+            <center>
+                <div id='hallType' class="container" name = ''>
+                    <div class="btn-group-sm menuButton ">
+                        <span   >I want to eat at:</span> <br class = "mobile"/>
+                        {% for dhall in dhalls%}
+                        <button type = 'button' class='btn-lg dHallType' 
+                        id='{{dhall}}'>{{dhall}}</button>
+                            {% if (loop.index % 3) == 0 %}
+                            <br class = "break"/>
+                            {%endif%}
+                        {% endfor %}
+                        <br/>
+                        <button class='btn-lg' id='anyDhall' type = 'button'
+                         style = "margin: 10px; margin-top: 10px;  "
+                         data-toggle="tooltip" data-bs-placement="right" title="Select every DHall as a potential meal location.">
+                            Any DHall
+                        </button>
+                    </div>
+                </div>
+              
+                <div id='hallType' class="container">
+                    <div class="btn-group-sm menuButton" id = "daysField" name = "">
+                        <span   >On the following days:</span><br class = "mobile"/>
+                        {% for day in ['Mon','Tues','Wed','Thurs',"Fri",'Sat','Sun']%}
+                        <button class='btn-lg dayType' 
+                           type = "button"
+                        id='{{day}}'>{{day}}</button>
+                            {% if (loop.index % 3) == 0 %}
+                            <br class = "break"/>
+                            {%endif%}
+                        {% endfor %}
+                    </div>
+                </div>
+              </center>
+                        
+                <div id='mealTimes' class="container row"   >
+                    <div class="btn-group-sm dropdown" id='time' style="font-size: 18px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                        data-toggle="tooltip" data-bs-placement="left" title="Click on the clock icon or type to enter your availability!">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>  
+                        <script>
+                            // activate tooltips
+                            $('#time').ready(function () {
+                            $('[data-toggle="tooltip"]').tooltip()
+                            })
+                        </script>
+                        <span   >I'm free from:</span>
+                        <input class='btn-sm' type='time' step='60' id='startTimeButton' name = '' style = 'size-adjust: 75%;'>
+                        <span   >to</span>
+                        <input  class='btn-sm' type='time' step='60' id='endTimeButton' name = ''>
+                        
+                        <!-- <button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;"
+                             data-toggle="tooltip" data-placement="bottom" title="Select the full remaining meal period.">
+                            Any Time
+                          </button> -->
+                    </div>
+                </div>
+      
+                <center>
+                <div class='container'   >
+                    <a id="submitButtonForm">
+                        <!-- have it close modal and save info somehow -->
+                        <button type = "button" class='btn-lg submitReqButton orange-moon enter-button'>Confirm</button>
+                    </a>
+                </div>
+                </center>
+      
+      
+            </div>
+    </center>
+
+</body>
+
+</html>
+
+<script>
+
+let lunchButton = document.getElementById("lunchButton");
+	let dinnerButton = document.getElementById("dinnerButton");
+	let activeMeal = "";
+	let activeDhalls = {};
+    let activeDays = {};
+	let dHallButtons = document.getElementsByClassName('dHallType');
+    let dayButtons = document.getElementsByClassName('dayType');
+	let anyDhallButton = document.getElementById('anyDhall');
+    let isAnyActive = false;
+  let dayOptions = "";
+  let dHallOptions = ""
+
+
+  for (btn of dHallButtons) {
+		activeDhalls[btn.id] = false;
+	}
+
+
+	lunchButton.addEventListener('click', function onClick() {
+		activeMeal = 'lunch';
+		console.log('lunch Pressed');
+		lunchButton.style.backgroundColor = "#ff9f46";
+		dinnerButton.style.backgroundColor = '';
+
+	});
+
+	dinnerButton.addEventListener('click', function onClick() {
+		activeMeal = 'dinner';
+		console.log('dinner Pressed');
+		dinnerButton.style.backgroundColor = "#ff9f46";
+		lunchButton.style.backgroundColor = '';
+
+	});
+
+    console.log("buttons "); console.log(dayButtons);
+
+    for (btn of dHallButtons) {
+		activeDhalls[btn.id] = false;
+	}
+
+  for (btn of dayButtons) {
+		activeDays[btn.id] = false;
+	}
+
+  for (let i = 0; i < dayButtons.length; i++) {
+		let btn = dayButtons[i];
+		btn.addEventListener('click',
+			function () {
+
+				day = btn.id;
+
+				// select Dhall
+				if (!activeDays[day]) {
+					btn.style.backgroundColor = "#ff9f46";
+					activeDays[day] = true;
+				}
+				else {
+					btn.style.backgroundColor = "";
+					activeDays[day] = false;
+				}
+
+				
+				console.log(activeDays)
+
+			});
+	}
+
+  for (day of dayButtons) {
+
+    console.log('id is ' + day.id)
+    day.addEventListener('click', function ()
+            {
+              const dayMap = {'Mon': "M", "Tues": "T", "Wed":"W", "Thurs":"R", "Fri": "F", "Sat":"S","Sun":"U"}
+              dayOptions = ""
+              for (var day in activeDays) {
+                console.log(day + 'is ' + activeDays[day])
+                  if (activeDays[day]) {
+                    dayOptions += (dayMap[day]);
+                    
+                  }
+                }
+
+
+              console.log('day field is ' + dayOptions);
+              document.getElementById('daysField').setAttribute('name', dayOptions);
+              console.log("df is "+document.getElementById('daysField').getAttribute('name'))
+
+            });
+    console.log(day.id + "created")
+	}
+
+  
+		
+
+
+    for (let i = 0; i < dHallButtons.length; i++) {
+		let btn = dHallButtons[i];
+		btn.addEventListener('click',
+			function () {
+
+				dhall = btn.id;
+
+				// select Dhall
+				if (!activeDhalls[dhall]) {
+					btn.style.backgroundColor = "#ff9f46";
+					activeDhalls[dhall] = true;
+				}
+				else {
+					btn.style.backgroundColor = "";
+					activeDhalls[dhall] = false;
+				}
+
+				// deactivate anyDHall button
+				if(isAnyActive)
+				{
+					anyDhallButton.style.backgroundColor = "";
+					isAnyActive = false;
+				
+				}
+				
+
+				console.log(activeDhalls)
+
+			});
+
+	}
+
+
+
+  for (let i = 0; i < dHallButtons.length; i++) {
+		  let btn = dHallButtons[i];
+
+      btn.addEventListener('click', () =>
+      {
+        dHallOptions = "";
+        for (var dh in activeDhalls) {
+            if (activeDhalls[dh]) {
+              dHallOptions += (dh + "-");
+              dHallSelected = true;
+            }
+            console.log(dHallOptions)
+
+          document.getElementById('hallType').setAttribute('name', dHallOptions);
+          console.log('name is '+document.getElementById('hallType').getAttribute('name'));
+        
+
+		}
+
+      });
+
+  }
+
+
+    
+
+	anyDhallButton.addEventListener('click',
+		function(){
+
+			if(!isAnyActive)
+				anyDhallButton.style.backgroundColor = "#ff9f46";
+			else
+				anyDhallButton.style.backgroundColor = "";
+				
+			for(let i = 0; i < dHallButtons.length; i++)
+			{
+				let btn = dHallButtons[i];
+				
+				// activate all buttons
+				if(!isAnyActive)
+					{
+						activeDhalls[btn.id] = true;
+						btn.style.backgroundColor = "#ff9f46";
+					}
+				else // deactivate all buttons
+					{
+						activeDhalls[btn.id] = false;
+						btn.style.backgroundColor = "";
+					}
+			}
+			// flip active flag
+			isAnyActive = !isAnyActive;
+		});
+
+
+
+</script>
+
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	body {
+		font-weight: normal;
+	}
+
+	#mealType {
+		margin: 20px;
+		margin-top: 20px;
+
+	}
+
+	.mobile {
+ 		 display: none;
+	}
+
+	.break {
+		display: none;
+	}
+
+	.mealTypeBreak {
+		display: none
+	}
+
+	@media (max-width: 488px) {
+	.mobile {
+		display: block;
+		/* Add other properties here */
+	}
+	}
+
+
+	@media (max-width: 991px)
+	{
+		.break {
+		display: block;
+		}
+	}
+
+	@media (max-width: 411px)
+	{
+		.mealTypeBreak{
+		display: block;
+		}
+	}
+
+</style>

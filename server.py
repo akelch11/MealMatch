@@ -407,6 +407,21 @@ def tutorial_method():
     response = make_response(html)
     return response
 
+
+@app.route('/recurrequest', methods=['GET'])
+def recur_request_page():
+    error = request.args.get('error')
+
+    if error is None:
+        error = ""
+
+    html = render_template('recurrequest.html',
+                           dhalls=dhall_list,
+                           date=datetime.now())
+    response = make_response(html)
+    return response
+
+
 # CAS LOGOUT
 
 
