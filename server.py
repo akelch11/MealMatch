@@ -422,6 +422,49 @@ def recur_request_page():
     return response
 
 
+@app.route('/submitrecurrequest', methods=['GET'])
+def submit_recur_request():
+
+    try:
+        meal_type = request.args.get('meal')
+        print('Meal type', meal_type, file=stdout)
+        dhall = request.args.get('location')
+        print('DHALL STRING:', dhall, file=stdout)
+        start_time = request.args.get('start')
+        end_time = request.args.get('end')
+        days = request.args.get('days')
+        at_dhall = request.args.get('atdhall')
+    except Exception as ex:
+        return make_response(render_template('page404.html'), 404)
+
+    # TODO: add validation to ensure bad requests can't be submitted through url
+    # mostly just checking meal type alligns w times
+
+    start_time_datetime = parser.parse(start_time)
+    end_time_datetime = parser.parse(end_time)
+    print(start_time_datetime)
+    print(end_time_datetime)
+    # multiple dhalls can be selected via scheduled match
+    # Dining halls are listed in between '-' of dhall request parameter
+
+    dhall_arr = [hall_name in dhall for hall_name in dhall_list]
+    print(dhall_arr)
+
+    # update user's configured recurring request
+    update_user_sql = ''' UPDATE users
+                          SET recur = TRUE, recur_begintime = %s, recur_endtime = %s, days = %s, location = %s
+                          WHERE netid = {}'''.format(auth.authenticate())
+
+    meal_requests.configure_recurring_request(
+        auth.authenticate(), start_time_datetime, end_time_datetime, days, dhall)
+
+    print('config recurring request')
+
+    html = render_template('homescreen.html')
+    response = make_response(html)
+    return response
+
+
 # CAS LOGOUT
 
 
@@ -471,7 +514,10 @@ if __name__ == "__main__":
         scheduler = BackgroundScheduler()
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
+
         scheduler.start()
+
+        meal_requests.execute_recurring_requests()
 
         # redirect to HTTPS when on heroku, don't use security protocol on localhost
         if host != 'localhost':
@@ -483,5 +529,6 @@ if __name__ == "__main__":
         port = int(os.environ.get('PORT', 5001))
         app.run(host=host, port=port, debug=False)
     except Exception as ex:
+        print('EXCEPTION OCCURRED')
         print(ex, file=stderr)
         exit(1)
