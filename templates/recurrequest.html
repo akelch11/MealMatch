@@ -87,10 +87,10 @@
       
                 <center>
                 <div class='container'   >
-                    <span id="submitButtonForm">
+                    <a id="submitButtonForm">
                         <!-- have it close modal and save info somehow -->
                         <button type = "button" class='btn-lg submitReqButton orange-moon enter-button'>Confirm</button>
-					</span>
+					</a>
                 </div>
                 </center>
 
@@ -122,8 +122,8 @@ let lunchButton = document.getElementById("lunchButton");
     let dayButtons = document.getElementsByClassName('dayType');
 	let anyDhallButton = document.getElementById('anyDhall');
     let isAnyActive = false;
-  let dayOptions = "";
-  let dHallOptions = ""
+  	let dayOptions = "";
+  	let dHallOptions = ""
 
 
   function compareTimeStrings(t1, t2) {
@@ -312,7 +312,7 @@ let lunchButton = document.getElementById("lunchButton");
 
 	// update url to contain proper match request information
 	function updateUrl() {
-		let url = "/recurrequest"
+		let url = "/submitrecurrequest"
 		let startTime = document.getElementById("startTimeButton").value;
 		let endTime = document.getElementById("endTimeButton").value;
 
@@ -380,14 +380,12 @@ let lunchButton = document.getElementById("lunchButton");
 			// times are within lunch range and not in past
 			let lunch_bool = (meal === 'lunch') &&
 				(compareTimeStrings(lunch_start, t1) <= 0) &&
-				(compareTimeStrings(nowTime, t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
 				(compareTimeStrings(t2, "14:00") <= 0);
 
 			// times are within dinner range and not in past
 			let dinner_bool = (meal === "dinner") &&
 				(compareTimeStrings("17:00", t1) <= 0) &&
-				(compareTimeStrings(nowTime, t1) <= 0) &&
 				(compareTimeStrings(t1, t2) < 0) &&
 				(compareTimeStrings(t2, "20:00") <= 0);
 
@@ -415,7 +413,7 @@ let lunchButton = document.getElementById("lunchButton");
 	let validMealTimes = validateTimes(startTime, endTime, activeMeal);
 	console.log('valid mealtimes ' + validMealTimes)
 
-	let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
+	let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected || dayOptions == "")
 	console.log('empty fields?: ' + emptyFields)
 
 	let interval_len = 20;
@@ -432,12 +430,12 @@ let lunchButton = document.getElementById("lunchButton");
 			// otherwise, if times are not appropriate, prompt user to enter valid hours
 			else if (!validMealTimes)
 				{
-					var nowTimeStr = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
-					if ((compareTimeStrings(nowTimeStr, "14:00") > 0 && activeMeal == 'lunch') || 
-						((compareTimeStrings(nowTimeStr, "20:00")  > 0) && activeMeal == 'dinner'))
-						document.getElementById('errorBox').innerHTML += "<p>*The hours of the selected mealtime have passed.<br> Please refer to the dining hall hours to enter valid times for a match request.</p><br>"
-					else
-					document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the selected meal at these hours.<br> Please refer to the dining hall hours to enter valid times for a match request.</p><br>"
+					// var nowTimeStr = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
+					// if ((compareTimeStrings(nowTimeStr, "14:00") > 0 && activeMeal == 'lunch') || 
+					// 	((compareTimeStrings(nowTimeStr, "20:00")  > 0) && activeMeal == 'dinner'))
+					// 	document.getElementById('errorBox').innerHTML += "<p>*The hours of the selected mealtime have passed.<br> Please refer to the dining hall hours to enter valid times for a match request.</p><br>"
+					// else
+						document.getElementById('errorBox').innerHTML += "<p>*The dining hall may not be open for the selected meal at these hours.<br> Please refer to the dining hall hours to enter valid times for a match request.</p><br>"
 				}
 
 
@@ -448,7 +446,7 @@ let lunchButton = document.getElementById("lunchButton");
 			// prevents submission
 			event.preventDefault();
 		}
-			else { event.preventDefault();}
+			else updateUrl();
 	});
 
 

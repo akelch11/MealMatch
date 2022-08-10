@@ -140,15 +140,23 @@ def recur_request_to_normal_request(recur_request_dict):
     normal_request_dict['dhall_arr'] = [
         hall_name in recur_request_dict['location'] for hall_name in dhall_list]
 
+    print(normal_request_dict['dhall_arr'])
+
     begin = recur_request_dict['recur_begintime']
     end = recur_request_dict['recur_endtime']
 
+    def _zero_pad_minute(min_num):
+        if min_num < 10:
+            return ('0' + str(min_num))
+        else:
+            return str(min_num)
+
     # strip day and make it current, keep hour
     normal_starttime = datetime.fromisoformat(
-        date.today().isoformat() + begin.hour + ":" + begin.minute + ":00")
+        date.today().isoformat() + " " + str(begin.hour) + ":" + _zero_pad_minute(begin.minute) + ":00")
 
     normal_endtime = datetime.fromisoformat(
-        date.today().isoformat() + end.hour + ":" + end.minute + ":00")
+        date.today().isoformat() + " " + str(end.hour) + ":" + _zero_pad_minute(end.minute) + ":00")
 
     print('Begin: ' + normal_starttime.isoformat())
 
@@ -188,7 +196,7 @@ def get_all_recurring_requests():
     rows = cur.fetchall()
     close_connection(cur, conn)
 
-    keys = ["netid", 'recur_begintime', 'recur_endtime', 'days', 'location]']
+    keys = ["netid", 'recur_begintime', 'recur_endtime', 'days', 'location']
     reqs = []
     for row in rows:
         reqs.append(dict(zip(keys, row)))
@@ -196,23 +204,54 @@ def get_all_recurring_requests():
     return reqs
 
 
-def execute_recurring_requests():
+def execute_recurring_requests_lunch():
 
+    print('LUNCH JOB')
     recur_reqs_dicts = get_all_recurring_requests()
     normalized_req_dicts = []
     print('made past get')
     for recur_dict in recur_reqs_dicts:
         print('going into iter')
-        normalized_req_dicts.append(
-            recur_request_to_normal_request(recur_dict))
+        normal_req_dict = recur_request_to_normal_request(recur_dict)
+
+        # if boolean lunch field is true
+        if normal_req_dict['meal_type'] == True:
+            normalized_req_dicts.append(normal_req_dict)
         print('made it out of iter')
         print(normalized_req_dicts)
 
     for req in normalized_req_dicts:
-        # success = add_request(req['netid'], req['meal_type'], req['starttime'],
-        #                       req['endtime'], req['dhall_arr'], req['at_dhall'])
-        # if success:
-        #     print('recur request for ' + req['netid'] + ' added to pool')
-        # else:
-        #     print('error aah')
+        success = add_request(req['netid'], req['meal_type'], req['starttime'],
+                              req['endtime'], req['dhall_arr'], req['at_dhall'])
+        if success:
+            print('recur request for ' + req['netid'] + ' added to pool')
+        else:
+            print('error aah')
+        print(req)
+
+
+def execute_recurring_requests_dinner():
+
+    print('DINNER JOB RUNNING')
+    recur_reqs_dicts = get_all_recurring_requests()
+    normalized_req_dicts = []
+    print('made past get')
+    for recur_dict in recur_reqs_dicts:
+        print('going into iter')
+        normal_req_dict = recur_request_to_normal_request(recur_dict)
+
+        # if boolean lunch field is true
+        if normal_req_dict['meal_type'] == False:
+            normalized_req_dicts.append(normal_req_dict)
+
+        print('made it out of iter')
+        print(normalized_req_dicts)
+
+    for req in normalized_req_dicts:
+        success = add_request(req['netid'], req['meal_type'], req['starttime'],
+                              req['endtime'], req['dhall_arr'], req['at_dhall'])
+        if success:
+            print('recur request for ' + req['netid'] + ' added to pool')
+        else:
+            print('error aah')
         print(req)

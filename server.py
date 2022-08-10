@@ -10,6 +10,7 @@ from dateutil import parser
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
+from pytz import timezone
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 from flask_talisman import Talisman
@@ -515,9 +516,13 @@ if __name__ == "__main__":
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
 
-        scheduler.start()
+        # schedule lunch job to start at 9:30AM ET
+        recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_lunch,
+                                            'cron', hour=23, minute=8, timezone='America/New_York')
+        recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
+                                            'cron', hour=0, minute=11, timezone='America/New_York')
 
-        meal_requests.execute_recurring_requests()
+        scheduler.start()
 
         # redirect to HTTPS when on heroku, don't use security protocol on localhost
         if host != 'localhost':
