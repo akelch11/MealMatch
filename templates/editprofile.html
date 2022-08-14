@@ -48,7 +48,7 @@
 			<h2>{{title_value}}</h2>
 		</div>
 		<hr>
-		<form action="/submit_profile_form" method="get">
+		<form id = "profileForm" action="/submit_profile_form" method="get">
 			<table>
 				<tr>
 					<td align="right">Name:</td>
@@ -244,6 +244,7 @@
 						{% if valid_phonenum == False %}
 						<div class="container row" id="errorBox" style="color: red">Please enter a valid US phone number.</div>
 						{% endif %}
+						<div class="container row noError" id="prefErrorBox" style="color: red">Please select a type of matching preference.</div>
 					</div>
 				</tr>
 			</table>
@@ -255,47 +256,37 @@
 <script type = "text/javascript" src = "../static/js/prefmatchbuttons.js">
 </script>
 <script>
-	let recurToggle = document.getElementById('recur');
-	let recurConfigButton = document.getElementById('config-toggle');
-	let recurDialog = document.getElementById('recur-config-dialog');
-	let modalClose = document.getElementById('modal-close');
 
-	// modalClose.addEventListener('click', () => {$('#exampleModal').modal('hide')});
+	let form = document.getElementById('profileForm');
+	let matchPrefOptionSelected = false;
+	let majorPrefButton = document.getElementById("toggle-button-Major/Year");
+	let randomPrefButton = document.getElementById("toggle-button-Random");
+	let prefErrorBox = document.getElementById('prefErrorBox');
 
-	function openCheck(dialog) {
-        if(dialog.open) {
-          console.log('Dialog open');
-        } else {
-          console.log('Dialog closed');
-        }
-      }
 
-	recurToggle.addEventListener('change' , (event) => {
-	
 
+	function registerSelectedMatchPref () { 
 		
-		if (recurToggle.getAttribute('name') === 'TRUE')
-		{
-			recurToggle.setAttribute('name', 'FALSE');
-			recurConfigButton.classList.add("inactive-recur-config");
-			recurConfigButton.classList.remove("active-recur-config");
-			openCheck(recurDialog);
-		}
-		else if (recurToggle.getAttribute('name') === 'FALSE')
+		matchPrefOptionSelected = true; 
+		
+ }
+
+	majorPrefButton.addEventListener('click', registerSelectedMatchPref);
+	randomPrefButton.addEventListener('click', registerSelectedMatchPref);
+
+
+
+	form.addEventListener('submit', (event) => {
+		if(!matchPrefOptionSelected)
 			{
-				recurToggle.setAttribute('name', 'TRUE')
-				recurConfigButton.classList.add("active-recur-config");
-				recurConfigButton.classList.remove("inactive-recur-config");
-				// $('#exampleModal').modal('show')
-				// openCheck(recurDialog);
+				
+				event.preventDefault();
+				prefErrorBox.classList.remove('noError');
+				prefErrorBox.classList.add('error');
+
 			}
+	})
 	
-	
-	// console.log('recur is ' + recurToggle.getAttribute('name'));
-	});
-
-
-	recurConfigButton.addEventListener('click', () => $('#exampleModal').modal('show'));
 </script>
 
 
@@ -310,6 +301,15 @@
 .toggle {
   cursor: pointer;
   display: inline-block;
+}
+
+.noError
+{
+	display: none;
+}
+
+.error  {
+	display: block;
 }
 
 .toggle-switch {
