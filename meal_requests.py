@@ -218,7 +218,6 @@ def execute_recurring_requests_lunch():
         if normal_req_dict['meal_type'] == True:
             normalized_req_dicts.append(normal_req_dict)
         print('made it out of iter')
-        print(normalized_req_dicts)
 
     for req in normalized_req_dicts:
         success = add_request(req['netid'], req['meal_type'], req['starttime'],
