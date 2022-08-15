@@ -344,9 +344,32 @@ def get_matches():
         print('REQ: ', req, "\n Loc: ", loc)
         req_locations.append(loc)
 
+    # get recurring request to display
+    recur_request = meal_requests.get_users_recurring_request(netid)
+
+    if recur_request != None:
+        recur_request = meal_requests.recur_request_to_normal_request(
+            recur_request)
+
+        dhalls_in_req = [dhall_list[i]
+                         for i in range(len(dhall_list)) if recur_request['dhall_arr'][i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
+
+        recur_request['dhall_arr'] = loc
+
+        recur_request['days'] = meal_requests.recurring_meal_string_to_days(
+            recur_request['days'])
+
+        print('valid recurring request')
+        print(str(recur_request))
+    else:
+        print('recur request is None')
+
     html = render_template('matches.html',
                            all_matches=all_matches,
                            all_requests=all_requests,
+                           recur_request=recur_request,
                            locations=req_locations)
     response = make_response(html)
     return response
@@ -452,10 +475,6 @@ def submit_recur_request():
     print(dhall_arr)
 
     # update user's configured recurring request
-    update_user_sql = ''' UPDATE users
-                          SET recur = TRUE, recur_begintime = %s, recur_endtime = %s, days = %s, location = %s
-                          WHERE netid = {}'''.format(auth.authenticate())
-
     meal_requests.configure_recurring_request(
         auth.authenticate(), start_time_datetime, end_time_datetime, days, dhall)
 
@@ -464,6 +483,15 @@ def submit_recur_request():
     html = render_template('homescreen.html')
     response = make_response(html)
     return response
+
+
+@app.route('/cancel_recurring_request', methods=['GET'])
+def cancel_recurring_request():
+    # update user's configured recurring request
+    print('inside cancell RR')
+    meal_requests.cancel_recurring_request(auth.authenticate())
+    print('rerouting')
+    return redirect('/matches')
 
 
 # CAS LOGOUT
@@ -518,9 +546,9 @@ if __name__ == "__main__":
 
         # schedule lunch job to start at 9:30AM ET
         recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_lunch,
-                                            'cron', hour=23, minute=8, timezone='America/New_York')
+                                            'cron', hour=10, minute=0, timezone='America/New_York')
         recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
-                                            'cron', hour=0, minute=11, timezone='America/New_York')
+                                            'cron', hour=16, minute=0, timezone='America/New_York')
 
         scheduler.start()
 

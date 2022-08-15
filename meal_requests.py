@@ -254,3 +254,64 @@ def execute_recurring_requests_dinner():
         else:
             print('error aah')
         print(req)
+
+
+def get_users_recurring_request(netid):
+
+    update_user_sql = ''' SELECT netid, recur, recur_begintime, recur_endtime, days, location
+                        FROM users
+                          WHERE netid = '{}' '''.format(netid)
+
+    cur, conn = new_connection()
+    cur.execute(update_user_sql)
+    row = cur.fetchone()
+    close_connection(cur, conn)
+
+    keys = ["netid", 'recur', 'recur_begintime',
+            'recur_endtime', 'days', 'location']
+    req_dict = dict(zip(keys, row))
+    print('testyyyy ' + str(req_dict))
+    if req_dict != None and req_dict['recur'] == True:
+        print('req dict')
+        print('Non-null reqdict ' + str(req_dict))
+        return req_dict
+    else:
+        print('Not valid RR ' + str(req_dict))
+        return None
+
+
+def recurring_meal_string_to_days(day_string):
+    day_char_arr = list(day_string)
+    day_char_to_full_name = {'M': "Monday", 'T': 'Tuesday', 'W': "Wednesday",
+                             'R': 'Thursday', 'F': "Friday", "S": "Saturday", "U": 'Sunday'}
+    days = ""
+    for day_char in day_char_arr:
+        days += (day_char_to_full_name[day_char]+",")
+
+    # for one day, there will be 2 elements in the split
+    if len(days.split(',')) == 2:
+        return days.split(',')[0]
+    # 2 days are presenr
+    elif len(days.split(',')) == 3:
+        sep_days = days.split(',')
+        print(sep_days[0] + ' and ' + sep_days[1])
+        return sep_days[0] + ' and ' + sep_days[1]
+    elif len(days.split(',')) > 3:
+        day_str = ""
+        sep_days = days.split(',')
+        for i in range(len(sep_days) - 2):
+            day_str += (sep_days[i] + ", ")
+            print(day_str)
+        day_str += " and " + sep_days[len(sep_days) - 2]
+        print(day_str)
+        return day_str
+
+
+def cancel_recurring_request(netid):
+    update_user_sql = ''' UPDATE users
+                          SET recur = FALSE, recur_begintime = NULL, recur_endtime = NULL, days = NULL, location = NULL
+                          WHERE netid = '{}' '''.format(netid)
+    cur, conn = new_connection()
+    cur.execute(update_user_sql)
+    print('the update cancel rr has executed')
+    close_connection(cur, conn)
