@@ -439,6 +439,7 @@ def recur_request_page():
     if error is None:
         error = ""
 
+    # get string for existing recur request to display
     current_recur_req = meal_requests.get_users_recurring_request(
         auth.authenticate())
     current_recur_req_string = ""

@@ -329,6 +329,7 @@ def recur_request_to_string(recur_req_dict):
     if recur_req_dict == None:
         return None
     else:
+        # change to normal req for easier field access
         req = recur_request_to_normal_request(recur_req_dict)
         if req['meal_type']:
             meal = 'Lunch'
