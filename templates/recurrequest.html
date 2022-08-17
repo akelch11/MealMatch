@@ -9,6 +9,22 @@
 <body class="forceMaven">
 	{% include 'header.html' %}
 
+	{% if current_recur_req_string != None %}
+		<nav class="navbar navbar-expand-lg navbar-light jumbotron" id = 'currentRRHead'>
+			<div class="container-fluid">
+				<div class = 'col-md-8'>
+					You have an existing recurring meal request: {{current_recur_req_string}}. <br/> Go <a href = '/matches'>here</a> to check it out.
+					Submitting another request here will replace your existing recurring request.
+				</div>
+				<div class="navbar navbar-collapse justify-content-end col-sm-4" id="content">
+					<ul class="forceMaven navbar-nav">
+						<li><img src = '../static/close.svg' height="25px" width='auto'></img></button></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	{%endif%}
+
 	<center>
         <center>
             <div id='mealType' class="container">
@@ -113,7 +129,10 @@
 
 <script>
 
-let lunchButton = document.getElementById("lunchButton");
+	let curReqBanner = document.getElementById('currentRRHead');
+	curReqBanner.addEventListener('click', () => {curReqBanner.classList.add('closed');})
+
+	let lunchButton = document.getElementById("lunchButton");
 	let dinnerButton = document.getElementById("dinnerButton");
 	let activeMeal = "";
 	let activeDhalls = {};
@@ -499,6 +518,10 @@ let lunchButton = document.getElementById("lunchButton");
 
 	.mealTypeBreak {
 		display: none
+	}
+
+	.closed {
+		display: none;
 	}
 
 	@media (max-width: 488px) {

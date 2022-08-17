@@ -1,3 +1,4 @@
+from ast import Is
 from requests import get
 from database import new_connection, close_connection
 from matcher import match_requests
@@ -315,3 +316,33 @@ def cancel_recurring_request(netid):
     cur.execute(update_user_sql)
     print('the update cancel rr has executed')
     close_connection(cur, conn)
+
+
+def get_current_weekday_char():
+    now = datetime.now().replace(second=0, microsecond=0)
+    ISOWEEKDAY_NUM_TO_DAY_CHAR = {1: 'M', 2: 'T',
+                                  3: 'W', 4: 'R', 5: 'F', 6: 'S', 7: 'U'}
+    return ISOWEEKDAY_NUM_TO_DAY_CHAR[now.isoweekday()]
+
+
+def recur_request_to_string(recur_req_dict):
+    if recur_req_dict == None:
+        return None
+    else:
+        req = recur_request_to_normal_request(recur_req_dict)
+        if req['meal_type']:
+            meal = 'Lunch'
+        else:
+            meal = 'Dinner'
+
+        dhalls_in_req = [dhall_list[i]
+                         for i in range(len(dhall_list)) if req['dhall_arr'][i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
+        day_string = recurring_meal_string_to_days(req['days'])
+
+        ret_string = meal + ' @ ' + loc + " from " + \
+            req['starttime'].strftime('%-I:%M%p') + "-" + req['endtime'].strftime('%-I:%M%p') \
+            + ', on ' + day_string
+
+        return ret_string

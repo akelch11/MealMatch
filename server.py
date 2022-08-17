@@ -439,9 +439,18 @@ def recur_request_page():
     if error is None:
         error = ""
 
+    current_recur_req = meal_requests.get_users_recurring_request(
+        auth.authenticate())
+    current_recur_req_string = ""
+    if current_recur_req != None:
+        current_recur_req_string = meal_requests.recur_request_to_string(
+            current_recur_req)
+        print(current_recur_req_string)
+
     html = render_template('recurrequest.html',
                            dhalls=dhall_list,
-                           date=datetime.now())
+                           date=datetime.now(),
+                           current_recur_req_string=current_recur_req_string)
     response = make_response(html)
     return response
 
