@@ -18,6 +18,7 @@ import meal_requests
 import matcher
 import auth
 import req_validation
+import notifications
 from big_lists import majors, dhall_list
 
 app = Flask(__name__)
@@ -215,8 +216,6 @@ def validate_req(args):
         print('Meal type', meal_type, file=stdout)
         dhall = args.get('location')
         print('DHALL STRING:', dhall, file=stdout)
-        start_time = args.get('start')
-        end_time = args.get('end')
         at_dhall = args.get('atdhall')
         print('req type: ', at_dhall, file=stdout)
         if at_dhall == "False":
@@ -529,11 +528,15 @@ if __name__ == "__main__":
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
 
-        # schedule lunch job to start at 9:30AM ET
+        # schedule lunch job to start at 10:00AM ET
+        recur_lunch_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_lunch,
+                                                 'cron', hour=9, minute=45, timezone='America/New_York')
         recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_lunch,
                                             'cron', hour=10, minute=0, timezone='America/New_York')
-        recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
-                                            'cron', hour=16, minute=0, timezone='America/New_York')
+        recur_dinner_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_dinner,
+                                                  'cron', hour=16, minute=0, timezone='America/New_York')
+        recur_dinner_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
+                                             'cron', hour=16, minute=30, timezone='America/New_York')
 
         scheduler.start()
 
