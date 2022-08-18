@@ -1,16 +1,13 @@
 ##
-from nis import match
 from sys import stdout, stderr
-from datetime import date, datetime, tzinfo
+from datetime import date, datetime
 from argparse import ArgumentParser
 import os
-from urllib import response
 
 from dateutil import parser
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, session
 from flask import render_template, make_response, redirect, url_for
-from pytz import timezone
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 from flask_talisman import Talisman
@@ -20,12 +17,11 @@ import user_profile
 import meal_requests
 import matcher
 import auth
-import keys
 import req_validation
-from big_lists import majors, dept_code, dhall_list
+from big_lists import majors, dhall_list
 
 app = Flask(__name__)
-app.secret_key = keys.APP_SECRET_KEY
+app.secret_key = os.urandom(16)
 
 
 @app.route('/landing', methods=['GET'])
@@ -105,24 +101,11 @@ def update_account_form():
     else:  # protect against malicious manually entering parameter to different than 0 or 1
         return make_response(render_template('page404.html'), 404)
 
-    title_value = ""
-    button_value = ""
     new_user = not user_profile.exists(username)
-
-    # netid detected in system
-    if not new_user:
-        title_value = 'Edit Your Profile!'
-        button_value = "Submit Changes"
-    else:
-        title_value = 'Create Your Account!'
-        button_value = "Get Started!"
-
     html = render_template('editprofile.html',
                            senior_class=senior_year(),
                            majors=majors,
                            existing_profile_info=profile_dict,
-                           title_value=title_value,
-                           button_value=button_value,
                            valid_phonenum=valid_phonenum,
                            new_user=new_user,
                            dhalls=dhall_list)
@@ -141,14 +124,6 @@ def form():
     bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum')
     match_pref = request.args.get('match-pref')
-    yeardict = {}
-    for i in range(4):
-        y = str(senior_year()+i)
-        yeardict[y] = 'class of '+str(y)
-    if year == "Grad Student":
-        y = str(senior_year()-1)
-        yeardict[y] = year
-        year = y
     if bio == "":
         bio = "Hey, my name is %s. Let's grab a meal sometime!" % name
     if user_profile.exists(netid):

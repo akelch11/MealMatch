@@ -8,70 +8,115 @@
 
 <body>
 	{% include 'header.html' %}
-	<div class="container-fluid">
+	<div class="container-fluid" id="TitleAndIntro">
 		<br>
-            <div style="margin-top: 10px;">
-               <h2>Welcome to the MealMatch Tutorial!<p>(*page under development*)</p></h2>
-               <hr>
-			   <p>Before you start meeting and eating with people on MealMatch, here's a brief guide on how to use the platform.</p>
-            </div>
-	</div>
-	<div class="container-fluid" id="developers">
-		<div class="row"><h2>Matching</h2></div>
-		<div>
-			<div class = "row">
-				<p>With MealMatch, you can match to eat with new people in two main ways: <b>On-Demand</b> and <b>Scheduled</b>.</p><br>
-			</div>
+		<div style="margin-top: 10px;">
+			<h2>Welcome to the MealMatch Tutorial!<p>(*page under development*)</p>
+			</h2>
+			<hr>
+			<p>Before you start meeting and eating with people on MealMatch, here's a brief guide on how to use the
+				platform.</p>
 		</div>
-		<div class = "row">
-			<p><b>On-Demand</b> matching allows a user to match with people when they are currently at a dining hall.<br>
-				Matches can be made with this feature during Lunch hours of <b>11:30AM - 2:00PM</b> on weekdays and <b>10:00AM - 2:00PM</b> on weekends, and during Dinner hours of <b>5:00PM - 8:00PM</b> (all in EDT).
+	</div>
+	<div id="profile">
+		<div class="row">
+			<h2>Creating and Editing your Profile</h2>
+		</div>
+		<div class="row">
+			<p> When you navigate to the app and login for the first time, you'll be brought to the
+				<b>Create a Profile</b> page. Here you can select your year and major, as well as
+				enter a short bio to introduce yourself.
+			</p>
+		</div>
+		<center id="cprofileimg">
+			<div class="row container-fluid">
+				<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
+					src="/static/tutorial/filledoutcreate.png" />`
+			</div>
+		</center>
+		<div class="row">
+			You can return to this page to update these
+			features by clicking the profile button on the home page
+		</div>
+		<center>
+			<div class="row container-fluid">
+				<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
+					src="/static/tutorial/HS_Profile.png" />`
+			</div>
+		</center>
+	</div>
+	<div class="container-fluid" id="matching">
+		<div class="row">
+			<h2>Matching</h2>
+		</div>
+		<div class="row">
+			<p>With MealMatch, you can match to eat with new people in two main ways: <b>On-Demand</b> and
+				<b>Scheduled</b>.
+			</p><br>
+		</div>
+		<div class="row">
+			<p><b>On-Demand</b> matching allows a user to match with people when they are currently at a dining
+				hall.<br>
+				Matches can be made with this feature during Lunch hours of <b>11:30AM - 2:00PM</b> on weekdays and
+				<b>10:00AM - 2:00PM</b> on weekends, and during Dinner hours of <b>5:00PM - 8:00PM</b> (all in EDT).
 				Click on the <b>I'M AT A DHALL</b> button to get started.
-			<br>
+				<br>
 			</p>
 			<p>
-			<b>Scheduled</b> matching allows a user to match with people later in the same day (near-future). Matches can be made with this feature during dining hall hours Lunch and Dinner for times <b>later in the day</b> (after present time).
-			 Click on the <b>SCHEDULE A MEAL</b> button to get started.
+				<b>Scheduled</b> matching allows a user to match with people later in the same day (near-future).
+				Matches can be made with this feature during dining hall hours Lunch and Dinner for times <b>later in
+					the day</b> (after present time).
+				Click on the <b>SCHEDULE A MEAL</b> button to get started.
 			</p>
 		</div>
-
-			<center>
-				<div class = "row container-fluid">
-					<img style = "width: 85%; height: 85%; margin-top: 0px; object-fit: contain;" src="/static/matchingHStutorial.png"/>
-				</div>
-			</center>
-
-		<div class="row"><h2>Meal Requests</h2></div>
-		<div class = "row">
-			<p>To create meal request, simply specify what type of meal you want to eat (for scheduled meals), where you want to eat, and when you want to eat.</p><br>
-			<p>After selecting your desired meal type, preferred dining hall locations, and time availability, we will find you a match who also wants to eat at the same time and place.</p>
+		<center>
+			<div class="row container-fluid">
+				<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
+					src="/static/tutorial/HS_Scheduled.png" />
+			</div>
+		</center>
+	</div>
+	<div id="meal-request">
+		<div class="row">
+			<h2>Meal Requests</h2>
+		</div>
+		<div class="row">
+			<p>To create a meal request, simply specify what type of meal you want to eat (for scheduled meals), where
+				you want to eat, and when you want to eat.
+			</p><br>
+			<p>After selecting your desired meal type, preferred dining hall locations, and time availability, we will
+				find you a match who also wants to eat at the same time and place.
+			</p>
 			<p>
 				The image below is an example of how to use the menu to create requests. <br>
 				This user has created a request for <b>Lunch @ RoMa</b> from <b>1:05PM - 1:50PM</b>.<br>
 			</p>
-			<p>When submitting requests, be sure to specify times that are <b>not in the past</b>, <b>within dining hall hours</b> (for your specified meal), and are <b>at least 20 minutes apart</b>.</p>
+			<p>When submitting requests, be sure to specify times that are <b>not in the past</b>, <b>within dining hall
+					hours</b> (for your specified meal), and are <b>at least 20 minutes apart</b>.
+			</p>
 		</div>
 
 		<center>
-			<div class = "row container-fluid">
-				<img style = "width: 85%; height: 85%; margin-top: 0px; object-fit: contain;" src="/static/scheduledrequest_tutorial.png"/>
+			<div class="row container-fluid">
+				<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
+					src="/static/tutorial/HS_Scheduled.png" />
 			</div>
 		</center>
 
 		<hr>
 	</div>
-	
+
 </body>
 
 </html>
 <style>
-	.about_img{
+	.about_img {
 		height: 200px;
 		border: 1px;
 		border-radius: 10px;
 	}
 
-	 p {
+	p {
 		font-size: 18px;
-	} 
+	}
 </style>

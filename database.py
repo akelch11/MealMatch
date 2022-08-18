@@ -1,13 +1,9 @@
 from psycopg2 import connect
 from os import environ
+from big_lists import dhall_list
 
 
 def new_connection():
-    # conn = connect(database="d4p66i6pnk5690",
-    #             user="uvqmavpcfqtovz",
-    #             password="e7843c562a8599da9fecff85cd975b8219280577dd6bf1a0a235fe35245973d2",
-    #             host="ec2-44-194-167-63.compute-1.amazonaws.com",
-    #             port="5432")
     conn = connect(database=environ["DATABASE"],
                    user=environ['DB_USERNAME'],
                    password=environ['DB_PASSWORD'],
@@ -35,8 +31,7 @@ def create_user_table():
             RECUR BOOLEAN,
             RECUR_BEGINTIME TIMESTAMP,
             RECUR_ENDTIME TIMESTAMP,
-            DAYS TEXT
-            );'''
+            DAYS TEXT);'''
 
     cur, conn = new_connection()
     cur.execute(create_table_query)
@@ -63,7 +58,6 @@ def create_matches_table():
 
 
 def create_requests_table():
-    from big_lists import dhall_list
     create_table_query = '''CREATE TABLE requests
             (REQUESTID TEXT PRIMARY KEY NOT NULL,
             NETID TEXT NOT NULL,
@@ -88,16 +82,16 @@ if __name__ == "__main__":
     clear_query = "DROP TABLE %s;"
 
     cur, conn = new_connection()
-    # for table in [
-    #     # 'requests', 'matches' \
-    #     'users' \
-    # ]:
-    #     cur.execute(clear_query, [table])
-    # cur.execute('DROP TABLE users')
+    for table in [
+        # 'matches',
+        # 'requests',
+        # 'users',
+    ]:
+        cur.execute(clear_query, [table])
     close_connection(cur, conn)
     print('database deleted')
 
     # create_matches_table()
     # create_requests_table()
-    create_user_table()
+    # create_user_table()
     print('database created')
