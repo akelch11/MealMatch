@@ -22,6 +22,7 @@ import matcher
 import auth
 import keys
 import req_validation
+import notifications
 from big_lists import majors, dept_code, dhall_list
 
 app = Flask(__name__)
@@ -554,11 +555,15 @@ if __name__ == "__main__":
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
 
-        # schedule lunch job to start at 9:30AM ET
+        # schedule lunch job to start at 10:00AM ET
+        recur_lunch_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_lunch,
+                                                 'cron', hour=9, minute=45, timezone='America/New_York')
         recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_lunch,
                                             'cron', hour=10, minute=0, timezone='America/New_York')
-        recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
-                                            'cron', hour=16, minute=0, timezone='America/New_York')
+        recur_dinner_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_dinner,
+                                                  'cron', hour=16, minute=0, timezone='America/New_York')
+        recur_dinner_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
+                                             'cron', hour=16, minute=30, timezone='America/New_York')
 
         scheduler.start()
 
