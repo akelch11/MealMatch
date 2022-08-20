@@ -181,6 +181,7 @@ def recur_request_to_normal_request(recur_request_dict):
 
 
 # return array of dictionaries, each dictionary contains information for a request
+# filters for current day
 def get_all_recurring_requests():
 
     now = datetime.now().replace(second=0, microsecond=0)
@@ -347,3 +348,5 @@ def recur_request_to_string(recur_req_dict):
             + ', on ' + day_string
 
         return ret_string
+
+
