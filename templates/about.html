@@ -3,6 +3,14 @@
 
 <head>
 	<title>MealMatch | About</title>
+	<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- FontAwesome CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	{% include 'imports.html' %}
 </head>
 
@@ -24,10 +32,6 @@
 				<h3>Who built this? </h3>
 				<div class="row">
 					<div class = "col-sm-3 text-center align-middle">
-						<img src = "/static/photos/rajiv.png"  class="rounded-circle about_img">
-						<p>Rajiv Swamy<br>rswamy@princeton.edu</p>				
-					</div>
-					<div class = "col-sm-3 text-center align-middle">
 						<img src = "/static/photos/adam.png"   class="rounded-circle about_img">
 						<p>Adam Kelch<br>akelch@princeton.edu</p>
 					</div>
@@ -39,7 +43,76 @@
 						<img src = "/static/photos/jeremy.png" class="rounded-circle about_img">
 						<p>Jeremy Dapaah<br>jdapaah@princeton.edu</p>
 					</div>
+					<div class = "col-sm-3 text-center align-middle">
+						<img src = "/static/photos/rajiv.png"  class="rounded-circle about_img">
+						<p>Rajiv Swamy<br>rswamy@princeton.edu</p>				
+					</div>
 				</div>
+			</div>
+
+			<div class="container-fluid" id="developers">
+				<hr>
+				<h3>FAQ</h3>
+				  <section class="container-fluid my-5" id="maincontent">
+					<section id="accordion">
+
+						<!-- COPY THIS SECTION TO ADD ANOTHER QUESTION	 -->
+					  <a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top" aria-controls="faq-17" aria-expanded="false" data-toggle="collapse" href="#faq-17" role="button">
+						<div class="position-relative">
+						  <h2 class="h4 m-0 pr-3">
+							Matching is available for Lunch and Dinner, what about Breakfast?
+						  </h2>
+						  <div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+							<i class="fa fa-plus"></i>
+						  </div>
+						</div>
+					  </a>
+					  <div class="collapse" id="faq-17" style="">
+						<div class="card card-body border-0 p-0">
+						  <p>Due to the smaller volume of people attending breakfast, we decided to focus on creating matches for Lunch and Dinner.
+							  <br/>
+							 We still accommodate matching for Brunch on the weekends.
+						  </p>
+						</div>
+					  </div>
+					  	<!-- END OF QUESTION  -->
+				
+					  <a class="py-3 d-block h-100 w-100 position-relative z-index-1 pr-1 text-secondary border-top" aria-controls="faq-18" aria-expanded="false" data-toggle="collapse" href="#faq-18" role="button">
+						<div class="position-relative">
+						  <h2 class="h4 m-0 pr-3">
+							How does the matching algorithm work?
+						  </h2>
+						  <div class="position-absolute top-0 right-0 h-100 d-flex align-items-center">
+							<i class="fa fa-plus"></i>
+						  </div>
+						</div>
+					  </a>
+					  <div class="collapse" id="faq-18" style="">
+						<div class="card card-body border-0 p-0">
+						  <p>Here is a summary of our matching algorithm:
+							  <br/>
+							 <ul>
+								 <li>When a new meal request is submitted, the algorithm goes through all requests, checking for all possible matches between two users (same dining hall(s), overlapping time window). </li>
+								 <li>All possible matches are scored based on each user's matching preferences. A match has a base score of 1 for having a matching location and time period. Additonial points are awarded as follows:
+									 <ul>
+										 <li>If two users both have a Major/Year matching preference, additional points are awarded for either having a matching class year or major (one for each).</li>
+										 <li>If two users both have a Random matching preference, two additional points are awarded.</li>
+										 <li>If users have different matching preferences, no additional points are awarded.</li>
+									</ul>
+								 </li>
+								 <li> Matches with higher scores are created before those with lower scores.</li>
+								 <li> Note that if there is any possible match including a user, it will be created over not creating a match.</li>
+							</ul>
+
+						  </p>
+						  <p>
+						  </p>
+						</div>
+					  </div>
+				
+					</section>
+				  </section>
+
 			</div>
 
 			<div class="container-fluid" id="developers">
@@ -62,12 +135,75 @@
 
 
 </body>
+<script>
+	let faqs = document.getElementsByClassName('list-group-item');
+	for(let i = 0; i < faqs.length; i++)
+		faqs[i].addEventListener('click')
+
+</script>
 
 </html>
 <style>
-	.about_img{
-		height: 175px;
-		border: 1px;
-		border-radius: 10px;
-	}
+		.about_img{
+			height: 175px;
+			border: 1px;
+			border-radius: 10px;
+		}
+
+		
+		.text-secondary {
+    color: #3d5d6f;
+  }
+  
+  .h4,
+  h4 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    color: #333;
+  }
+  
+  .fa,
+  .fas {
+    font-family: 'FontAwesome';
+    font-weight: 400;
+    font-size: 1.2rem;
+    font-style: normal;
+  }
+  
+  .right-0 {
+    right: 0;
+  }
+  
+  .top-0 {
+    top: 0;
+  }
+  
+  .h-100 {
+    height: 100%;
+  }
+  
+  a.text-secondary:focus,
+  a.text-secondary:hover {
+    text-decoration: none;
+    color: #22343e;
+  }
+  
+  #accordion .fa-plus {
+    transition: -webkit-transform 0.25s ease-in-out;
+    transition: transform 0.25s ease-in-out;
+    transition: transform 0.25s ease-in-out, -webkit-transform 0.25s ease-in-out;
+  }
+  
+  #accordion a[aria-expanded=true] .fa-plus {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  .my-5 {
+	  margin-top: 2rem!important;
+  }
+
+		
 </style>
