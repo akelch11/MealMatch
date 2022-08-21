@@ -22,7 +22,7 @@
 		</div>
 		<div class="container-fluid" id="profile">
 			<div class="row">
-				<h2>Creating and Editing your Profile</h2>
+				<h2>Creating and Editing Your Profile</h2>
 			</div>
 			<div class="row">
 				<p> When you navigate to the app and login for the first time, you'll be brought to the
@@ -32,8 +32,10 @@
 			</div>
 			<center id="cprofileimg">
 				<div class="row container-fluid">
-					<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-						src="/static/tutorial/FilledOutCreate.png" />`
+					<div class = 'col-lg-1'></div>
+					<img class = 'tutorial-img col-lg-10'
+						src="/static/tutorial/FilledOutCreate.png"/>
+					<div class = 'col-lg-1'></div>
 				</div>
 			</center>
 			<div class="row">
@@ -43,9 +45,11 @@
 				</p><br>
 			</div>
 			<center>
-				<div class="row container-fluid">
-					<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-						src="/static/tutorial/HS_Profile.png" />`
+				<div class="row container-fluid align-items-center">
+					<div class = 'col-lg-1'></div>
+					<img class = 'tutorial-img col-lg-10'
+						src="/static/tutorial/HS_Profile.png"/>
+					<div class = 'col-lg-1'></div>
 				</div>
 			</center>
 		</div>
@@ -80,8 +84,10 @@
 			</div>
 			<center>
 				<div class="row container-fluid">
-					<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-						src="/static/tutorial/HS_RequestTypes.png" />
+					<div class = 'col-lg-1'></div>
+					<img class = 'tutorial-img col-lg-10'
+						src="/static/tutorial/HS_RequestTypes.png"/>
+					<div class = 'col-lg-1'></div>
 				</div>
 			</center>
 		</div>
@@ -107,8 +113,10 @@
 			</div>
 			<center>
 				<div class="row container-fluid">
-					<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-						src="/static/tutorial/FilledOutScheduled.png" />
+					<div class = 'col-lg-1'></div>
+					<img class = 'tutorial-img col-lg-10'
+						src="/static/tutorial/FilledOutScheduled.png"/>
+					<div class = 'col-lg-1'></div>
 				</div>
 			</center>
 			<hr>
@@ -124,8 +132,10 @@
 					Here, you have the option to delete existing requests, and accept or deny potential matches
 					<center>
 						<div class="row container-fluid">
-							<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-								src="/static/tutorial/ExistingRequest.png" />
+							<div class = 'col-lg-1'></div>
+						<img class = 'tutorial-img col-lg-10'
+							src="/static/tutorial/ExistingRequest.png"/>
+						<div class = 'col-lg-1'></div>
 						</div>
 					</center>
 				</p>
@@ -135,8 +145,10 @@
 					You can also reach this page from the navigation bar or the home screen.
 					<center>
 						<div class="row container-fluid">
-							<img style="width: 85%; height: 85%; margin-top: 0px; object-fit: contain;"
-								src="/static/tutorial/HS_MatchReq.png" />
+							<div class = 'col-lg-1'></div>
+						<img class = 'tutorial-img col-lg-10'
+							src="/static/tutorial/HS_MatchReq.png"/>
+						<div class = 'col-lg-1'></div>
 						</div>
 					</center>
 				</p>
@@ -149,5 +161,18 @@
 <style>
 	p {
 		font-size: 18px;
+	}
+
+	.tutorial-img 
+	{
+		width: 80%; 
+		height: 80%; 
+		margin-top: 5px; 
+		margin-bottom: 5px; 
+		object-fit: contain;
+		border: 3px #ff9f46 !important;
+		border-width: 3px !important;
+		box-shadow: 0 6px 5px #8888888e;
+		
 	}
 </style>
