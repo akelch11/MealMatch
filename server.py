@@ -169,6 +169,7 @@ def submit_request():
     except Exception as ex:
         return make_response(render_template('page404.html'), 404)
 
+    print('request arguments')
     print(request.args, file=stdout)
 
     # validate back end submission of requests to ensure
@@ -423,10 +424,13 @@ def recur_request_page():
             current_recur_req)
         print(current_recur_req_string)
 
+    print('final call for RR string: ' + current_recur_req_string)
+
     html = render_template('recurrequest.html',
                            dhalls=dhall_list,
                            date=datetime.now(),
-                           current_recur_req_string=current_recur_req_string)
+                           current_recur_req_string=current_recur_req_string,
+                           error=error)
     response = make_response(html)
     return response
 
@@ -445,6 +449,14 @@ def submit_recur_request():
         at_dhall = request.args.get('atdhall')
     except Exception as ex:
         return make_response(render_template('page404.html'), 404)
+
+    print('recur req args')
+    print(request.args)
+
+    request_is_valid = validate_req(request.args)
+
+    if not request_is_valid:
+        return redirect('/recurrequest?error=invalid_request')
 
     # TODO: add validation to ensure bad requests can't be submitted through url
     # mostly just checking meal type alligns w times
@@ -530,7 +542,7 @@ if __name__ == "__main__":
             meal_requests.clean_requests, 'interval', hours=5)
 
         initialize_usage_metrics = scheduler.add_job(database.create_new_day_usage_metrics, 'cron',
-                                                     hour=12, minute=7, timezone='America/New_York')
+                                                     hour=0, minute=0, timezone='America/New_York')
         # schedule lunch job to start at 10:00AM ET
         recur_lunch_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_lunch,
                                                  'cron', hour=9, minute=45, timezone='America/New_York')

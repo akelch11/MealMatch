@@ -9,7 +9,7 @@
 <body class="forceMaven">
 	{% include 'header.html' %}
 
-	{% if current_recur_req_string != None %}
+	{% if current_recur_req_string != None and current_recur_req_string != '' %}
 		<nav class="navbar navbar-expand-lg navbar-light jumbotron" id = 'currentRRHead'>
 			<div class="container-fluid">
 				<div class = 'col-md-8'>
@@ -110,6 +110,14 @@
 					</a>
                 </div>
                 </center>
+
+                <div class = "container" id = "hoursBox" style = "font-size: 18px;">
+                    Dining Hall Hours: <br>
+                    
+                    Lunch: 11:30AM - 2PM / Brunch: 10AM - 2PM
+                    <br>
+                    Dinner: 5PM - 8PM
+                </div>
 
 				<div class="container row" id="errorBox" style="color: red">
 					
