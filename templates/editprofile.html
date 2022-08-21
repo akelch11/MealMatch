@@ -240,6 +240,13 @@
 	let prefErrorBox = document.getElementById('prefErrorBox');
 
 
+	let initiallyActiveButtons = document.getElementsByClassName('active-button');
+	
+	if(initiallyActiveButtons.length > 0)
+		matchPrefOptionSelected = true;
+
+
+
 
 	function registerSelectedMatchPref () { 
 		
