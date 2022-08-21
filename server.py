@@ -19,6 +19,7 @@ import matcher
 import auth
 import req_validation
 import notifications
+import database
 from big_lists import majors, dhall_list
 
 app = Flask(__name__)
@@ -528,6 +529,8 @@ if __name__ == "__main__":
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
 
+        initialize_usage_metrics = scheduler.add_job(database.create_new_day_usage_metrics, 'cron',
+                                                     hour=12, minute=7, timezone='America/New_York')
         # schedule lunch job to start at 10:00AM ET
         recur_lunch_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_lunch,
                                                  'cron', hour=9, minute=45, timezone='America/New_York')

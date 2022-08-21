@@ -1,6 +1,6 @@
 from ast import Is
 from requests import get
-from database import new_connection, close_connection
+from database import new_connection, close_connection, update_request_usage_metric
 from matcher import match_requests
 from big_lists import dhall_list
 from datetime import datetime, date
@@ -39,6 +39,9 @@ def add_request(netid, meal_type, start_time, end_time, dhall_arr, atdhall):
     clean_requests()
 
     match_requests()
+
+    # increment request counter
+    update_request_usage_metric()
 
     return True
 
@@ -348,5 +351,3 @@ def recur_request_to_string(recur_req_dict):
             + ', on ' + day_string
 
         return ret_string
-
-

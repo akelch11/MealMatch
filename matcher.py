@@ -2,6 +2,7 @@ from operator import le
 import random
 import string
 import notifications
+import database
 from datetime import datetime
 from big_lists import dhall_list
 
@@ -313,6 +314,8 @@ def accept_match(netid, matchid, phonenum):
             # If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(
                 match_name)
+            # match has been finalized, update matches count
+            database.update_matches_usage_metric()
 
     elif row[2] == netid:
         # We know that the user is the second_netid
@@ -325,6 +328,8 @@ def accept_match(netid, matchid, phonenum):
             # If the other person has not accepted, notify the other person that match is confirmed
             message = "{} also accepted the match! Have fun eating!".format(
                 match_name)
+            # match has been finalized, update matches count
+            database.update_matches_usage_metric()
     notifications.send_message(message, phonenum)
 
     query = """UPDATE matches SET {} = TRUE WHERE MATCH_ID = %s""".format(

@@ -1,3 +1,4 @@
+from datetime import datetime, date
 from psycopg2 import connect
 from os import environ
 from big_lists import dhall_list
@@ -78,20 +79,69 @@ def create_requests_table():
     close_connection(cur, conn)
 
 
+def create_metrics_table():
+    create_table_query = ''' CREATE table metrics 
+                            (DAY TEXT PRIMARY KEY NOT NULL, REQUESTS INT NOT NULL, MATCHES INT NOT NULL) '''
+
+    cur, conn = new_connection()
+    cur.execute(create_table_query)
+    close_connection(cur, conn)
+
+
+def create_new_day_usage_metrics():
+    day_string = date.today().isoformat()
+    init_metrics_query = ''' INSERT INTO metrics (day, requests, matches)
+                            VALUES (\'{}\', 0, 0) '''.format(day_string)
+
+    print('day string: ' + day_string)
+    print('init metrics query ' + init_metrics_query)
+
+    cur, conn = new_connection()
+    cur.execute(init_metrics_query)
+    close_connection(cur, conn)
+
+
+def update_request_usage_metric():
+    try:
+        day_string = date.today().isoformat()
+        increment_requests = ''' UPDATE metrics SET REQUESTS = REQUESTS + 1  WHERE day = \'{}\''''.format(
+            day_string)
+        cur, conn = new_connection()
+        cur.execute(increment_requests)
+        close_connection(cur, conn)
+    except Exception as ex:
+        print('EXCEPTION IN UPDATING MATCHES OCCURRED')
+        print(ex)
+
+
+def update_matches_usage_metric():
+    try:
+        day_string = date.today().isoformat()
+        increment_requests = ''' UPDATE metrics SET MATCHES = MATCHES + 1  WHERE day = \'{}\''''.format(
+            day_string)
+        cur, conn = new_connection()
+        cur.execute(increment_requests)
+        close_connection(cur, conn)
+    except Exception as ex:
+        print('EXCEPTION IN UPDATING MATCHES OCCURRED')
+        print(ex)
+
+
 if __name__ == "__main__":
     clear_query = "DROP TABLE %s;"
 
-    cur, conn = new_connection()
-    for table in [
-        # 'matches',
-        # 'requests',
-        # 'users',
-    ]:
-        cur.execute(clear_query, [table])
-    close_connection(cur, conn)
-    print('database deleted')
+    # cur, conn = new_connection()
+    # for table in [
+    #     # 'matches',
+    #     # 'requests',
+    #     # 'users',
+    # ]:
+    # cur.execute(clear_query, [table])
+    # close_connection(cur, conn)
+    # print('database deleted')
 
     # create_matches_table()
     # create_requests_table()
     # create_user_table()
-    print('database created')
+    # create_metrics_table()
+    print('database script ran')
