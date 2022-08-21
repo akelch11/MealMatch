@@ -1,10 +1,8 @@
 ##
-from nis import match
 from sys import stdout, stderr
-from datetime import date, datetime, tzinfo
+from datetime import date, datetime
 from argparse import ArgumentParser
 import os
-from urllib import response
 
 from dateutil import parser
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -19,12 +17,12 @@ import user_profile
 import meal_requests
 import matcher
 import auth
-import keys
 import req_validation
-from big_lists import majors, dept_code, dhall_list
+import notifications
+from big_lists import majors, dhall_list
 
 app = Flask(__name__)
-app.secret_key = keys.APP_SECRET_KEY
+app.secret_key = os.urandom(16)
 
 
 @app.route('/landing', methods=['GET'])
@@ -104,26 +102,14 @@ def update_account_form():
     else:  # protect against malicious manually entering parameter to different than 0 or 1
         return make_response(render_template('page404.html'), 404)
 
-    title_value = ""
-    button_value = ""
     new_user = not user_profile.exists(username)
-
-    # netid detected in system
-    if not new_user:
-        title_value = 'Edit Your Profile!'
-        button_value = "Submit Changes"
-    else:
-        title_value = 'Create Your Account!'
-        button_value = "Get Started!"
-
     html = render_template('editprofile.html',
                            senior_class=senior_year(),
                            majors=majors,
                            existing_profile_info=profile_dict,
-                           title_value=title_value,
-                           button_value=button_value,
                            valid_phonenum=valid_phonenum,
-                           new_user=new_user)
+                           new_user=new_user,
+                           dhalls=dhall_list)
     response = make_response(html)
     return response
 
@@ -139,14 +125,6 @@ def form():
     bio = request.args.get('bio').strip()
     phonenum = request.args.get('phonenum')
     match_pref = request.args.get('match-pref')
-    yeardict = {}
-    for i in range(4):
-        y = str(senior_year()+i)
-        yeardict[y] = 'class of '+str(y)
-    if year == "Grad Student":
-        y = str(senior_year()-1)
-        yeardict[y] = year
-        year = y
     if bio == "":
         bio = "Hey, my name is %s. Let's grab a meal sometime!" % name
     if user_profile.exists(netid):
@@ -238,8 +216,6 @@ def validate_req(args):
         print('Meal type', meal_type, file=stdout)
         dhall = args.get('location')
         print('DHALL STRING:', dhall, file=stdout)
-        start_time = args.get('start')
-        end_time = args.get('end')
         at_dhall = args.get('atdhall')
         print('req type: ', at_dhall, file=stdout)
         if at_dhall == "False":
@@ -342,9 +318,32 @@ def get_matches():
         print('REQ: ', req, "\n Loc: ", loc)
         req_locations.append(loc)
 
+    # get recurring request to display
+    recur_request = meal_requests.get_users_recurring_request(netid)
+
+    if recur_request != None:
+        recur_request = meal_requests.recur_request_to_normal_request(
+            recur_request)
+
+        dhalls_in_req = [dhall_list[i]
+                         for i in range(len(dhall_list)) if recur_request['dhall_arr'][i]]
+        # append dining halls into a string split by /
+        loc = '/'.join(dhalls_in_req)
+
+        recur_request['dhall_arr'] = loc
+
+        recur_request['days'] = meal_requests.recurring_meal_string_to_days(
+            recur_request['days'])
+
+        print('valid recurring request')
+        print(str(recur_request))
+    else:
+        print('recur request is None')
+
     html = render_template('matches.html',
                            all_matches=all_matches,
                            all_requests=all_requests,
+                           recur_request=recur_request,
                            locations=req_locations)
     response = make_response(html)
     return response
@@ -406,6 +405,79 @@ def tutorial_method():
     response = make_response(html)
     return response
 
+
+@app.route('/recurrequest', methods=['GET'])
+def recur_request_page():
+    error = request.args.get('error')
+
+    if error is None:
+        error = ""
+
+    # get string for existing recur request to display
+    current_recur_req = meal_requests.get_users_recurring_request(
+        auth.authenticate())
+    current_recur_req_string = ""
+    if current_recur_req != None:
+        current_recur_req_string = meal_requests.recur_request_to_string(
+            current_recur_req)
+        print(current_recur_req_string)
+
+    html = render_template('recurrequest.html',
+                           dhalls=dhall_list,
+                           date=datetime.now(),
+                           current_recur_req_string=current_recur_req_string)
+    response = make_response(html)
+    return response
+
+
+@app.route('/submitrecurrequest', methods=['GET'])
+def submit_recur_request():
+
+    try:
+        meal_type = request.args.get('meal')
+        print('Meal type', meal_type, file=stdout)
+        dhall = request.args.get('location')
+        print('DHALL STRING:', dhall, file=stdout)
+        start_time = request.args.get('start')
+        end_time = request.args.get('end')
+        days = request.args.get('days')
+        at_dhall = request.args.get('atdhall')
+    except Exception as ex:
+        return make_response(render_template('page404.html'), 404)
+
+    # TODO: add validation to ensure bad requests can't be submitted through url
+    # mostly just checking meal type alligns w times
+
+    start_time_datetime = parser.parse(start_time)
+    end_time_datetime = parser.parse(end_time)
+    print(start_time_datetime)
+    print(end_time_datetime)
+    # multiple dhalls can be selected via scheduled match
+    # Dining halls are listed in between '-' of dhall request parameter
+
+    dhall_arr = [hall_name in dhall for hall_name in dhall_list]
+    print(dhall_arr)
+
+    # update user's configured recurring request
+    meal_requests.configure_recurring_request(
+        auth.authenticate(), start_time_datetime, end_time_datetime, days, dhall)
+
+    print('config recurring request')
+
+    html = render_template('homescreen.html')
+    response = make_response(html)
+    return response
+
+
+@app.route('/cancel_recurring_request', methods=['GET'])
+def cancel_recurring_request():
+    # update user's configured recurring request
+    print('inside cancell RR')
+    meal_requests.cancel_recurring_request(auth.authenticate())
+    print('rerouting')
+    return redirect('/matches')
+
+
 # CAS LOGOUT
 
 
@@ -430,9 +502,9 @@ def error500(e):
     return render_template('page500.html'), 500
 
 
+# import modules to all Jinja templates
 @app.context_processor
 def add_imports():
-    # Note: we only define the top-level module names!
     return dict(user_profile=user_profile, datetime=datetime, os=os, auth=auth)
 
 
@@ -455,6 +527,17 @@ if __name__ == "__main__":
         scheduler = BackgroundScheduler()
         job = scheduler.add_job(
             meal_requests.clean_requests, 'interval', hours=5)
+
+        # schedule lunch job to start at 10:00AM ET
+        recur_lunch_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_lunch,
+                                                 'cron', hour=9, minute=45, timezone='America/New_York')
+        recur_lunch_job = scheduler.add_job(meal_requests.execute_recurring_requests_lunch,
+                                            'cron', hour=10, minute=0, timezone='America/New_York')
+        recur_dinner_text_job = scheduler.add_job(notifications.send_recurring_request_notifications_dinner,
+                                                  'cron', hour=16, minute=0, timezone='America/New_York')
+        recur_dinner_job = scheduler.add_job(meal_requests.execute_recurring_requests_dinner,
+                                             'cron', hour=16, minute=30, timezone='America/New_York')
+
         scheduler.start()
 
         # redirect to HTTPS when on heroku, don't use security protocol on localhost
@@ -467,5 +550,6 @@ if __name__ == "__main__":
         port = int(os.environ.get('PORT', 5001))
         app.run(host=host, port=port, debug=False)
     except Exception as ex:
+        print('EXCEPTION OCCURRED')
         print(ex, file=stderr)
         exit(1)

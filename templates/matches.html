@@ -56,6 +56,9 @@
 		</div>
 		{% endif %}
 	{% endif %}
+	{% if recur_request != None %}
+		{% include 'recur_request-comp.html' %}
+	{% endif %}
 </body>
 
 <script>

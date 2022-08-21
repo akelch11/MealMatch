@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>MealMatch | Schedule a Meal!</title>
+	{% include 'imports.html' %}
+</head>
+
+<body class="forceMaven">
+	{% include 'header.html' %}
+
+	{% if current_recur_req_string != None %}
+		<nav class="navbar navbar-expand-lg navbar-light jumbotron" id = 'currentRRHead'>
+			<div class="container-fluid">
+				<div class = 'col-md-8'>
+					You have an existing recurring meal request: {{current_recur_req_string}}. <br/> Go <a href = '/matches'>here</a> to check it out.
+					Submitting another request here will replace your existing recurring request.
+				</div>
+				<div class="navbar navbar-collapse justify-content-end col-sm-4" id="content">
+					<ul class="forceMaven navbar-nav">
+						<!-- hm -->
+						<li><img src = '../static/close.svg' height="25px" width='auto'></img></button></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	{%endif%}
+
+	<center>
+        <center>
+            <div id='mealType' class="container">
+                <div class="btn-group-sm menuButton">
+                    I want to eat:
+                    <br class = "mealTypeBreak"/>
+                    {% if date.isoweekday() == 6 or date.isoweekday() == 7%}
+                    <button class='btn-lg' id='lunchButton'> Brunch </button>
+                    {%else%}
+                    <button class='btn-lg' id='lunchButton'> Lunch </button>
+                    {%endif%}
+                    <button class='btn-lg' id='dinnerButton'> Dinner </button>
+                </div>
+            </div>
+        </center>
+
+            <center>
+                <div id='hallType' class="container" name = ''>
+                    <div class="btn-group-sm menuButton ">
+                        <span   >I want to eat at:</span> <br class = "mobile"/>
+                        {% for dhall in dhalls%}
+                        <button type = 'button' class='btn-lg dHallType' 
+                        id='{{dhall}}'>{{dhall}}</button>
+                            {% if (loop.index % 3) == 0 %}
+                            <br class = "break"/>
+                            {%endif%}
+                        {% endfor %}
+                        <br/>
+                        <button class='btn-lg' id='anyDhall' type = 'button'
+                         style = "margin: 10px; margin-top: 10px;  "
+                         data-toggle="tooltip" data-bs-placement="right" title="Select every DHall as a potential meal location.">
+                            Any DHall
+                        </button>
+                    </div>
+                </div>
+              
+                <div id='hallType' class="container">
+                    <div class="btn-group-sm menuButton" id = "daysField" name = "">
+                        <span   >On the following days:</span><br/><br class = "mobile"/>
+                        {% for day in ['Mon','Tues','Wed','Thurs',"Fri",'Sat','Sun']%}
+                        <button class='btn-lg dayType' 
+                           type = "button"
+                        id='{{day}}'>{{day}}</button>
+                            {% if (loop.index % 3) == 0 %}
+                            <br class = "break"/>
+                            {%endif%}
+                        {% endfor %}
+                    </div>
+                </div>
+              </center>
+                        
+                <div id='mealTimes' class="container row"   >
+                    <div class="btn-group-sm dropdown" id='time' style="font-size: 18px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"
+                                        data-toggle="tooltip" data-bs-placement="left" title="Click on the clock icon or type to enter your availability!">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>  
+                        <script>
+                            // activate tooltips
+                            $('#time').ready(function () {
+                            $('[data-toggle="tooltip"]').tooltip()
+                            })
+                        </script>
+                        <span   >I'm free from:</span>
+                        <input class='btn-sm' type='time' step='60' id='startTimeButton' name = '' style = 'size-adjust: 75%;'>
+                        <span   >to</span>
+                        <input  class='btn-sm' type='time' step='60' id='endTimeButton' name = ''>
+                        
+                        <!-- <button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px;"
+                             data-toggle="tooltip" data-placement="bottom" title="Select the full remaining meal period.">
+                            Any Time
+                          </button> -->
+                    </div>
+                </div>
+      
+                <center>
+                <div class='container'   >
+                    <a id="submitButtonForm">
+                        <!-- have it close modal and save info somehow -->
+                        <button type = "button" class='btn-lg submitReqButton orange-moon enter-button'>Confirm</button>
+					</a>
+                </div>
+                </center>
+
+				<div class="container row" id="errorBox" style="color: red">
+					
+					<!-- catching invalid requests on back-end -->
+					{% if error == "invalid_request": %}
+					<p>*An attempt was made to submit a request with invalid parameters. Please refer to request guidelines to submit a valid request.</p><br>
+					<!-- multiple requests in same meal period -->
+					{% endif %}
+				</div>
+      
+      
+            </div>
+    </center>
+
+</body>
+
+</html>
+
+<script type = 'text/javascript' src = '../static/js/recurrequest.js'>
+</script>
+
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	body {
+		font-weight: normal;
+	}
+
+	#mealType {
+		margin: 20px;
+		margin-top: 20px;
+
+	}
+
+	.mobile {
+ 		 display: none;
+	}
+
+	.break {
+		display: none;
+	}
+
+	.mealTypeBreak {
+		display: none
+	}
+
+	.closed {
+		display: none;
+	}
+
+	@media (max-width: 488px) {
+	.mobile {
+		display: block;
+		/* Add other properties here */
+	}
+	}
+
+
+	@media (max-width: 991px)
+	{
+		.break {
+		display: block;
+		}
+	}
+
+	@media (max-width: 411px)
+	{
+		.mealTypeBreak{
+		display: block;
+		}
+	}
+
+</style>

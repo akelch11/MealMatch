@@ -1,0 +1,58 @@
+{% if recur_request != None %}
+<center>
+	<div style="margin-top: 10px;">
+		<h2 class="forceMaven">Your Recurring Meal Requests</h2>
+		<hr>
+	</div>
+</center>
+<div class="container-fluid">
+    <div class="card">
+            <div class='row align-content-center'>
+                <div class="card-body col-sm-9">
+                    
+                    <strong class = "cardText d-flex justify-content-center justify-content-sm-start">
+                    
+                
+                    {% if recur_request != None and recur_request['meal_type']%} 
+                    {% set meal = 'Lunch' %}
+                    {% else %}
+                    {% set meal= "Dinner" %}
+                    {%endif%}
+                    {{
+                        meal + ' @ ' + recur_request['dhall_arr'] + " "
+                    }}
+                    from
+                    <br/>
+                    {{
+                    recur_request['starttime'].strftime('%-I:%M%p')
+                    }}
+                    -
+                    {{
+                    recur_request['endtime'].strftime('%-I:%M%p') +","
+                    }}
+                    on {{recur_request['days']}} 
+                
+                    </strong>
+                </div>
+                <div class="card-body col-sm-3 row" style = "padding: 5px;">
+                    <center>
+                    <a href = "/recurrequest" style= "height: 50%;">
+                        
+						<button class='btn-sm' style="background-color: #ff9f46; color: white; padding-top: 5px; padding-bottom: 5px; height: 50%; width:auto; border-radius: 5px;" >
+                           Modify Recurring Request
+						</button>
+                    
+					</a>
+                    <br/>
+                    <div class ='row'></div>
+                    <a href = '/cancel_recurring_request' style= "height: 50%;" >
+                        
+                        <button class='btn-sm' style="background-color: #c55353; color: white; padding-top: 5px; padding-bottom: 5px; height: 50%; width:auto; border-radius: 5px;">Cancel Recurring Request</button>
+                       
+                    </a>
+                </center>
+                </div>
+        </div>
+    </div>
+</div>
+{% endif %}

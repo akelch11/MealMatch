@@ -276,8 +276,8 @@ def get_past_matches(netid):
         other_netid = match[0] if match[1] == netid else match[1]
 
         match_info['netid'] = other_netid
-        match_info['name'], match_info['phonenum'] = get_from_netid(
-            other_netid, 'name', 'phonenum')
+        match_info['name'], match_info['phonenum'], match_info['bio'] = get_from_netid(
+            other_netid, 'name', 'phonenum', 'bio')
         match_info['day'] = match[2]
         match_info['dhall'] = match[3]
         match_info['id'] = match[4]
