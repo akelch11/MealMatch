@@ -14,7 +14,7 @@
 
 	lunchButton.addEventListener('click', function onClick() {
 		activeMeal = 'lunch';
-		console.log('lunch Pressed');
+		// console.log('lunch Pressed');
 		lunchButton.style.backgroundColor = "#ff9f46";
 		dinnerButton.style.backgroundColor = '';
 
@@ -22,7 +22,7 @@
 
 	dinnerButton.addEventListener('click', function onClick() {
 		activeMeal = 'dinner';
-		console.log('dinner Pressed');
+		// console.log('dinner Pressed');
 		dinnerButton.style.backgroundColor = "#ff9f46";
 		lunchButton.style.backgroundColor = '';
 
@@ -30,7 +30,7 @@
 
 	function detectBrunch() {
 		
-		console.log("brunch function run")
+		// console.log("brunch function run")
 		now = new Date()
 		// render "Brunch" on weekends
 		if (now.getDay() == 0 || now.getDay() == 6)
@@ -65,7 +65,7 @@
 				}
 				
 
-				console.log(activeDhalls)
+				// console.log(activeDhalls)
 
 			});
 	}
@@ -223,7 +223,7 @@
 
 		let startTime = document.getElementById("startTimeButton").value;
 		let endTime = document.getElementById("endTimeButton").value;
-		console.log(startTime + " " + endTime);
+		// console.log(startTime + " " + endTime);
 
 		// determine if any dhall buttons have been pressed 'ON'
 		let selected = false;
@@ -231,23 +231,23 @@
 			if (activeDhalls[dh])
 				selected = true;
 
-		console.log('dHallselected' + selected)
+		// console.log('dHallselected' + selected)
 
 		// check if times are within the reasonable range and ordered correctly
 		let validMealTimes = validateTimes(startTime, endTime, activeMeal);
-		console.log('valid mealtimes ' + validMealTimes)
+		// console.log('valid mealtimes ' + validMealTimes)
 
 		let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected)
-		console.log('empty fields?: ' + emptyFields)
+		// console.log('empty fields?: ' + emptyFields)
 		
 		let interval_len = 20;
 		let longEnoughInterval = length(startTime, endTime) >= interval_len;
-		console.log('long enough interval?: ' + longEnoughInterval)
+		// console.log('long enough interval?: ' + longEnoughInterval)
 
 		document.getElementById('errorBox').innerHTML = ""
 		// takeout validMealTimes to remove lunch/dinner time validation
 		if (emptyFields || !validMealTimes || !longEnoughInterval) {
-			console.log('attempt to send invalid meal request')
+			// console.log('attempt to send invalid meal request')
 			// if there is an incomplete field, only show this error
 			if (emptyFields)
 				document.getElementById('errorBox').innerHTML += "<p>*Please enter all information to make a match request</p><br>"
@@ -299,7 +299,7 @@
 		{
 			// add anyTime button
 			document.getElementById('time').innerHTML += '<button type="button" class="btn-sm" id = "anyTime" style = "margin-left: 10px; " data-toggle="tooltip" data-placement="right" title="Add the full time window for the selected meal period." onclick = "updateAnyTimes()">Rest of Meal</button>';
-			console.log("any time button added " + (compareTimeStrings(nowTime, "20:00") < 0));
+			// console.log("any time button added " + (compareTimeStrings(nowTime, "20:00") < 0));
 		}
 	}
 
@@ -311,7 +311,7 @@
 		{
 			
 			var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
-			console.log(nowTime);
+			// console.log(nowTime);
 
 			if(activeMeal === "lunch")
 			{
@@ -328,7 +328,7 @@
 				document.getElementById('endTimeButton').setAttribute('value', "14:00");
 
 
-				console.log('times changed to lunch')
+				// console.log('times changed to lunch')
 			}
 			else if (activeMeal === "dinner")
 			{
@@ -341,7 +341,7 @@
 				
 				document.getElementById('endTimeButton').setAttribute('value', "20:00");
 
-				console.log('times changed to dinner')
+				// console.log('times changed to dinner')
 			}
 
 			startTimeButton.innerHTML = startTimeButton.innerHTML;

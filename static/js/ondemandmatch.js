@@ -68,7 +68,7 @@ let submitButtonForm = document.getElementById("submitButtonForm");
 
 // update url to contain proper match request information
 function updateUrl() {
-    console.log('called updateurl')
+    // // console.log('called updateurl')
 
     let url = "/submitrequest"
     let endTime = document.getElementById("endTimeButton").value;
@@ -131,19 +131,19 @@ submitButtonForm.addEventListener('click', function (event) {
 
 
     let endTime = document.getElementById("endTimeButton").value;
-    console.log(endTime);
+    // // console.log(endTime);
 
     // determine if any dhall buttons have been pressed 'ON'
     let selected = activeDhall != ""
 
-    console.log(activeDhall)
+    // console.log(activeDhall)
 
     // check if 
     let validMealTimes = validateTimes(endTime);
 
-    console.log('valid mealtimes ' + validMealTimes)
-    console.log('lunch time? : ' + isLunchTime())
-    console.log('dinner time? : ' + isDinnerTime())
+    // // console.log('valid mealtimes ' + validMealTimes)
+    // // console.log('lunch time? : ' + isLunchTime())
+    // // console.log('dinner time? : ' + isDinnerTime())
 
 
 
@@ -154,13 +154,13 @@ submitButtonForm.addEventListener('click', function (event) {
     let interval_len = 20;
     let startTime = new Date().toTimeString().substring(0, 5);
     let longEnoughInterval = length(startTime, endTime) >= interval_len;
-    console.log('long enough interval?: ' + longEnoughInterval)
+    // // console.log('long enough interval?: ' + longEnoughInterval)
 
-    console.log('empty: ' + emptyFields)
+    // // console.log('empty: ' + emptyFields)
 
     // takeout validMealTimes to remove lunch/dinner time validation
     if (emptyFields || !validMealTimes || !longEnoughInterval) {
-        console.log('attempt to send invalid meal request')
+        // // console.log('attempt to send invalid meal request')
         if (emptyFields)
             document.getElementById('errorBox').innerHTML += "<p>*Please select all fields to make a match request</p><br>"
         else if (!validMealTimes && (isLunchTime() || isDinnerTime()))
@@ -173,7 +173,7 @@ submitButtonForm.addEventListener('click', function (event) {
         event.preventDefault();
     }
     else {
-        console.log('submission successful')
+        // console.log('submission successful')
         updateUrl()
     }
 
@@ -181,25 +181,25 @@ submitButtonForm.addEventListener('click', function (event) {
 });
 
 function validateTimes(t1) {
-    console.log("validation, time: " + t1)
+    // console.log("validation, time: " + t1)
     if (t1 === "") return false;
     else {
 
 
         let nowTime = new Date().toTimeString().substring(0, 5);
-        console.log('cur time', nowTime)
+        // console.log('cur time', nowTime)
 
         // if dinner time, ensure endTime is in dinner hour range and is later than present time
         let dinner_bool = isDinnerTime() &&
             (compareTimeStrings(nowTime, t1) <= 0) &&
             (compareTimeStrings(t1, "20:00") <= 0);
-        console.log("RETURN ME, dinner: " + dinner_bool);
+        // console.log("RETURN ME, dinner: " + dinner_bool);
         
         // if lunch time, ensure endTime is in lunch hour range and is later than present time
         let lunch_bool = isLunchTime() &&
             (compareTimeStrings(nowTime, t1) <= 0) &&
             (compareTimeStrings(t1, "14:00") <= 0);
-        console.log("RETURN ME, lunch: " + lunch_bool);
+        // console.log("RETURN ME, lunch: " + lunch_bool);
         
         return lunch_bool || dinner_bool;
 
@@ -232,7 +232,7 @@ function addAnyTimeButton() {
         else if (isDinnerTime())
         buttonString += "Dinner </button>";
         document.getElementById('time').innerHTML += buttonString;
-        console.log("any time button added ");
+        // console.log("any time button added ");
     }
 }
 
@@ -242,7 +242,7 @@ function updateAnyTimes()
     {
         
         var nowTime = (new Date()).toLocaleTimeString('en-GB').substring(0,5);
-        console.log(nowTime);
+        // console.log(nowTime);
 
         
         if (isLunchTime())

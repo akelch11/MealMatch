@@ -34,7 +34,7 @@ for (btn of dHallButtons) {
 
 lunchButton.addEventListener('click', function onClick() {
 	activeMeal = 'lunch';
-	console.log('lunch Pressed');
+	// console.log('lunch Pressed');
 	lunchButton.style.backgroundColor = "#ff9f46";
 	dinnerButton.style.backgroundColor = '';
 
@@ -42,13 +42,13 @@ lunchButton.addEventListener('click', function onClick() {
 
 dinnerButton.addEventListener('click', function onClick() {
 	activeMeal = 'dinner';
-	console.log('dinner Pressed');
+	// console.log('dinner Pressed');
 	dinnerButton.style.backgroundColor = "#ff9f46";
 	lunchButton.style.backgroundColor = '';
 
 });
 
-console.log("buttons "); console.log(dayButtons);
+// console.log("buttons "); // console.log(dayButtons);
 
 for (btn of dHallButtons) {
 	activeDhalls[btn.id] = false;
@@ -76,20 +76,20 @@ for (let i = 0; i < dayButtons.length; i++) {
 			}
 
 			
-			console.log(activeDays)
+			// console.log(activeDays)
 
 		});
 }
 
 for (day of dayButtons) {
 
-console.log('id is ' + day.id)
+// console.log('id is ' + day.id)
 day.addEventListener('click', function ()
 		{
 		  const dayMap = {'Mon': "M", "Tues": "T", "Wed":"W", "Thurs":"R", "Fri": "F", "Sat":"S","Sun":"U"}
 		  dayOptions = ""
 		  for (var day in activeDays) {
-			console.log(day + 'is ' + activeDays[day])
+			// console.log(day + 'is ' + activeDays[day])
 			  if (activeDays[day]) {
 				dayOptions += (dayMap[day]);
 				
@@ -97,12 +97,12 @@ day.addEventListener('click', function ()
 			}
 
 
-		  console.log('day field is ' + dayOptions);
+		  // console.log('day field is ' + dayOptions);
 		  document.getElementById('daysField').setAttribute('name', dayOptions);
-		  console.log("df is "+document.getElementById('daysField').getAttribute('name'))
+		  // console.log("df is "+document.getElementById('daysField').getAttribute('name'))
 
 		});
-console.log(day.id + "created")
+// console.log(day.id + "created")
 }
 
 
@@ -135,7 +135,7 @@ for (let i = 0; i < dHallButtons.length; i++) {
 			}
 			
 
-			console.log(activeDhalls)
+			// console.log(activeDhalls)
 
 		});
 
@@ -154,10 +154,10 @@ for (let i = 0; i < dHallButtons.length; i++) {
 		  dHallOptions += (dh + "-");
 		  dHallSelected = true;
 		}
-		console.log(dHallOptions)
+		// console.log(dHallOptions)
 
 	  document.getElementById('hallType').setAttribute('name', dHallOptions);
-	  console.log('name is '+document.getElementById('hallType').getAttribute('name'));
+	  // console.log('name is '+document.getElementById('hallType').getAttribute('name'));
 	
 
 	}
@@ -225,7 +225,7 @@ function updateUrl() {
 	url += "&days=" + dayOptions;
 	url += "&atdhall=False";
 
-	console.log(url);
+	// console.log(url);
 
 	submitButtonForm.setAttribute('href', url);
 }
@@ -288,7 +288,7 @@ submitButtonForm.addEventListener('click', function (event) {
 
 let startTime = document.getElementById("startTimeButton").value;
 let endTime = document.getElementById("endTimeButton").value;
-console.log(startTime + " " + endTime);
+// console.log(startTime + " " + endTime);
 
 // determine if any dhall buttons have been pressed 'ON'
 let selected = false;
@@ -296,23 +296,23 @@ for (var dh in activeDhalls)
 	if (activeDhalls[dh])
 		selected = true;
 
-console.log('dHallselected' + selected)
+// console.log('dHallselected' + selected)
 
 // check if times are within the reasonable range and ordered correctly
 let validMealTimes = validateTimes(startTime, endTime, activeMeal);
-console.log('valid mealtimes ' + validMealTimes)
+// console.log('valid mealtimes ' + validMealTimes)
 
 let emptyFields = (endTime === "" || startTime === "" || activeMeal === "" || !selected || dayOptions == "")
-console.log('empty fields?: ' + emptyFields)
+// console.log('empty fields?: ' + emptyFields)
 
 let interval_len = 20;
 let longEnoughInterval = length(startTime, endTime) >= interval_len;
-console.log('long enough interval?: ' + longEnoughInterval)
+// console.log('long enough interval?: ' + longEnoughInterval)
 
 	document.getElementById('errorBox').innerHTML = ""
 	// takeout validMealTimes to remove lunch/dinner time validation
 	if (emptyFields || !validMealTimes || !longEnoughInterval) {
-		console.log('attempt to send invalid meal request')
+		// console.log('attempt to send invalid meal request')
 		// if there is an incomplete field, only show this error
 		if (emptyFields)
 			document.getElementById('errorBox').innerHTML += "<p>*Please enter all information to make a match request</p><br>"

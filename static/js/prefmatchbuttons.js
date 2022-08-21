@@ -11,7 +11,7 @@ for(let i = 0; i < options.length; i++)
     // console.log('try setup for ', opt);
     btn.addEventListener('click', function()
     {
-        console.log('make ', opt, 'active')
+        // console.log('make ', opt, 'active')
         if(btn.classList.contains('inactive-button'))
         {
             btn.classList.remove('inactive-button');
