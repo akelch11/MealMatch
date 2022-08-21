@@ -26,19 +26,25 @@
 	{% include 'header.html' %}
 	<div id="wrapper">
 		<!-- Section for description -->
+		
 		<div id="mainWindow" style = "vertical-align: middle; align-items: center;">
+			<div class = 'row'></div>
 			<center>
+				<div class = 'row'><br/></div>
+				<div class = 'row'><br/></div>
+				<div class = 'row'><br/></div>
+				<div class = 'row'><br/></div>
 				<div style="display: flexbox; align-items: center; justify-content: center;
 				line-height: 1.5; display: inline-block; vertical-align: middle;">
 					<div class="row justify-content-center">
-						<div class="col-4" id="landingText">
-							<h3>Match for Meals!</h3>
+						<div class="col-lg-20" id="landingText">
+							<h1>Welcome to MealMatch!</h1>
 						</div>
 					</div>
 					<center>
 						<div class="row justify-content-center">
 							<div class="col-8">
-								<p class="text-center">MealMatch is an online app that enables Princeton
+								<p class="text-center lead">MealMatch is an online app that enables Princeton
 									University students to meet new people over meals at dining halls.
 									Use our app to enjoy your food and make new friends!</p>
 							</div>
@@ -69,6 +75,10 @@
 		background-size: cover;
 		background-repeat: no-repeat;
 
+	}
+
+	#mainWindow {
+		height: 100%
 	}
 
 	#landingText {
