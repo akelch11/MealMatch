@@ -1,6 +1,7 @@
 
 let curReqBanner = document.getElementById('currentRRHead');
-curReqBanner.addEventListener('click', () => {curReqBanner.classList.add('closed');})
+if(curReqBanner !== null)
+	curReqBanner.addEventListener('click', () => {curReqBanner.classList.add('closed');})
 
 let lunchButton = document.getElementById("lunchButton");
 let dinnerButton = document.getElementById("dinnerButton");
